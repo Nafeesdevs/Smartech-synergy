@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: auto; }
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: hidden; }
+  body {
+    @apply font-body bg-ink text-white;
+    overflow-x: hidden;
+  }
+  ::selection { background: #F4BC21; color: #09090B; }
+  @media (pointer: fine) {
+    body.has-cursor, body.has-cursor a, body.has-cursor button { cursor: none; }
+  }
+}
+
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12; }
+  .label { @apply font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.22em]; }
+  .display { @apply font-display font-black uppercase leading-[0.88] tracking-tightest; font-stretch: 112%; }
+  .btn {
+    @apply relative inline-flex items-center gap-3 overflow-hidden rounded-full px-6 py-4 font-display text-sm font-bold uppercase tracking-wider transition-colors duration-300;
+  }
+  .btn-sun { @apply bg-sun text-ink; }
+  .btn-ghost { @apply border border-white/20 text-white hover:border-white; }
+}
+
+/* film grain like the reference reel */
+.grain::after {
+  content: '';
+  position: fixed; inset: -50%;
+  pointer-events: none; z-index: 60;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  opacity: .07;
+  animation: grain 1.2s steps(6) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0,0) } 20% { transform: translate(-3%,2%) } 40% { transform: translate(2%,-3%) }
+  60% { transform: translate(-2%,-1%) } 80% { transform: translate(3%,3%) } 100% { transform: translate(0,0) }
+}
+
+.stripe-sun { background: linear-gradient(115deg, transparent 0 30%, #F4BC21 30% 70%, transparent 70%); }
+.text-outline { -webkit-text-stroke: 1.5px currentColor; color: transparent; }
+.dot-grid {
+  background-image: radial-gradient(currentColor 1.2px, transparent 1.4px);
+  background-size: 22px 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
