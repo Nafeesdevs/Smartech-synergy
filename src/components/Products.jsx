@@ -53,29 +53,29 @@ export default function Products() {
         <div className="grid items-end gap-10 lg:grid-cols-12">
           <div className="lg:col-span-8">
             <SectionLabel index="05" dark={false}>Products we sell</SectionLabel>
-            <h2 className="display mt-8 text-[13vw] sm:text-7xl lg:text-[6vw]">
+            <h2 className="display mt-6 sm:mt-8 text-[12vw] sm:text-6xl md:text-7xl lg:text-[6vw]">
               <MaskLines lines={[<span>Quality<span className="inline-block w-[0.25em]" />tech</span>, <span key="s">sourced <span className="text-volt">for you.</span></span>]} />
             </h2>
           </div>
-          <div className="flex items-end justify-between gap-6 lg:col-span-4 lg:flex-col lg:items-end">
+          <div className="flex items-start sm:items-end justify-between gap-6 lg:col-span-4 lg:flex-col lg:items-end">
             <Reveal>
-              <p className="max-w-sm leading-relaxed text-ink/70 lg:text-right">
+              <p className="max-w-sm text-sm sm:text-base leading-relaxed text-ink/70 lg:text-right">
               Equip your team with devices suited to their work and your budget. We supply new and pre-owned laptops, desktops and office essentials, with every unit tested and quality-checked before delivery. Share your requirements to discuss suitable options.
               </p>
             </Reveal>
             <div className="hidden sm:block">
-              <RingText dark text="Business Ready • Warrantied • Quality Checked • Trusted • " size={150} speed={-1.2} />
+              <RingText dark text="Business Ready • Warrantied • Quality Checked • Trusted • " size={140} className="md:scale-110" speed={-1.2} />
             </div>
           </div>
         </div>
 
-        <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 sm:mt-16 grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((p, i) => (
             <Tile key={p.t} p={p} i={i} />
           ))}
         </div>
 
-        <Reveal className="mt-10 flex flex-col gap-4 rounded-3xl bg-ink p-7 text-white md:flex-row md:items-center md:justify-between md:p-10">
+        <Reveal className="mt-8 sm:mt-10 flex flex-col gap-4 rounded-3xl bg-ink p-5 sm:p-7 text-white md:flex-row md:items-center md:justify-between md:p-10">
           <div className="flex items-center gap-4">
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-sun text-ink">
               <Icon name="check" className="h-5 w-5" />

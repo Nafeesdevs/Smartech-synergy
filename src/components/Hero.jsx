@@ -57,7 +57,7 @@ export default function Hero({ ready, lenis }) {
           </motion.div>
 
           {ready && (
-            <h1 className="display text-[15vw] sm:text-[12vw] lg:text-[9.4vw]">
+            <h1 className="display text-[14vw] sm:text-[11vw] lg:text-[9.4vw]">
               <KineticText text="Tech that" className="block" delay={0.1} />
               <span className="relative inline-block px-[0.12em] text-sun">
                 <KineticText text="never skips" delay={0.35} chaos={1.4} />
@@ -68,7 +68,7 @@ export default function Hero({ ready, lenis }) {
           )}
 
           <motion.div
-            className="mt-10 flex max-w-2xl flex-col gap-8 sm:flex-row sm:items-end sm:justify-between lg:max-w-none"
+            className="mt-8 sm:mt-10 flex max-w-2xl flex-col gap-8 sm:flex-row sm:items-end sm:justify-between lg:max-w-none"
             initial={{ opacity: 0, y: 30 }}
             animate={ready ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1, ease, delay: 1.2 }}
@@ -76,38 +76,39 @@ export default function Hero({ ready, lenis }) {
             <p className="max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
               From a single device repair to a complete office setup, Smartech Synergys supports the technology your business depends on. We provide repairs, performance upgrades and on-site IT support across Kuala Lumpur and Selangor, helping your team spend less time troubleshooting and more time working.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <Magnetic>
-                <a href="#contact" onClick={go} className="btn btn-sun group">
+                <a href="#contact" onClick={go} className="btn btn-sun group justify-center sm:justify-start">
                   <span className="relative z-10">Get a free consultation</span>
                   <Icon name="arrow" className="relative z-10 h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
                   <span className="absolute inset-0 origin-bottom scale-y-0 bg-white transition-transform duration-500 group-hover:scale-y-100" />
                 </a>
               </Magnetic>
               <Magnetic>
-                <a href={brand.whatsapp} target="_blank" rel="noreferrer" className="btn btn-ghost">
+                <a href={brand.whatsapp} target="_blank" rel="noreferrer" className="btn btn-ghost justify-center sm:justify-start">
                   <Icon name="whatsapp" className="h-4 w-4" /> WhatsApp
                 </a>
               </Magnetic>
             </div>
           </motion.div>
-        {/* highlight ticker */}
-        <div className="mt-14 hidden md:block">
-          <div className="grid grid-cols-4 border-t border-white/10">
-            {highlights.map((h, i) => (
-              <motion.div
-                key={h.k}
-                className="border-r border-white/10 py-5 pr-6 last:border-r-0 [&:not(:first-child)]:pl-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={ready ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.8, ease, delay: 1.4 + i * 0.08 }}
-              >
-                <div className="font-display text-2xl font-black uppercase">{h.k}</div>
-                <div className="label mt-1 text-white/50">{h.v}</div>
-              </motion.div>
-            ))}
+
+          {/* highlight ticker — responsive on mobile & tablet */}
+          <div className="mt-10 sm:mt-14">
+            <div className="grid grid-cols-2 md:grid-cols-4 border-t border-white/10 gap-y-4">
+              {highlights.map((h, i) => (
+                <motion.div
+                  key={h.k}
+                  className="py-4 pr-4 md:py-5 md:pr-6 border-b sm:border-b-0 border-white/10 md:border-r md:last:border-r-0 [&:not(:first-child)]:md:pl-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={ready ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.8, ease, delay: 1.4 + i * 0.08 }}
+                >
+                  <div className="font-display text-xl sm:text-2xl font-black uppercase text-white">{h.k}</div>
+                  <div className="label mt-1 text-white/50">{h.v}</div>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
         </motion.div>
 
       </motion.div>

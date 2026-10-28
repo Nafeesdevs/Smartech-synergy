@@ -18,22 +18,22 @@ function Card({ s, i, progress, total }) {
     <motion.article
       style={{ rotate }}
       data-hover
-      className={`group relative flex h-[68vh] max-h-[620px] min-h-[460px] w-[82vw] shrink-0 flex-col justify-between overflow-hidden rounded-[28px] p-7 sm:w-[60vw] md:p-10 lg:w-[34vw] ${tones[s.tone]}`}
+      className={`group relative flex h-[64vh] sm:h-[68vh] max-h-[600px] min-h-[380px] sm:min-h-[440px] md:min-h-[460px] w-[86vw] sm:w-[60vw] lg:w-[34vw] shrink-0 flex-col justify-between overflow-hidden rounded-[28px] p-6 sm:p-8 md:p-10 ${tones[s.tone]}`}
     >
       <div className="flex items-start justify-between">
-        <span className="font-display text-7xl font-black leading-none tracking-tightest opacity-90 md:text-8xl">{s.n}</span>
-        <motion.span style={{ rotate: iconRot }} className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-current">
-          <Icon name={s.icon} className="h-8 w-8" />
+        <span className="font-display text-6xl sm:text-7xl font-black leading-none tracking-tightest opacity-90 md:text-8xl">{s.n}</span>
+        <motion.span style={{ rotate: iconRot }} className="flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl border-2 border-current">
+          <Icon name={s.icon} className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8" />
         </motion.span>
       </div>
       {/* decorative dot matrix */}
       <div className="dot-grid pointer-events-none absolute -right-10 top-1/3 h-48 w-64 opacity-20 transition-transform duration-700 group-hover:translate-x-[-20px]" />
       <div className="relative">
-        <h3 className="font-display text-3xl font-black uppercase leading-[0.95] tracking-tight md:text-[2.6rem]">{s.t}</h3>
-        <p className="mt-4 max-w-sm text-[15px] leading-relaxed opacity-75">{s.d}</p>
-        <div className="mt-6 flex flex-wrap gap-2">
+        <h3 className="font-display text-2xl sm:text-3xl font-black uppercase leading-[0.95] tracking-tight md:text-[2.6rem]">{s.t}</h3>
+        <p className="mt-3 sm:mt-4 max-w-sm text-sm sm:text-[15px] leading-relaxed opacity-75">{s.d}</p>
+        <div className="mt-5 sm:mt-6 flex flex-wrap gap-1.5 sm:gap-2">
           {s.tags.map((t) => (
-            <span key={t} className="label rounded-full border border-current/30 px-3 py-1.5" style={{ borderColor: 'currentColor' }}>
+            <span key={t} className="label rounded-full border border-current/30 px-2.5 py-1 text-[10px] sm:text-[11px] sm:px-3 sm:py-1.5" style={{ borderColor: 'currentColor' }}>
               {t}
             </span>
           ))}
@@ -96,16 +96,16 @@ export default function Services() {
     <section id="services" data-section ref={ref} className="relative bg-ink" style={{ height: `calc(100vh + ${scrollDistance}px)` }}>
       <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
         <motion.div ref={track} style={{ x }} className="flex items-center gap-6 pl-5 pr-12 sm:pl-8 sm:pr-16 md:gap-8 lg:pl-12 lg:pr-24">
-          <div className="flex w-[85vw] shrink-0 flex-col justify-center pr-6 sm:w-[60vw] md:w-[48vw] lg:w-[35vw] xl:w-[32vw]">
+          <div className="flex w-[88vw] shrink-0 flex-col justify-center pr-4 sm:w-[60vw] md:w-[48vw] lg:w-[35vw] xl:w-[32vw]">
             <SectionLabel index="03">What we offer</SectionLabel>
-            <h2 className="display mt-8 text-4xl sm:text-5xl md:text-5xl lg:text-[4.2vw] xl:text-[4.0vw]">
+            <h2 className="display mt-6 sm:mt-8 text-3xl sm:text-4xl md:text-5xl lg:text-[4.2vw] xl:text-[4.0vw]">
               <MaskLines lines={['Everything', 'your', 'tech', <span key="n" className="text-sun">needs.</span>]} />
             </h2>
-            <p className="mt-8 max-w-sm leading-relaxed text-white/60">
+            <p className="mt-6 sm:mt-8 max-w-sm text-sm sm:text-base leading-relaxed text-white/60">
             Device repairs, performance upgrades, office setups, custom PC builds and on-site support. Our five core services address the practical needs of your workplace, whether you are resolving an immediate fault or preparing for your next stage of growth.
             </p>
-            <div className="label mt-10 flex items-center gap-3 text-white/40">
-              Scroll <span className="inline-block h-px w-16 bg-white/30" /> →
+            <div className="label mt-8 sm:mt-10 flex items-center gap-3 text-white/40">
+              Scroll <span className="inline-block h-px w-12 sm:w-16 bg-white/30" /> →
             </div>
           </div>
           {services.map((s, i) => (

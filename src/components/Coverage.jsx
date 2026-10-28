@@ -16,15 +16,15 @@ const cities = [
   { name: 'Ampang', ring: 0.44, bearing: 55, dot: 'bg-sun' },
 
   // Circle 3: 13 - 17 km from Sunway Visio Tower
-  { name: 'Petaling Jaya', ring: 0.66, bearing: 260, dot: 'bg-sun' },
-  { name: 'Sunway', ring: 0.66, bearing: 215, dot: 'bg-volt' },
-  { name: 'Subang', ring: 0.66, bearing: 155, dot: 'bg-sun' },
-  { name: 'Puchong', ring: 0.66, bearing: 105, dot: 'bg-volt' },
+  { name: 'Petaling Jaya', ring: 0.64, bearing: 260, dot: 'bg-sun' },
+  { name: 'Sunway', ring: 0.64, bearing: 215, dot: 'bg-volt' },
+  { name: 'Subang', ring: 0.64, bearing: 155, dot: 'bg-sun' },
+  { name: 'Puchong', ring: 0.64, bearing: 105, dot: 'bg-volt' },
 
-  // Circle 4: 24 - 33 km from Sunway Visio Tower
-  { name: 'Shah Alam', ring: 0.88, bearing: 245, dot: 'bg-sun' },
-  { name: 'Cyberjaya', ring: 0.88, bearing: 185, dot: 'bg-volt' },
-  { name: 'Klang', ring: 0.88, bearing: 295, dot: 'bg-sun' },
+  // Circle 4: 24 - 33 km from Sunway Visio Tower (safely contained for mobile screens)
+  { name: 'Shah Alam', ring: 0.82, bearing: 245, dot: 'bg-sun' },
+  { name: 'Cyberjaya', ring: 0.82, bearing: 185, dot: 'bg-volt' },
+  { name: 'Klang', ring: 0.82, bearing: 295, dot: 'bg-sun' },
 ]
 
 function toScreen(bearing, ring) {
@@ -37,7 +37,7 @@ function toScreen(bearing, ring) {
 
 function Radar() {
   // 4 Concentric circles radiating outward from Sunway Visio Tower
-  const rings = [0.22, 0.44, 0.66, 0.88]
+  const rings = [0.22, 0.44, 0.64, 0.82]
 
   const particles = Array.from({ length: 160 }, (_, i) => {
     const r = 0.14 + ((Math.sin(i * 91.7) + 1) / 2) * 0.84
@@ -101,8 +101,8 @@ function Radar() {
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease, delay: 0.15 + i * 0.05 }}
           >
-            <span className="flex items-center gap-2 whitespace-nowrap rounded-full bg-steel/95 px-3.5 py-1.5 text-xs font-bold text-white shadow-lg ring-1 ring-white/20 backdrop-blur-md transition-all duration-300 hover:scale-105 hover:ring-sun/60">
-              <span className={`h-2 w-2 shrink-0 rounded-full ${city.dot}`} />
+            <span className="flex items-center gap-1.5 sm:gap-2 whitespace-nowrap rounded-full bg-steel/95 px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-[11px] sm:text-xs font-bold text-white shadow-lg ring-1 ring-white/20 backdrop-blur-md transition-all duration-300 hover:scale-105 hover:ring-sun/60">
+              <span className={`h-1.5 w-1.5 sm:h-2 sm:w-2 shrink-0 rounded-full ${city.dot}`} />
               <span className="font-display tracking-tight uppercase text-white">{city.name}</span>
             </span>
           </motion.div>
@@ -114,28 +114,32 @@ function Radar() {
 
 export default function Coverage() {
   return (
-    <section id="coverage" data-section className="relative overflow-hidden bg-ink py-28 md:py-40">
-      <div className="container-x grid items-center gap-16 lg:grid-cols-2">
+    <section id="coverage" data-section className="relative overflow-hidden bg-ink py-20 sm:py-28 md:py-40">
+      <div className="container-x grid items-center gap-12 sm:gap-16 lg:grid-cols-2">
         <div>
           <SectionLabel index="08">Coverage</SectionLabel>
-          <h2 className="display mt-8 text-[13vw] sm:text-7xl lg:text-[6vw]">
+          <h2 className="display mt-6 sm:mt-8 text-[12vw] sm:text-6xl md:text-7xl lg:text-[6vw]">
             <MaskLines lines={['We come', <span key="t" className="text-sun">to you.</span>]} />
           </h2>
           <Reveal>
-            <p className="mt-8 max-w-md text-lg leading-relaxed text-white/65">
+            <p className="mt-6 sm:mt-8 max-w-md text-base sm:text-lg leading-relaxed text-white/65">
               Based at Sunway Visio Tower in Cheras, Kuala Lumpur, our technicians provide fast on-site IT support across the entire Klang Valley. We deploy directly to your workplace or residence — from Cheras and central KL to Petaling Jaya, Subang, Shah Alam, and Klang.
             </p>
           </Reveal>
-          <div className="mt-10 grid grid-cols-3 gap-3">
+          <div className="mt-8 sm:mt-10 grid grid-cols-1 gap-2.5 sm:gap-3">
             {[
               { t: 'Offices', sub: 'Corporate & SME' },
               { t: 'Businesses', sub: 'Retail & Shophouse' },
               { t: 'Homes', sub: 'Remote & WFH' },
             ].map((item, i) => (
-              <Reveal key={item.t} delay={i * 0.08}>
-                <div className="rounded-2xl border border-white/10 p-5 text-center transition-colors hover:border-sun/40 hover:bg-coal/60">
-                  <div className="font-display text-lg font-black uppercase text-white">{item.t}</div>
-                  <div className="label mt-1 text-white/40">{item.sub}</div>
+              <Reveal key={item.t} delay={i * 0.08} className="w-full">
+                <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-coal/50 px-5 py-3.5 sm:px-6 sm:py-4 transition-all duration-300 hover:border-sun/40 hover:bg-steel/70">
+                  <span className="font-display text-sm sm:text-base font-black uppercase tracking-tight text-white shrink-0">
+                    {item.t}
+                  </span>
+                  <span className="font-mono text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-white/50 text-right shrink-0 whitespace-nowrap">
+                    {item.sub}
+                  </span>
                 </div>
               </Reveal>
             ))}

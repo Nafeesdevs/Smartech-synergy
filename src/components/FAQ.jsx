@@ -20,10 +20,10 @@ function FaqItem({ item, index, isOpen, toggle }) {
       <button
         onClick={toggle}
         type="button"
-        className="flex w-full items-start justify-between gap-6 p-6 text-left sm:p-8"
+        className="flex w-full items-start justify-between gap-4 p-5 text-left sm:gap-6 sm:p-8"
         aria-expanded={isOpen}
       >
-        <div className="flex flex-col gap-3 sm:gap-2">
+        <div className="flex flex-col gap-2.5 sm:gap-2">
           <div className="flex items-center gap-3">
             <span className="font-mono text-[10px] tracking-widest text-sun sm:text-xs">
               0{index + 1}
@@ -31,19 +31,19 @@ function FaqItem({ item, index, isOpen, toggle }) {
             <span className="h-1 w-1 rounded-full bg-white/20" />
             <span className="label text-white/40">{item.tag}</span>
           </div>
-          <h3 className="font-display text-lg font-bold text-white transition-colors duration-300 group-hover:text-white sm:text-xl md:text-2xl">
+          <h3 className="font-display text-base font-bold text-white transition-colors duration-300 group-hover:text-white sm:text-xl md:text-2xl">
             {item.q}
           </h3>
         </div>
 
         <span
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-500 ${
+          className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-500 ${
             isOpen
               ? 'border-sun bg-sun text-ink rotate-45'
               : 'border-white/15 bg-white/5 text-white/70 group-hover:border-white/40 group-hover:text-white'
           }`}
         >
-          <Icon name="plus" className="h-4 w-4" />
+          <Icon name="plus" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </span>
       </button>
 
@@ -57,8 +57,8 @@ function FaqItem({ item, index, isOpen, toggle }) {
             transition={{ duration: 0.45, ease }}
             className="overflow-hidden"
           >
-            <div className="border-t border-white/10 px-6 pb-8 pt-5 sm:px-8">
-              <p className="text-[15px] leading-relaxed text-white/70 sm:text-base">
+            <div className="border-t border-white/10 px-5 pb-6 pt-4 sm:px-8 sm:pb-8 sm:pt-5">
+              <p className="text-[14px] leading-relaxed text-white/70 sm:text-base">
                 {item.before}
                 <span className="font-semibold text-white">
                   {item.highlight}
@@ -91,7 +91,7 @@ export default function FAQ() {
           <div className="lg:col-span-6 xl:col-span-5">
             <div className="lg:sticky lg:top-32">
               <SectionLabel index="09">Clarity & Assurance</SectionLabel>
-              <h2 className="display mt-8 text-5xl sm:text-6xl md:text-7xl lg:text-[4.6vw] xl:text-[4.3vw] tracking-tight">
+              <h2 className="display mt-6 sm:mt-8 text-4xl sm:text-5xl md:text-6xl lg:text-[4.6vw] xl:text-[4.3vw] tracking-tight">
                 <MaskLines
                   lines={[
                     'Frequently',
@@ -102,7 +102,7 @@ export default function FAQ() {
                 />
               </h2>
               <Reveal delay={0.15}>
-                <p className="mt-8 max-w-sm leading-relaxed text-white/65">
+                <p className="mt-6 sm:mt-8 max-w-sm text-sm sm:text-base leading-relaxed text-white/65">
                   Clear answers to key operational questions regarding deployment times, diagnostic policies, enterprise hardware sourcing, and after-hours coverage.
                 </p>
               </Reveal>

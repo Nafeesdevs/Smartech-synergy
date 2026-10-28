@@ -185,26 +185,32 @@ export function Nav({ lenis }) {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-40 flex flex-col justify-end bg-sun p-6 pb-12 text-ink lg:hidden"
+            className="fixed inset-0 z-40 flex flex-col justify-between overflow-y-auto bg-sun p-6 pb-10 pt-24 text-ink lg:hidden"
             initial={{ clipPath: 'circle(0% at 92% 6%)' }}
             animate={{ clipPath: 'circle(150% at 92% 6%)' }}
             exit={{ clipPath: 'circle(0% at 92% 6%)' }}
             transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
           >
-            {[...nav, { label: 'Contact', href: '#contact' }].map((n, i) => (
-              <motion.a
-                key={n.href}
-                href={n.href}
-                onClick={(e) => go(e, n.href)}
-                className="display border-b border-ink/15 py-3 text-5xl"
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.25 + i * 0.06, duration: 0.6, ease }}
-              >
-                {n.label}
-              </motion.a>
-            ))}
-            <div className="label mt-8">{brand.phone} · {brand.email}</div>
+            <div className="flex flex-col">
+              {[...nav, { label: 'Contact', href: '#contact' }].map((n, i) => (
+                <motion.a
+                  key={n.href}
+                  href={n.href}
+                  onClick={(e) => go(e, n.href)}
+                  className="display border-b border-ink/15 py-2.5 sm:py-3 text-3xl sm:text-4xl md:text-5xl tracking-tight"
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 + i * 0.05, duration: 0.5, ease }}
+                >
+                  {n.label}
+                </motion.a>
+              ))}
+            </div>
+            <div className="label mt-8 pt-4 border-t border-ink/15 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+              <span>{brand.phone}</span>
+              <span>·</span>
+              <span className="break-all">{brand.email}</span>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

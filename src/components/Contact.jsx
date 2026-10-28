@@ -24,49 +24,49 @@ export function Contact() {
       <div className="dot-grid pointer-events-none absolute inset-0 text-white/[0.05]" />
       <div className="container-x relative">
         <SectionLabel index="08">Let&rsquo;s work together</SectionLabel>
-        <h2 className="display mt-8 text-[14vw] lg:text-[8.5vw]">
+        <h2 className="display mt-6 sm:mt-8 text-[12vw] sm:text-6xl md:text-7xl lg:text-[8.5vw]">
           <KineticText text="Let's fix it" className="block" />
           <KineticText text="together." className="block text-sun" delay={0.3} />
         </h2>
 
-        <div className="mt-16 grid gap-16 lg:grid-cols-12">
+        <div className="mt-10 sm:mt-16 grid gap-10 sm:gap-16 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <Reveal>
-              <p className="text-lg leading-relaxed text-white/70">
+              <p className="text-base sm:text-lg leading-relaxed text-white/70">
                 Get a <span className="font-bold text-white">FREE tech consultation</span> for your office today. Share your requirements and we&rsquo;ll recommend the best solution for your business  no obligations.
               </p>
             </Reveal>
-            <div className="mt-10 space-y-3">
+            <div className="mt-8 sm:mt-10 space-y-3">
               {cards.map((c, i) => (
                 <motion.a
                   key={c.k}
                   href={c.href}
                   target={c.href.startsWith('http') ? '_blank' : undefined}
                   rel="noreferrer"
-                  className="group flex items-center gap-5 rounded-2xl border border-white/10 bg-ink/50 p-5 transition-colors duration-300 hover:border-sun hover:bg-sun hover:text-ink"
+                  className="group flex items-center gap-3.5 sm:gap-5 rounded-2xl border border-white/10 bg-ink/50 p-4 sm:p-5 transition-colors duration-300 hover:border-sun hover:bg-sun hover:text-ink"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, ease, delay: i * 0.08 }}
                 >
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/5 group-hover:bg-ink group-hover:text-sun">
-                    <Icon name={c.icon} className="h-5 w-5" />
+                  <span className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-white/5 group-hover:bg-ink group-hover:text-sun">
+                    <Icon name={c.icon} className="h-4 w-4 sm:h-5 sm:w-5" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="label block text-white/40 group-hover:text-ink/60">{c.k}</span>
-                    <span className="block truncate font-display text-lg font-bold">{c.v}</span>
+                    <span className="label block text-[10px] sm:text-[11px] text-white/40 group-hover:text-ink/60">{c.k}</span>
+                    <span className="block truncate font-display text-base sm:text-lg font-bold">{c.v}</span>
                   </span>
-                  <Icon name="arrowUR" className="h-5 w-5 transition-transform duration-500 group-hover:rotate-45" />
+                  <Icon name="arrowUR" className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-500 group-hover:rotate-45" />
                 </motion.a>
               ))}
               <Reveal delay={0.25}>
-                <div className="flex items-start gap-5 rounded-2xl border border-white/10 p-5">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/5">
-                    <Icon name="pin" className="h-5 w-5" />
+                <div className="flex items-start gap-3.5 sm:gap-5 rounded-2xl border border-white/10 p-4 sm:p-5">
+                  <span className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-white/5">
+                    <Icon name="pin" className="h-4 w-4 sm:h-5 sm:w-5" />
                   </span>
                   <span>
-                    <span className="label block text-white/40">Office</span>
-                    <span className="mt-1 block leading-relaxed text-white/80">{brand.address}</span>
+                    <span className="label block text-[10px] sm:text-[11px] text-white/40">Office</span>
+                    <span className="mt-1 block text-sm sm:text-base leading-relaxed text-white/80">{brand.address}</span>
                   </span>
                 </div>
               </Reveal>
@@ -74,7 +74,7 @@ export function Contact() {
           </div>
 
           <Reveal className="lg:col-span-7" delay={0.1}>
-            <form onSubmit={submit} className="relative rounded-[28px] bg-ink p-7 ring-1 ring-white/10 md:p-12">
+            <form onSubmit={submit} className="relative rounded-[28px] bg-ink p-5 sm:p-7 ring-1 ring-white/10 md:p-12">
               <div className="label mb-4 flex items-center justify-between text-white/40">
                 <span>Request a free consultation</span>
                 <span className="flex items-center gap-2 text-sun">
@@ -117,16 +117,16 @@ export function Footer({ lenis }) {
   const y = useTransform(scrollYProgress, [0, 1], ['40%', '0%'])
   const scale = useTransform(scrollYProgress, [0, 1], [0.85, 1])
   return (
-    <footer ref={ref} className="relative overflow-hidden bg-ink pt-24">
+    <footer ref={ref} className="relative overflow-hidden bg-ink pt-16 sm:pt-24">
       <div className="container-x">
-        <div className="grid gap-10 border-b border-white/10 pb-14 md:grid-cols-4">
-          <div className="md:col-span-2">
-            <Logo className="text-3xl" />
-            <p className="mt-6 max-w-sm text-white/55">Business IT support and device supply across Kuala Lumpur and Selangor. Repairs, upgrades and office setups, with on-site assistance throughout the Klang Valley.</p>
+        <div className="grid gap-8 sm:gap-10 border-b border-white/10 pb-10 sm:pb-14 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+          <div className="sm:col-span-2">
+            <Logo className="text-2xl sm:text-3xl" />
+            <p className="mt-4 sm:mt-6 max-w-sm text-sm sm:text-base text-white/55 leading-relaxed">Business IT support and device supply across Kuala Lumpur and Selangor. Repairs, upgrades and office setups, with on-site assistance throughout the Klang Valley.</p>
           </div>
           <div>
             <div className="label text-white/40">Services</div>
-            <ul className="mt-4 space-y-2 text-white/70">
+            <ul className="mt-3 sm:mt-4 space-y-2 text-sm sm:text-base text-white/70">
               {services.map((s) => (
                 <li key={s.t}>{s.t}</li>
               ))}
@@ -134,20 +134,20 @@ export function Footer({ lenis }) {
           </div>
           <div>
             <div className="label text-white/40">Contact</div>
-            <ul className="mt-4 space-y-2 text-white/70">
+            <ul className="mt-3 sm:mt-4 space-y-2 text-sm sm:text-base text-white/70">
               <li><a className="hover:text-sun" href={`tel:${brand.phoneRaw}`}>{brand.phone}</a></li>
               <li><a className="break-all hover:text-sun" href={`mailto:${brand.email}`}>{brand.email}</a></li>
               <li><a className="hover:text-sun" href={brand.whatsapp} target="_blank" rel="noreferrer">WhatsApp</a></li>
             </ul>
-            <button onClick={() => lenis?.current?.scrollTo(0, { duration: 2 })} className="label mt-8 flex items-center gap-2 text-sun">
-              Back to top <Icon name="arrow" className="h-4 w-4 -rotate-90" />
+            <button onClick={() => lenis?.current?.scrollTo(0, { duration: 2 })} className="label mt-6 sm:mt-8 flex items-center gap-2 text-sun hover:text-white transition-colors">
+              Back to top <Icon name="arrow" className="h-3.5 w-3.5 sm:h-4 sm:w-4 -rotate-90" />
             </button>
           </div>
         </div>
       </div>
-      <motion.div style={{ y, scale }} className="origin-bottom select-none">
+      <motion.div style={{ y, scale }} className="origin-bottom select-none overflow-hidden">
         <div
-          className="font-display font-black uppercase whitespace-nowrap text-center text-[15.5vw] leading-none text-white tracking-tight -mb-[0.08em]"
+          className="font-display font-black uppercase whitespace-nowrap text-center text-[14vw] sm:text-[15.5vw] leading-none text-white tracking-tight -mb-[0.08em]"
           style={{
             fontStretch: '100%',
             WebkitFontSmoothing: 'antialiased',

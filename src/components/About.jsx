@@ -41,49 +41,49 @@ export default function About() {
         {/* Section label sits above both columns so both start flush */}
         <SectionLabel index="01" dark={false}>About us</SectionLabel>
 
-        <div className="mt-8 grid items-start gap-16 lg:grid-cols-12">
+        <div className="mt-8 grid items-start gap-10 sm:gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
-            <h2 className="display text-[13vw] sm:text-7xl lg:text-[6.4vw]">
+            <h2 className="display text-[12vw] sm:text-6xl md:text-7xl lg:text-[6.4vw]">
               <MaskLines lines={['Your IT team,', 'without the', <span key="o" className="text-volt">overhead.</span>]} />
             </h2>
           </div>
           <div className="flex flex-col justify-start lg:col-span-5">
             <Reveal>
-              <p className="text-lg leading-relaxed text-ink/75">
+              <p className="text-base sm:text-lg leading-relaxed text-ink/75">
               Based in Cheras, Kuala Lumpur, Smartech Synergys provides IT support and device supply for businesses across the Klang Valley. We help you resolve technical issues, improve existing equipment and equip new workspaces, with recommendations grounded in how your team works and what your business needs.
               </p>
             </Reveal>
-            <ul className="mt-10 divide-y divide-ink/10 border-y border-ink/10">
+            <ul className="mt-8 sm:mt-10 divide-y divide-ink/10 border-y border-ink/10">
               {points.map((p, i) => (
                 <motion.li
                   key={p}
-                  className="group flex items-center gap-4 py-4"
+                  className="group flex items-center gap-3.5 sm:gap-4 py-3.5 sm:py-4"
                   initial={{ opacity: 0, x: 40 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, ease, delay: i * 0.08 }}
                 >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink text-sun transition-colors duration-300 group-hover:bg-volt group-hover:text-white">
-                    <Icon name="check" className="h-4 w-4" />
+                  <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full bg-ink text-sun transition-colors duration-300 group-hover:bg-volt group-hover:text-white">
+                    <Icon name="check" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </span>
-                  <span className="font-display text-base font-bold uppercase tracking-wide">{p}</span>
+                  <span className="font-display text-sm sm:text-base font-bold uppercase tracking-wide">{p}</span>
                 </motion.li>
               ))}
             </ul>
           </div>
         </div>
 
-        <div className="relative mt-28 grid items-center gap-16 md:mt-40 lg:grid-cols-12">
+        <div className="relative mt-16 sm:mt-24 md:mt-40 grid items-center gap-12 sm:gap-16 lg:grid-cols-12">
           <div className="lg:col-span-9">
             <ScrollWords
-              className="font-display text-3xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-[3.6vw]"
+              className="font-display text-2xl sm:text-4xl md:text-5xl lg:text-[3.6vw] font-bold leading-[1.15] tracking-tight"
               highlight={['luxury', 'exist', 'never', 'skip', 'beat']}
               text="Most businesses don't have the luxury of a full-time IT department. That's exactly why we exist. We step in when you need us, fix what's broken and make sure your operations never skip a beat."
             />
           </div>
           <div className="flex justify-center lg:col-span-3">
             <Parallax speed={0.4}>
-              <RingText dark text="24H Response • On-site Service • KL & Selangor • " size={230} speed={1.4} />
+              <RingText dark text="24H Response • On-site Service • KL & Selangor • " size={190} className="sm:scale-110 md:scale-125" speed={1.4} />
             </Parallax>
           </div>
         </div>

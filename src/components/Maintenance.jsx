@@ -20,7 +20,7 @@ export default function Maintenance() {
           {/* Left Column: Heading & Service Assurance */}
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-32">
-              <h2 className="display text-4xl sm:text-5xl md:text-6xl lg:text-[4.2vw] tracking-tight">
+              <h2 className="display text-3xl sm:text-4xl md:text-5xl lg:text-[4.2vw] tracking-tight">
                 <MaskLines
                   lines={[
                     'Preventive',
@@ -30,28 +30,28 @@ export default function Maintenance() {
                 />
               </h2>
               <Reveal delay={0.15}>
-                <p className="mt-8 max-w-md leading-relaxed text-white/65">
+                <p className="mt-6 sm:mt-8 max-w-md text-sm sm:text-base leading-relaxed text-white/65">
                   Scheduled servicing and targeted hardware upgrades extend machine lifespan, eliminate heat bottlenecks, and prevent sudden operational downtime. Every upgrade and repair is thoroughly stress-tested before handover.
                 </p>
               </Reveal>
 
-              <Reveal delay={0.25} className="mt-10">
-                <div className="group relative overflow-hidden rounded-3xl border border-sun/30 bg-coal/80 p-6 shadow-xl backdrop-blur sm:p-7 transition-all duration-500 hover:border-sun/60">
-                  <div className="flex items-start gap-4">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-sun text-ink shadow-md">
-                      <Icon name="check" className="h-5 w-5" />
+              <Reveal delay={0.25} className="mt-8 sm:mt-10">
+                <div className="group relative overflow-hidden rounded-3xl border border-sun/30 bg-coal/80 p-5 sm:p-7 shadow-xl backdrop-blur transition-all duration-500 hover:border-sun/60">
+                  <div className="flex items-start gap-3.5 sm:gap-4">
+                    <span className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-2xl bg-sun text-ink shadow-md">
+                      <Icon name="check" className="h-4 w-4 sm:h-5 sm:w-5" />
                     </span>
                     <div>
                       <div className="label text-sun">Service Assurance</div>
-                      <p className="mt-2 font-display text-base font-bold uppercase tracking-tight text-white sm:text-lg">
-                         Warranty provided for selected repairs and replacement parts.
+                      <p className="mt-2 font-display text-sm sm:text-base font-bold uppercase tracking-tight text-white sm:text-lg">
+                        * Warranty provided for selected repairs and replacement parts.
                       </p>
                       <p className="mt-1 text-xs text-white/50 leading-relaxed">
                         Genuine parts and certified components sourced through verified suppliers with rigorous diagnostic checks.
                       </p>
                     </div>
                   </div>
-                  <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
+                  <div className="mt-5 sm:mt-6 flex items-center justify-between border-t border-white/10 pt-4">
                     <span className="label text-white/40">KL &amp; Selangor</span>
                     <a
                       href="#contact"

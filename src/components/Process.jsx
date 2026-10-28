@@ -42,46 +42,46 @@ export default function Process() {
           <div className="flex justify-center">
             <SectionLabel index="06">How it works</SectionLabel>
           </div>
-          <h2 className="display mt-8 text-[12vw] sm:text-7xl lg:text-[6vw]">
+          <h2 className="display mt-6 sm:mt-8 text-[11vw] sm:text-6xl md:text-7xl lg:text-[6vw]">
             <MaskLines lines={['Simple. Fast.', <span key="h" className="text-sun">Hassle-free.</span>]} />
           </h2>
           <Reveal>
-            <p className="mx-auto mt-6 max-w-lg text-white/60">Know what happens next. We assess your requirements, explain the recommended solution and carry out the work, then test the results before handover. Follow-up support gives you a point of contact once the job is complete.</p>
+            <p className="mx-auto mt-4 sm:mt-6 max-w-lg text-sm sm:text-base text-white/60">Know what happens next. We assess your requirements, explain the recommended solution and carry out the work, then test the results before handover. Follow-up support gives you a point of contact once the job is complete.</p>
           </Reveal>
         </div>
 
-        <div ref={ref} className="relative mx-auto mt-20 max-w-5xl">
-          <svg viewBox={`0 0 ${box.w} ${box.h}`} className="absolute inset-0 h-full w-full" aria-hidden="true">
+        <div ref={ref} className="relative mx-auto mt-14 sm:mt-20 max-w-5xl">
+          <svg viewBox={`0 0 ${box.w} ${box.h}`} className="absolute inset-0 h-full w-full pointer-events-none" aria-hidden="true">
             <path ref={pathRef} d={d} fill="none" stroke="rgba(255,255,255,.08)" strokeWidth="14" />
             <motion.path d={d} fill="none" stroke="#F4BC21" strokeWidth="14" strokeLinecap="round" pathLength={1} strokeDasharray="1 1" style={{ strokeDashoffset: dash }} />
             <motion.path d={d} fill="none" stroke="#196BE4" strokeWidth="4" strokeLinecap="round" pathLength={1} strokeDasharray="1 1" style={{ strokeDashoffset: dash }} />
           </svg>
           <span
-            className="pointer-events-none absolute z-10 h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-ink bg-white shadow-[0_0_0_6px_rgba(244,188,33,.35)]"
+            className="pointer-events-none absolute z-10 h-6 w-6 sm:h-7 sm:w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-ink bg-white shadow-[0_0_0_6px_rgba(244,188,33,.35)]"
             style={{ left: dot.x, top: dot.y }}
           />
 
-          <ol className="relative">
+          <ol className="relative space-y-16 sm:space-y-24 md:space-y-32 py-6 sm:py-10">
             {steps.map((s, i) => {
               const right = i % 2 === 1
               const on = active >= i
               return (
-                <li key={s.t} className={`flex min-h-[220px] items-center md:min-h-[260px] ${right ? 'justify-end' : 'justify-start'}`}>
+                <li key={s.t} className={`flex items-center ${right ? 'justify-end' : 'justify-start'}`}>
                   <motion.div
-                    initial={{ opacity: 0, x: right ? 60 : -60 }}
+                    initial={{ opacity: 0, x: right ? 40 : -40 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: '-20%' }}
-                    transition={{ duration: 0.9, ease }}
-                    className={`relative w-[78%] rounded-3xl border p-6 backdrop-blur-sm transition-colors duration-500 sm:w-[46%] md:p-8 ${on ? 'border-sun/60 bg-steel/90' : 'border-white/10 bg-coal/80'}`}
+                    viewport={{ once: true, margin: '-10%' }}
+                    transition={{ duration: 0.8, ease }}
+                    className={`relative w-[84%] sm:w-[48%] md:w-[45%] rounded-3xl border p-6 sm:p-7 md:p-8 backdrop-blur-md transition-all duration-500 ${on ? 'border-sun/60 bg-steel/95 shadow-[0_10px_30px_rgba(244,188,33,0.08)]' : 'border-white/10 bg-coal/85'}`}
                   >
-                    <div className="flex items-center gap-4">
-                      <span className={`flex h-12 w-12 items-center justify-center rounded-full font-display text-lg font-black transition-colors duration-500 ${on ? 'bg-sun text-ink' : 'bg-white/10 text-white'}`}>
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <span className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full font-display text-base sm:text-lg font-black transition-colors duration-500 ${on ? 'bg-sun text-ink' : 'bg-white/10 text-white'}`}>
                         {i + 1}
                       </span>
                       <span className="label text-white/40">Step 0{i + 1}</span>
                     </div>
-                    <h3 className="mt-5 font-display text-2xl font-black uppercase tracking-tight md:text-3xl">{s.t}</h3>
-                    <p className="mt-3 text-[15px] leading-relaxed text-white/60">
+                    <h3 className="mt-4 sm:mt-5 font-display text-xl sm:text-2xl font-black uppercase tracking-tight md:text-3xl">{s.t}</h3>
+                    <p className="mt-2 sm:mt-3 text-sm sm:text-[15px] leading-relaxed text-white/60">
                       {s.before}
                       <span className="font-bold text-white transition-colors duration-300 group-hover:text-white">
                         {s.highlight}
