@@ -17,14 +17,14 @@ export default function Vision() {
         </motion.div>
 
         <div className="container-x relative -mt-[12vw]">
-          <SectionLabel index="06" dark={false}>Vision &amp; Mission</SectionLabel>
+          <SectionLabel index="07" dark={false}>Vision &amp; Mission</SectionLabel>
           <div className="mt-14 grid gap-14 lg:grid-cols-2 lg:gap-20">
             <Reveal>
               <div className="relative rounded-[28px] bg-ink p-8 text-white md:p-12">
                 <Brackets size={18} color="#F4BC21" className="m-4" />
                 <div className="label text-sun">Our vision</div>
                 <p className="mt-6 font-display text-2xl font-bold leading-snug tracking-tight md:text-[2rem]">
-                  To be the most trusted, go-to tech solutions provider for businesses across Kuala Lumpur and Selangor — delivering quality, speed and reliability every time.
+                  To be the most trusted, go-to tech solutions provider for businesses across Kuala Lumpur and Selangor delivering quality, speed and reliability every time.
                 </p>
               </div>
             </Reveal>

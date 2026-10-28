@@ -38,17 +38,19 @@ export default function About() {
     <section id="about" data-section className="relative overflow-hidden bg-paper py-28 text-ink md:py-40">
       <div className="dot-grid pointer-events-none absolute inset-0 text-ink/[0.07]" />
       <div className="container-x relative">
-        <div className="grid gap-16 lg:grid-cols-12">
+        {/* Section label sits above both columns so both start flush */}
+        <SectionLabel index="01" dark={false}>About us</SectionLabel>
+
+        <div className="mt-8 grid items-start gap-16 lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <SectionLabel index="01" dark={false}>About us</SectionLabel>
-            <h2 className="display mt-8 text-[13vw] sm:text-7xl lg:text-[6.4vw]">
+            <h2 className="display text-[13vw] sm:text-7xl lg:text-[6.4vw]">
               <MaskLines lines={['Your IT team,', 'without the', <span key="o" className="text-volt">overhead.</span>]} />
             </h2>
           </div>
-          <div className="flex flex-col justify-end lg:col-span-5">
+          <div className="flex flex-col justify-start lg:col-span-5">
             <Reveal>
               <p className="text-lg leading-relaxed text-ink/75">
-                Smartech Synergys is a Kuala Lumpur and Selangor based IT solutions provider dedicated to keeping your business running smoothly. From emergency repairs to complete office setups, we take care of your technology — so you can stay focused on what you do best.
+              Based in Cheras, Kuala Lumpur, Smartech Synergys provides IT support and device supply for businesses across the Klang Valley. We help you resolve technical issues, improve existing equipment and equip new workspaces, with recommendations grounded in how your team works and what your business needs.
               </p>
             </Reveal>
             <ul className="mt-10 divide-y divide-ink/10 border-y border-ink/10">

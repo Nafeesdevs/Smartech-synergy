@@ -73,8 +73,8 @@ export default function Hero({ ready, lenis }) {
             animate={ready ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1, ease, delay: 1.2 }}
           >
-            <p className="max-w-md text-base leading-relaxed text-white/70 sm:text-lg">
-              {brand.tagline}. Fast repairs, upgrades, office setups and on-site support — so you can focus on running your business, not your devices.
+            <p className="max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
+              From a single device repair to a complete office setup, Smartech Synergys supports the technology your business depends on. We provide repairs, performance upgrades and on-site IT support across Kuala Lumpur and Selangor, helping your team spend less time troubleshooting and more time working.
             </p>
             <div className="flex flex-wrap gap-3">
               <Magnetic>

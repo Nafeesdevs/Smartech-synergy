@@ -8,8 +8,11 @@
   .lenis.lenis-smooth { scroll-behavior: auto !important; }
   .lenis.lenis-stopped { overflow: hidden; }
   body {
-    @apply font-body bg-ink text-white;
+    @apply font-body bg-ink text-white antialiased;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   ::selection { background: #F4BC21; color: #09090B; }
   @media (pointer: fine) {

@@ -33,7 +33,7 @@ export function Contact() {
           <div className="lg:col-span-5">
             <Reveal>
               <p className="text-lg leading-relaxed text-white/70">
-                Get a <span className="font-bold text-white">FREE tech consultation</span> for your office today. Share your requirements and we&rsquo;ll recommend the best solution for your business — no obligations.
+                Get a <span className="font-bold text-white">FREE tech consultation</span> for your office today. Share your requirements and we&rsquo;ll recommend the best solution for your business  no obligations.
               </p>
             </Reveal>
             <div className="mt-10 space-y-3">
@@ -122,7 +122,7 @@ export function Footer({ lenis }) {
         <div className="grid gap-10 border-b border-white/10 pb-14 md:grid-cols-4">
           <div className="md:col-span-2">
             <Logo className="text-3xl" />
-            <p className="mt-6 max-w-sm text-white/55">Professional IT support &amp; tech solutions for businesses across Kuala Lumpur and Selangor.</p>
+            <p className="mt-6 max-w-sm text-white/55">Business IT support and device supply across Kuala Lumpur and Selangor. Repairs, upgrades and office setups, with on-site assistance throughout the Klang Valley.</p>
           </div>
           <div>
             <div className="label text-white/40">Services</div>
@@ -146,7 +146,17 @@ export function Footer({ lenis }) {
         </div>
       </div>
       <motion.div style={{ y, scale }} className="origin-bottom select-none">
-        <div className="display -mb-[0.12em] whitespace-nowrap text-center text-[17vw] leading-none text-white">
+        <div
+          className="font-display font-black uppercase whitespace-nowrap text-center text-[15.5vw] leading-none text-white tracking-tight -mb-[0.08em]"
+          style={{
+            fontStretch: '100%',
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale',
+            textRendering: 'geometricPrecision',
+            transform: 'translateZ(0)',
+            backfaceVisibility: 'hidden',
+          }}
+        >
           Smartech<span className="text-sun">.</span>
         </div>
       </motion.div>

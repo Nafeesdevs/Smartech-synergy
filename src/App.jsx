@@ -6,10 +6,12 @@ import MarqueeBand from './components/Marquee'
 import About from './components/About'
 import Problems from './components/Problems'
 import Services from './components/Services'
+import Maintenance from './components/Maintenance'
 import Products from './components/Products'
 import Process from './components/Process'
 import Vision from './components/Vision'
 import Coverage from './components/Coverage'
+import FAQ from './components/FAQ'
 import { Contact, Footer } from './components/Contact'
 import { marqueeA, marqueeB } from './data/content'
 
@@ -51,10 +53,12 @@ export default function App() {
         <About />
         <Problems />
         <Services />
+        <Maintenance />
         <Products />
         <Process />
         <Vision />
         <Coverage />
+        <FAQ />
         <Contact />
       </main>
       <Footer lenis={lenis} />

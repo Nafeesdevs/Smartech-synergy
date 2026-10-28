@@ -52,19 +52,19 @@ export default function Products() {
       <div className="container-x">
         <div className="grid items-end gap-10 lg:grid-cols-12">
           <div className="lg:col-span-8">
-            <SectionLabel index="04" dark={false}>Products we sell</SectionLabel>
+            <SectionLabel index="05" dark={false}>Products we sell</SectionLabel>
             <h2 className="display mt-8 text-[13vw] sm:text-7xl lg:text-[6vw]">
-              <MaskLines lines={['Quality tech,', <span key="s">sourced <span className="text-volt">for you.</span></span>]} />
+              <MaskLines lines={[<span>Quality<span className="inline-block w-[0.25em]" />tech</span>, <span key="s">sourced <span className="text-volt">for you.</span></span>]} />
             </h2>
           </div>
           <div className="flex items-end justify-between gap-6 lg:col-span-4 lg:flex-col lg:items-end">
             <Reveal>
               <p className="max-w-sm leading-relaxed text-ink/70 lg:text-right">
-                Equipping your office with reliable devices? We&rsquo;ve got you covered — new and second-hand options, every unit fully tested and quality-checked before delivery.
+              Equip your team with devices suited to their work and your budget. We supply new and pre-owned laptops, desktops and office essentials, with every unit tested and quality-checked before delivery. Share your requirements to discuss suitable options.
               </p>
             </Reveal>
             <div className="hidden sm:block">
-              <RingText dark text="New • Second-hand • Fully tested • Verified • " size={150} speed={-1.2} />
+              <RingText dark text="Business Ready • Warrantied • Quality Checked • Trusted • " size={150} speed={-1.2} />
             </div>
           </div>
         </div>
@@ -86,10 +86,10 @@ export default function Products() {
         </Reveal>
       </div>
 
-      <div className="mt-20 border-y border-ink/10 py-8">
+      {/* <div className="mt-20 border-y border-ink/10 py-8">
         <div className="label container-x mb-4 text-ink/50">Brands we carry</div>
         <VelocityRow items={brands} baseVelocity={-1.5} itemClass="font-display text-5xl font-black uppercase tracking-tight text-ink md:text-7xl" sepClass="text-sun" sep="●" />
-      </div>
+      </div> */}
     </section>
   )
 }

@@ -40,13 +40,13 @@ export default function Process() {
       <div className="container-x">
         <div className="mx-auto max-w-4xl text-center">
           <div className="flex justify-center">
-            <SectionLabel index="05">How it works</SectionLabel>
+            <SectionLabel index="06">How it works</SectionLabel>
           </div>
           <h2 className="display mt-8 text-[12vw] sm:text-7xl lg:text-[6vw]">
             <MaskLines lines={['Simple. Fast.', <span key="h" className="text-sun">Hassle-free.</span>]} />
           </h2>
           <Reveal>
-            <p className="mx-auto mt-6 max-w-lg text-white/60">Here&rsquo;s exactly what to expect when you work with us — from first contact to final check.</p>
+            <p className="mx-auto mt-6 max-w-lg text-white/60">Know what happens next. We assess your requirements, explain the recommended solution and carry out the work, then test the results before handover. Follow-up support gives you a point of contact once the job is complete.</p>
           </Reveal>
         </div>
 
@@ -81,7 +81,13 @@ export default function Process() {
                       <span className="label text-white/40">Step 0{i + 1}</span>
                     </div>
                     <h3 className="mt-5 font-display text-2xl font-black uppercase tracking-tight md:text-3xl">{s.t}</h3>
-                    <p className="mt-2 text-white/60">{s.d}</p>
+                    <p className="mt-3 text-[15px] leading-relaxed text-white/60">
+                      {s.before}
+                      <span className="font-bold text-white transition-colors duration-300 group-hover:text-white">
+                        {s.highlight}
+                      </span>
+                      {s.after}
+                    </p>
                   </motion.div>
                 </li>
               )

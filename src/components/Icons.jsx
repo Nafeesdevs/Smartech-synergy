@@ -101,6 +101,8 @@ const paths = {
   ),
   bolt: <path d="M13 2L4 14h7l-1 8 9-12h-7z" />,
   x: <path d="M6 6l12 12M18 6L6 18" />,
+  plus: <path d="M12 5v14M5 12h14" />,
+  minus: <path d="M5 12h14" />,
 }
 
 export default function Icon({ name, className = 'h-6 w-6', ...rest }) {

@@ -6,12 +6,13 @@ import Icon from './Icons'
 
 export function Logo({ className = '', dark = false }) {
   return (
-    <span className={`relative inline-flex items-end font-display font-black uppercase tracking-tight ${className}`} style={{ fontStretch: '108%' }}>
-      <svg viewBox="0 0 120 30" className="absolute -top-[0.55em] left-[18%] w-[82%]" aria-hidden="true">
-        <path d="M2 28 C30 4, 80 -2, 118 14 C82 6, 40 10, 8 30 Z" fill="#196BE4" />
-      </svg>
-      <span className={`relative ${dark ? 'text-ink' : 'text-white'}`}>Smartech</span>
-      <span className="relative ml-[0.08em] mb-[0.14em] inline-block h-[0.24em] w-[0.24em] rounded-full bg-sun" />
+    <span className={`inline-flex items-center select-none ${className}`}>
+      <img
+        src={dark ? '/logo-dark.png' : '/logo.png'}
+        alt="Smartech"
+        className="h-[1.45em] w-auto max-w-none object-contain"
+        draggable={false}
+      />
     </span>
   )
 }
@@ -87,8 +88,10 @@ export function Preloader({ onDone }) {
 
 function useSectionIndex() {
   const [idx, setIdx] = useState(1)
+  const [total, setTotal] = useState(10)
   useEffect(() => {
     const els = [...document.querySelectorAll('[data-section]')]
+    if (els.length) setTotal(els.length)
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -100,7 +103,7 @@ function useSectionIndex() {
     els.forEach((el) => io.observe(el))
     return () => io.disconnect()
   }, [])
-  return idx
+  return { idx, total }
 }
 
 /* Fixed viewfinder HUD with scroll-driven timecode */
@@ -108,7 +111,7 @@ export function Hud() {
   const { scrollYProgress } = useScroll()
   const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 30 })
   const [tc, setTc] = useState('00:00:00:00')
-  const idx = useSectionIndex()
+  const { idx, total } = useSectionIndex()
   useMotionValueEvent(scrollYProgress, 'change', (v) => {
     const frames = Math.round(v * 60 * 24)
     const s = Math.floor(frames / 24)
@@ -127,7 +130,7 @@ export function Hud() {
         REC · On-site ready
       </div>
       <div className="label absolute bottom-2 right-7 flex items-center gap-4 text-white/70">
-        <span>SEC {String(idx).padStart(2, '0')}/09</span>
+        <span>SEC {String(idx).padStart(2, '0')}/{String(total).padStart(2, '0')}</span>
         <span className="tabular-nums">{tc}</span>
       </div>
       <motion.div className="absolute bottom-0 left-6 right-6 h-px origin-left bg-white/60" style={{ scaleX: smooth }} />
@@ -158,8 +161,8 @@ export function Nav({ lenis }) {
         transition={{ duration: 0.5, ease }}
       >
         <div className={`container-x mt-4 flex items-center justify-between rounded-full py-3 transition-all duration-500 md:mt-6 ${scrolled ? 'bg-ink/70 backdrop-blur-xl ring-1 ring-white/10 md:!px-6' : ''}`}>
-          <a href="#top" onClick={(e) => go(e, '#top')} aria-label="Smartech Synergys home" className="pt-2">
-            <Logo className="text-xl sm:text-2xl" />
+          <a href="#top" onClick={(e) => go(e, '#top')} aria-label="Smartech Synergys home" className="flex items-center">
+            <Logo className="text-2xl sm:text-3xl" />
           </a>
           <nav className="hidden items-center gap-8 lg:flex">
             {nav.map((n) => (
