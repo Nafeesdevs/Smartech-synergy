@@ -4,6 +4,9 @@ import { ease } from './Motion'
 import { brand, nav } from '../data/content'
 import Icon from './Icons'
 
+const navScrollEase = (t) =>
+  t < 0.5 ? 8 * t ** 4 : 1 - ((-2 * t + 2) ** 4) / 2
+
 export function Logo({ className = '', dark = false }) {
   return (
     <span className={`inline-flex items-center select-none ${className}`}>
@@ -151,7 +154,9 @@ export function Nav({ lenis }) {
   const go = (e, href) => {
     e.preventDefault()
     setOpen(false)
-    lenis?.current ? lenis.current.scrollTo(href, { offset: -20, duration: 1.6 }) : document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+    lenis?.current
+      ? lenis.current.scrollTo(href, { offset: -20, duration: 2.8, easing: navScrollEase })
+      : document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
   }
   return (
     <>

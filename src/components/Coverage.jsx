@@ -2,29 +2,21 @@ import { motion } from 'framer-motion'
 import { SectionLabel, MaskLines, Reveal, ease } from './Motion'
 import Icon from './Icons'
 
-// Accurate Malaysian geographic locations from Sunway Visio Tower, Cheras / Maluri:
-// Circle 1: Dedicated inner ring right near the map icon (Cheras ~2.3 km)
-// Circle 2: Inner-metro ring (Kuala Lumpur ~4.0 km, Ampang ~4.6 km)
-// Circle 3: Klang Valley core (Petaling Jaya ~13.4 km, Sunway ~14.5 km, Puchong ~16.0 km, Subang ~16.5 km)
-// Circle 4: Extended Selangor (Shah Alam ~23.8 km, Cyberjaya ~24.2 km, Klang ~32.4 km)
+// City marker positions follow the supplied coverage-map reference.
 const cities = [
-  // Circle 1: Innermost circle near the map pin icon
-  { name: 'Cheras', ring: 0.22, bearing: 135, dot: 'bg-sun' },
+  { name: 'Cheras', ring: 0.15, bearing: 90, dot: 'bg-sun' },
 
-  // Circle 2: 4 - 5 km from Sunway Visio Tower
-  { name: 'Kuala Lumpur', ring: 0.44, bearing: 330, dot: 'bg-volt' },
-  { name: 'Ampang', ring: 0.44, bearing: 55, dot: 'bg-sun' },
+  { name: 'Kuala Lumpur', ring: 0.38, bearing: 350, dot: 'bg-volt' },
+  { name: 'Ampang', ring: 0.75, bearing: 340, dot: 'bg-sun' },
 
-  // Circle 3: 13 - 17 km from Sunway Visio Tower
-  { name: 'Petaling Jaya', ring: 0.64, bearing: 260, dot: 'bg-sun' },
-  { name: 'Sunway', ring: 0.64, bearing: 215, dot: 'bg-volt' },
-  { name: 'Subang', ring: 0.64, bearing: 155, dot: 'bg-sun' },
-  { name: 'Puchong', ring: 0.64, bearing: 105, dot: 'bg-volt' },
+  { name: 'Petaling Jaya', ring: 0.5, bearing: 201, dot: 'bg-sun' },
+  { name: 'Sunway', ring: 0.46, bearing: 240, dot: 'bg-volt' },
+  { name: 'Subang', ring: 0.78, bearing: 245, dot: 'bg-sun' },
+  { name: 'Puchong', ring: 0.72, bearing: 95, dot: 'bg-volt' },
 
-  // Circle 4: 24 - 33 km from Sunway Visio Tower (safely contained for mobile screens)
-  { name: 'Shah Alam', ring: 0.82, bearing: 245, dot: 'bg-sun' },
-  { name: 'Cyberjaya', ring: 0.82, bearing: 185, dot: 'bg-volt' },
-  { name: 'Klang', ring: 0.82, bearing: 295, dot: 'bg-sun' },
+  { name: 'Shah Alam', ring: 0.58, bearing: 279, dot: 'bg-sun' },
+  { name: 'Cyberjaya', ring: 0.63, bearing: 140, dot: 'bg-volt' },
+  { name: 'Klang', ring: 0.82, bearing: 284, dot: 'bg-sun' },
 ]
 
 function toScreen(bearing, ring) {
@@ -46,7 +38,7 @@ function Radar() {
   })
 
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[620px] select-none">
+    <div className="relative mx-auto aspect-square w-[94%] max-w-[620px] select-none sm:w-full">
       {/* 4 Concentric distance rings radiating from Cheras HQ */}
       {rings.map((r) => (
         <span
@@ -82,12 +74,12 @@ function Radar() {
       {/* Center Location Map Pin with pulsing radar glow */}
       <div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
         <span className="absolute inset-0 animate-ping rounded-full bg-sun/60" />
-        <span className="relative flex h-12 w-12 items-center justify-center rounded-full bg-sun text-ink shadow-[0_0_30px_rgba(244,188,33,0.7)]">
-          <Icon name="pin" className="h-5 w-5" />
+        <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-sun text-ink shadow-[0_0_24px_rgba(244,188,33,0.7)] sm:h-12 sm:w-12 sm:shadow-[0_0_30px_rgba(244,188,33,0.7)]">
+          <Icon name="pin" className="h-4 w-4 sm:h-5 sm:w-5" />
         </span>
       </div>
 
-      {/* Cities placed strictly by accurate distance from Sunway Visio Tower, Cheras */}
+      {/* Cities placed to match the supplied coverage-map reference */}
       {cities.map((city, i) => {
         const { x, y } = toScreen(city.bearing, city.ring)
 
@@ -101,9 +93,16 @@ function Radar() {
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease, delay: 0.15 + i * 0.05 }}
           >
-            <span className="flex items-center gap-1.5 sm:gap-2 whitespace-nowrap rounded-full bg-steel/95 px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-[11px] sm:text-xs font-bold text-white shadow-lg ring-1 ring-white/20 backdrop-blur-md transition-all duration-300 hover:scale-105 hover:ring-sun/60">
-              <span className={`h-1.5 w-1.5 sm:h-2 sm:w-2 shrink-0 rounded-full ${city.dot}`} />
-              <span className="font-display tracking-tight uppercase text-white">{city.name}</span>
+            <span className="flex items-center gap-1 rounded-full bg-steel/95 px-1.5 py-1 text-[8px] font-bold text-white shadow-lg ring-1 ring-white/20 backdrop-blur-md transition-all duration-300 hover:scale-105 hover:ring-sun/60 sm:gap-2 sm:whitespace-nowrap sm:px-3.5 sm:py-1.5 sm:text-xs">
+              <span className={`h-1 w-1 shrink-0 rounded-full sm:h-2 sm:w-2 ${city.dot}`} />
+              <span className="text-center font-display leading-[1.05] tracking-tight uppercase text-white sm:text-left">
+                {city.name.split(' ').map((word, wordIndex, words) => (
+                  <span key={word} className="block sm:inline">
+                    {word}
+                    {wordIndex < words.length - 1 && <span className="hidden sm:inline"> </span>}
+                  </span>
+                ))}
+              </span>
             </span>
           </motion.div>
         )

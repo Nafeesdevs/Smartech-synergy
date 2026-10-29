@@ -1,46 +1,54 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { faqs } from '../data/content'
-import { SectionLabel, MaskLines, Reveal, ease } from './Motion'
+import { KineticText, SectionLabel, Reveal, ease } from './Motion'
 import Icon from './Icons'
 
-function FaqItem({ item, index, isOpen, toggle }) {
+function FaqItem({ item, index, isOpen, toggle, open }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      onMouseEnter={open}
+      initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-8%' }}
-      transition={{ duration: 0.8, ease, delay: index * 0.06 }}
-      className={`group relative overflow-hidden rounded-3xl border transition-all duration-500 ${
+      viewport={{ once: true, margin: '-10%' }}
+      transition={{ duration: 0.9, ease, delay: index * 0.05 }}
+      style={{ backfaceVisibility: 'hidden', willChange: 'transform, opacity' }}
+      className={`group relative overflow-hidden rounded-[20px] border bg-coal/55 transition-[border-color,box-shadow] duration-500 ease-out ${
         isOpen
-          ? 'border-sun/60 bg-steel/90 shadow-[0_12px_40px_rgba(0,0,0,0.4)]'
-          : 'border-white/10 bg-coal/70 hover:border-white/20 hover:bg-coal/90'
+          ? 'border-sun/70 shadow-[0_18px_60px_rgba(0,0,0,0.28)]'
+          : 'border-white/10 hover:border-sun/60'
       }`}
     >
+      <span
+        className={`pointer-events-none absolute inset-0 origin-bottom bg-sun transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${
+          isOpen ? 'scale-y-100' : 'scale-y-0 group-hover:scale-y-100'
+        }`}
+      />
       <button
         onClick={toggle}
         type="button"
-        className="flex w-full items-start justify-between gap-4 p-5 text-left sm:gap-6 sm:p-8"
+        className="relative z-10 flex w-full items-start gap-4 p-5 text-left sm:gap-6 sm:p-7 md:p-8"
         aria-expanded={isOpen}
       >
-        <div className="flex flex-col gap-2.5 sm:gap-2">
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-[10px] tracking-widest text-sun sm:text-xs">
-              0{index + 1}
-            </span>
-            <span className="h-1 w-1 rounded-full bg-white/20" />
-            <span className="label text-white/40">{item.tag}</span>
+        <span className={`font-display text-2xl font-black leading-none transition-colors duration-300 sm:text-3xl ${isOpen ? 'text-ink' : 'text-sun group-hover:text-ink'}`}>
+          0{index + 1}
+        </span>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-3 pt-0.5">
+            <span className={`h-1 w-1 rounded-full transition-colors duration-300 ${isOpen ? 'bg-ink/20' : 'bg-white/20 group-hover:bg-ink/20'}`} />
+            <span className={`label transition-colors duration-300 ${isOpen ? 'text-ink/60' : 'text-white/40 group-hover:text-ink/60'}`}>{item.tag}</span>
           </div>
-          <h3 className="font-display text-base font-bold text-white transition-colors duration-300 group-hover:text-white sm:text-xl md:text-2xl">
+          <h3 className={`mt-3 font-display text-base font-bold leading-tight transition-colors duration-300 sm:text-xl md:text-2xl ${isOpen ? 'text-ink' : 'text-white group-hover:text-ink'}`}>
             {item.q}
           </h3>
         </div>
 
         <span
-          className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-500 ${
+          className={`ml-auto flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-500 ${
             isOpen
-              ? 'border-sun bg-sun text-ink rotate-45'
-              : 'border-white/15 bg-white/5 text-white/70 group-hover:border-white/40 group-hover:text-white'
+              ? 'rotate-45 border-ink/40 bg-transparent text-ink'
+              : 'border-white/15 bg-white/5 text-white/70 group-hover:border-ink/40 group-hover:bg-transparent group-hover:text-ink'
           }`}
         >
           <Icon name="plus" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -51,16 +59,16 @@ function FaqItem({ item, index, isOpen, toggle }) {
         {isOpen && (
           <motion.div
             key="content"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            initial={{ height: 0, opacity: 0, y: -6 }}
+            animate={{ height: 'auto', opacity: 1, y: 0 }}
+            exit={{ height: 0, opacity: 0, y: -4 }}
             transition={{ duration: 0.45, ease }}
-            className="overflow-hidden"
+            className="relative z-10 overflow-hidden"
           >
-            <div className="border-t border-white/10 px-5 pb-6 pt-4 sm:px-8 sm:pb-8 sm:pt-5">
-              <p className="text-[14px] leading-relaxed text-white/70 sm:text-base">
+            <div className="border-t border-ink/15 px-5 pb-6 pt-4 sm:pb-7 sm:pl-[6.75rem] sm:pr-8 sm:pt-5">
+              <p className="text-[14px] leading-relaxed text-ink/70 sm:text-base">
                 {item.before}
-                <span className="font-semibold text-white">
+                <span className="font-semibold text-ink">
                   {item.highlight}
                 </span>
                 {item.after}
@@ -92,23 +100,18 @@ export default function FAQ() {
             <div className="lg:sticky lg:top-32">
               <SectionLabel index="09">Clarity & Assurance</SectionLabel>
               <h2 className="display mt-6 sm:mt-8 text-4xl sm:text-5xl md:text-6xl lg:text-[4.6vw] xl:text-[4.3vw] tracking-tight">
-                <MaskLines
-                  lines={[
-                    'Frequently',
-                    <span>
-                      asked <span className="text-sun">questions.</span>
-                    </span>,
-                  ]}
-                />
+                <KineticText text="Frequently" className="block" />
+                <KineticText text="asked" className="block" delay={0.2} />
+                <KineticText text="questions." className="block text-sun" delay={0.4} />
               </h2>
-              <Reveal delay={0.15}>
+              <Reveal delay={0.2}>
                 <p className="mt-6 sm:mt-8 max-w-sm text-sm sm:text-base leading-relaxed text-white/65">
                   Clear answers to key operational questions regarding deployment times, diagnostic policies, enterprise hardware sourcing, and after-hours coverage.
                 </p>
               </Reveal>
 
               <Reveal delay={0.25} className="mt-10 hidden sm:block">
-                <div className="rounded-2xl border border-white/10 bg-coal/60 p-6 backdrop-blur-sm">
+                <div className="border-l-2 border-sun py-1 pl-5">
                   <div className="label text-white/40">Need direct answers?</div>
                   <p className="mt-2 text-sm text-white/75">
                     Have a unique infrastructure challenge or urgent request?
@@ -125,7 +128,7 @@ export default function FAQ() {
           </div>
 
           {/* Right Column: Accordion List */}
-          <div className="flex flex-col gap-4 lg:col-span-6 xl:col-span-7 lg:pt-[3.5rem]">
+          <div className="flex flex-col gap-3 lg:col-span-6 xl:col-span-7 lg:pt-[3.5rem]">
             {faqs.map((faq, i) => (
               <FaqItem
                 key={faq.q}
@@ -133,6 +136,7 @@ export default function FAQ() {
                 index={i}
                 isOpen={openIndex === i}
                 toggle={() => toggle(i)}
+                open={() => setOpenIndex(i)}
               />
             ))}
           </div>

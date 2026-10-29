@@ -13,7 +13,7 @@ const tones = {
 function Card({ s, i, progress, total }) {
   const center = (i + 0.5) / total
   const rotate = useTransform(progress, [center - 0.35, center, center + 0.35], [6, 0, -6])
-  const iconRot = useTransform(progress, [0, 1], [0, 360])
+  const iconRot = useTransform(rotate, (value) => -value)
   return (
     <motion.article
       style={{ rotate }}

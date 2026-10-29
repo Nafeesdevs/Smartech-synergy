@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { maintenanceServices } from '../data/content'
 import Icon from './Icons'
-import { SectionLabel, MaskLines, Reveal, ease } from './Motion'
+import { KineticText, SectionLabel, Reveal, ease } from './Motion'
 
 export default function Maintenance() {
   return (
@@ -21,15 +21,12 @@ export default function Maintenance() {
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-32">
               <h2 className="display text-3xl sm:text-4xl md:text-5xl lg:text-[4.2vw] tracking-tight">
-                <MaskLines
-                  lines={[
-                    'Preventive',
-                    'care &',
-                    <span>hardware <span className="text-sun">tuning.</span></span>,
-                  ]}
-                />
+                <KineticText text="Preventive" className="block" />
+                <KineticText text="care &" className="block" delay={0.2} />
+                <KineticText text="hardware" className="block" delay={0.4} />
+                <KineticText text="tuning." className="block text-sun" delay={0.6} />
               </h2>
-              <Reveal delay={0.15}>
+              <Reveal delay={0.2}>
                 <p className="mt-6 sm:mt-8 max-w-md text-sm sm:text-base leading-relaxed text-white/65">
                   Scheduled servicing and targeted hardware upgrades extend machine lifespan, eliminate heat bottlenecks, and prevent sudden operational downtime. Every upgrade and repair is thoroughly stress-tested before handover.
                 </p>
@@ -65,65 +62,58 @@ export default function Maintenance() {
             </div>
           </div>
 
-          {/* Right Column: 9 Maintenance Services Grid */}
+          {/* Right Column: Scannable Maintenance Service Directory */}
           <div className="lg:col-span-7">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="flex items-center justify-between border-y border-white/10 py-4">
+              <span className="label text-white/45">Complete service directory</span>
+              <span className="font-mono text-xs font-bold tracking-widest text-sun">09 services</span>
+            </div>
+
+            <div>
               {maintenanceServices.map((item, i) => (
-                <motion.div
+                <motion.article
                   key={item.n}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 60 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-6%' }}
-                  transition={{ duration: 0.6, ease, delay: i * 0.04 }}
-                  className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-coal/70 p-6 transition-all duration-500 hover:border-sun/60 hover:bg-steel/90 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]"
+                  viewport={{ once: true, margin: '-10%' }}
+                  transition={{ duration: 0.9, ease, delay: i * 0.05 }}
+                  style={{ backfaceVisibility: 'hidden', willChange: 'transform, opacity' }}
+                  className="group relative overflow-hidden border-b border-white/10"
                 >
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <span className="font-mono text-xs font-bold tracking-wider text-sun">
-                          {item.n}
-                        </span>
-                        <span className="h-1 w-1 rounded-full bg-white/20" />
-                        <span className="label text-white/40 transition-colors group-hover:text-white/60">
+                  <span className="absolute inset-0 origin-left scale-x-0 bg-sun transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-x-100" />
+
+                  <div className="relative grid grid-cols-[auto_1fr_auto] gap-x-4 px-2 py-6 sm:gap-x-6 sm:px-4 sm:py-8">
+                    <span className="font-display text-2xl font-black leading-none text-sun transition-colors duration-300 group-hover:text-ink sm:text-3xl">
+                      {item.n}
+                    </span>
+
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2.5">
+                        <span className="h-1 w-1 rounded-full bg-white/20 transition-colors duration-300 group-hover:bg-ink/20" />
+                        <span className="label text-white/40 transition-colors duration-300 group-hover:text-ink/55">
                           {item.tag}
                         </span>
                       </div>
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/60 transition-all duration-500 group-hover:border-sun/40 group-hover:bg-sun group-hover:text-ink">
-                        <Icon name={item.icon} className="h-4 w-4" />
-                      </span>
+
+                      <h3 className="mt-3 font-display text-xl font-bold uppercase leading-tight tracking-tight text-white transition-colors duration-300 group-hover:text-ink sm:text-2xl">
+                        {item.t}
+                      </h3>
+                      <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/60 transition-colors duration-300 group-hover:text-ink/70 sm:text-[15px]">
+                        {item.d}
+                      </p>
+
+                      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-wider">
+                        <span className="text-white/35 transition-colors duration-300 group-hover:text-ink/55">On-site / In-shop</span>
+                        <span className="text-sun/80 transition-colors duration-300 group-hover:text-ink">Quality guaranteed</span>
+                      </div>
                     </div>
 
-                    <h3 className="font-display mt-5 text-xl font-bold uppercase tracking-tight text-white transition-colors group-hover:text-white sm:text-[1.3rem]">
-                      {item.t}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-white/60 transition-colors group-hover:text-white/80">
-                      {item.d}
-                    </p>
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/60 transition-all duration-500 group-hover:rotate-6 group-hover:border-ink/25 group-hover:bg-ink group-hover:text-sun sm:h-11 sm:w-11">
+                      <Icon name={item.icon} className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </span>
                   </div>
-
-                  <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-4 text-[11px] font-mono uppercase tracking-wider text-white/35">
-                    <span>On-site / In-shop</span>
-                    <span className="text-sun/80 transition-colors group-hover:text-sun">Quality Guaranteed</span>
-                  </div>
-                </motion.div>
+                </motion.article>
               ))}
-
-              {/* Bottom Warranty Banner inside the grid */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, ease, delay: 0.3 }}
-                className="mt-2 flex flex-col gap-4 rounded-2xl border border-sun/30 bg-sun/10 p-5 backdrop-blur-sm sm:col-span-2 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-sun animate-pulse" />
-                  <span className="font-display text-sm font-bold uppercase tracking-wide text-sun sm:text-base">
-                    Warranty provided for selected repairs and replacement parts.
-                  </span>
-                </div>
-                <span className="label text-white/60 shrink-0">Authentic Parts</span>
-              </motion.div>
             </div>
           </div>
         </div>

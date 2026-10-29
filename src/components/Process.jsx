@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
-import { motion, useScroll, useSpring, useMotionValueEvent, useTransform } from 'framer-motion'
+import { motion, useScroll, useSpring, useMotionValue, useMotionValueEvent, useTransform } from 'framer-motion'
 import { steps } from '../data/content'
 import { SectionLabel, MaskLines, Reveal, ease } from './Motion'
 
@@ -11,7 +11,8 @@ const scalePath = (w, h) =>
 export default function Process() {
   const ref = useRef(null)
   const pathRef = useRef(null)
-  const [dot, setDot] = useState({ x: 0, y: 0 })
+  const dotX = useMotionValue('50%')
+  const dotY = useMotionValue(0)
   const [box, setBox] = useState({ w: 1000, h: 1300 })
   const [len, setLen] = useState(1)
   const [active, setActive] = useState(-1)
@@ -25,13 +26,20 @@ export default function Process() {
     return () => ro.disconnect()
   }, [])
   useEffect(() => {
-    if (pathRef.current) setLen(pathRef.current.getTotalLength())
-  }, [box])
+    if (!pathRef.current) return
+    const nextLen = pathRef.current.getTotalLength()
+    const progress = Math.max(0, Math.min(1, p.get()))
+    const pt = pathRef.current.getPointAtLength(progress * nextLen)
+    setLen(nextLen)
+    dotX.set(pt.x)
+    dotY.set(pt.y)
+  }, [box, dotX, dotY, p])
   const d = scalePath(box.w, box.h)
   useMotionValueEvent(p, 'change', (v) => {
     if (!pathRef.current) return
     const pt = pathRef.current.getPointAtLength(Math.max(0, Math.min(1, v)) * len)
-    setDot({ x: pt.x, y: pt.y })
+    dotX.set(pt.x)
+    dotY.set(pt.y)
     setActive(Math.floor(v * steps.length - 0.15))
   })
 
@@ -56,9 +64,9 @@ export default function Process() {
             <motion.path d={d} fill="none" stroke="#F4BC21" strokeWidth="14" strokeLinecap="round" pathLength={1} strokeDasharray="1 1" style={{ strokeDashoffset: dash }} />
             <motion.path d={d} fill="none" stroke="#196BE4" strokeWidth="4" strokeLinecap="round" pathLength={1} strokeDasharray="1 1" style={{ strokeDashoffset: dash }} />
           </svg>
-          <span
+          <motion.span
             className="pointer-events-none absolute z-10 h-6 w-6 sm:h-7 sm:w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-ink bg-white shadow-[0_0_0_6px_rgba(244,188,33,.35)]"
-            style={{ left: dot.x, top: dot.y }}
+            style={{ left: dotX, top: dotY }}
           />
 
           <ol className="relative space-y-16 sm:space-y-24 md:space-y-32 py-6 sm:py-10">
@@ -68,11 +76,12 @@ export default function Process() {
               return (
                 <li key={s.t} className={`flex items-center ${right ? 'justify-end' : 'justify-start'}`}>
                   <motion.div
-                    initial={{ opacity: 0, x: right ? 40 : -40 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: '-10%' }}
-                    transition={{ duration: 0.8, ease }}
-                    className={`relative w-[84%] sm:w-[48%] md:w-[45%] rounded-3xl border p-6 sm:p-7 md:p-8 backdrop-blur-md transition-all duration-500 ${on ? 'border-sun/60 bg-steel/95 shadow-[0_10px_30px_rgba(244,188,33,0.08)]' : 'border-white/10 bg-coal/85'}`}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.15 }}
+                    transition={{ duration: 0.9, ease }}
+                    style={{ backfaceVisibility: 'hidden', willChange: 'transform, opacity' }}
+                    className={`relative w-[84%] sm:w-[48%] md:w-[45%] rounded-3xl border p-6 sm:p-7 md:p-8 backdrop-blur-md transition-[border-color,background-color,box-shadow] duration-500 ease-out ${on ? 'border-sun/60 bg-steel/95 shadow-[0_10px_30px_rgba(244,188,33,0.08)]' : 'border-white/10 bg-coal/85'}`}
                   >
                     <div className="flex items-center gap-3 sm:gap-4">
                       <span className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full font-display text-base sm:text-lg font-black transition-colors duration-500 ${on ? 'bg-sun text-ink' : 'bg-white/10 text-white'}`}>
