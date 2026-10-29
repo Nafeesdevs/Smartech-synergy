@@ -9,7 +9,7 @@ export default function Problems() {
   const bigX = useTransform(scrollYProgress, [0, 1], ['10%', '-40%'])
 
   return (
-    <section ref={ref} data-section className="relative overflow-hidden bg-ink py-28 md:py-40">
+    <section ref={ref} data-section className="relative overflow-hidden bg-ink pb-10 pt-28 sm:py-28 md:py-40">
       <motion.div style={{ x: bigX }} className="display text-outline pointer-events-none absolute top-10 whitespace-nowrap text-[22vw] text-white/[0.06]">
         Productivity · Downtime · Productivity
       </motion.div>

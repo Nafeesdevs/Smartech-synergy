@@ -10,6 +10,7 @@
   body {
     @apply font-body bg-ink text-white antialiased;
     overflow-x: hidden;
+    touch-action: pan-y;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -34,11 +35,12 @@
 /* film grain like the reference reel */
 .grain::after {
   content: '';
-  position: fixed; inset: -50%;
+  position: fixed; inset: -20%;
   pointer-events: none; z-index: 60;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
   opacity: .07;
   animation: grain 1.2s steps(6) infinite;
+  will-change: transform;
 }
 @keyframes grain {
   0% { transform: translate(0,0) } 20% { transform: translate(-3%,2%) } 40% { transform: translate(2%,-3%) }
@@ -54,4 +56,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+
+@media (max-width: 767px), (pointer: coarse) {
+  .grain::after {
+    inset: 0;
+    animation: none;
+    will-change: auto;
+  }
 }

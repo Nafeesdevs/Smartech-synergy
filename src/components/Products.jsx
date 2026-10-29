@@ -77,7 +77,7 @@ export default function Products() {
 
         <Reveal className="mt-8 sm:mt-10 flex flex-col gap-4 rounded-3xl bg-ink p-5 sm:p-7 text-white md:flex-row md:items-center md:justify-between md:p-10">
           <div className="flex items-center gap-4">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-sun text-ink">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-sun text-ink">
               <Icon name="check" className="h-5 w-5" />
             </span>
             <p className="max-w-xl text-white/80">All products are sourced through verified suppliers and fully tested to ensure quality and authenticity before delivery.</p>

@@ -20,19 +20,37 @@ export default function App() {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    const l = new Lenis({ lerp: 0.085, smoothWheel: true, wheelMultiplier: 1 })
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const l = new Lenis({
+      lerp: reduceMotion ? 1 : 0.085,
+      smoothWheel: !reduceMotion,
+      syncTouch: false,
+      wheelMultiplier: 1,
+    })
     lenis.current = l
     window.__lenis = l
     l.stop()
-    let raf
+    let raf = 0
     const loop = (t) => {
       l.raf(t)
       raf = requestAnimationFrame(loop)
     }
-    raf = requestAnimationFrame(loop)
+    const startLoop = () => {
+      if (!raf && !document.hidden) raf = requestAnimationFrame(loop)
+    }
+    const stopLoop = () => {
+      if (raf) cancelAnimationFrame(raf)
+      raf = 0
+    }
+    const onVisibilityChange = () => (document.hidden ? stopLoop() : startLoop())
+
+    startLoop()
+    document.addEventListener('visibilitychange', onVisibilityChange)
     return () => {
-      cancelAnimationFrame(raf)
+      stopLoop()
+      document.removeEventListener('visibilitychange', onVisibilityChange)
       l.destroy()
+      delete window.__lenis
     }
   }, [])
 

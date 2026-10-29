@@ -157,7 +157,7 @@ export function Footer({ lenis }) {
             backfaceVisibility: 'hidden',
           }}
         >
-          Smartech<span className="text-sun">.</span>
+          Smartech<span className="ml-[0.005em] inline-block h-[0.26em] w-[0.26em] bg-sun align-[0.08em]" style={{ clipPath: 'polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%)' }} aria-hidden="true" />
         </div>
       </motion.div>
       <div className="container-x label flex flex-col justify-between gap-2 py-6 text-white/40 sm:flex-row">

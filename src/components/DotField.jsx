@@ -7,8 +7,11 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
   useEffect(() => {
     const canvas = ref.current
     const ctx = canvas.getContext('2d')
-    let w = 0, h = 0, raf = 0, visible = true
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    let w = 0, h = 0, raf = 0, visible = false, lastPaint = 0
+    const lowPower = window.matchMedia('(pointer: coarse)').matches ||
+      (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+      (navigator.deviceMemory && navigator.deviceMemory <= 4)
+    const dpr = Math.min(window.devicePixelRatio || 1, lowPower ? 1.25 : 1.75)
     const mouse = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 }
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -16,27 +19,31 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
       const r = canvas.getBoundingClientRect()
       w = r.width
       h = r.height
-      canvas.width = w * dpr
-      canvas.height = h * dpr
+      canvas.width = Math.round(w * dpr)
+      canvas.height = Math.round(h * dpr)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
     resize()
-    window.addEventListener('resize', resize)
+    const ro = new ResizeObserver(resize)
+    ro.observe(canvas)
     const onMove = (e) => {
-      const r = canvas.getBoundingClientRect()
-      mouse.tx = (e.clientX - r.left) / r.width
-      mouse.ty = (e.clientY - r.top) / r.height
-    }
-    window.addEventListener('pointermove', onMove)
-    const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting))
-    io.observe(canvas)
-
-    const cols = density
-    const rows = Math.round(density * 0.6)
-    let t = 0
-    const draw = () => {
-      raf = requestAnimationFrame(draw)
       if (!visible) return
+      mouse.tx = e.clientX / window.innerWidth
+      mouse.ty = e.clientY / window.innerHeight
+    }
+    window.addEventListener('pointermove', onMove, { passive: true })
+
+    const cols = lowPower ? Math.min(density, 26) : density
+    const rows = Math.round(cols * 0.6)
+    let t = 0
+    const draw = (now = 0) => {
+      raf = 0
+      if (!visible || document.hidden) return
+      if (lowPower && now - lastPaint < 32) {
+        raf = requestAnimationFrame(draw)
+        return
+      }
+      lastPaint = now
       t += reduce ? 0 : 0.012
       mouse.x += (mouse.tx - mouse.x) * 0.05
       mouse.y += (mouse.ty - mouse.y) * 0.05
@@ -74,12 +81,28 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
         }
       }
       ctx.globalAlpha = 1
+      if (!reduce) raf = requestAnimationFrame(draw)
     }
-    draw()
+    const start = () => {
+      if (!raf && visible && !document.hidden) raf = requestAnimationFrame(draw)
+    }
+    const stop = () => {
+      if (raf) cancelAnimationFrame(raf)
+      raf = 0
+    }
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting
+      if (visible) start()
+      else stop()
+    }, { rootMargin: '120px 0px' })
+    const onVisibilityChange = () => (document.hidden ? stop() : start())
+    io.observe(canvas)
+    document.addEventListener('visibilitychange', onVisibilityChange)
     return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener('resize', resize)
+      stop()
+      ro.disconnect()
       window.removeEventListener('pointermove', onMove)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
       io.disconnect()
     }
   }, [density, accent, accent2, base])

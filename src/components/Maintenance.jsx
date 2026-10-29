@@ -33,7 +33,7 @@ export default function Maintenance() {
               </Reveal>
 
               <Reveal delay={0.25} className="mt-8 sm:mt-10">
-                <div className="group relative overflow-hidden rounded-3xl border border-sun/30 bg-coal/80 p-5 sm:p-7 shadow-xl backdrop-blur transition-all duration-500 hover:border-sun/60">
+                <div className="group relative overflow-hidden rounded-3xl border border-sun/30 bg-coal/80 p-5 sm:p-7 shadow-xl md:backdrop-blur transition-all duration-500 hover:border-sun/60">
                   <div className="flex items-start gap-3.5 sm:gap-4">
                     <span className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-2xl bg-sun text-ink shadow-md">
                       <Icon name="check" className="h-4 w-4 sm:h-5 sm:w-5" />

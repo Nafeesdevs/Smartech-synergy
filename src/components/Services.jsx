@@ -94,7 +94,7 @@ export default function Services() {
 
   return (
     <section id="services" data-section ref={ref} className="relative bg-ink" style={{ height: `calc(100vh + ${scrollDistance}px)` }}>
-      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
+      <div className="sticky top-0 flex h-screen flex-col justify-start overflow-hidden pt-10 sm:justify-center sm:pt-0">
         <motion.div ref={track} style={{ x }} className="flex items-center gap-6 pl-5 pr-12 sm:pl-8 sm:pr-16 md:gap-8 lg:pl-12 lg:pr-24">
           <div className="flex w-[88vw] shrink-0 flex-col justify-center pr-4 sm:w-[60vw] md:w-[48vw] lg:w-[35vw] xl:w-[32vw]">
             <SectionLabel index="03">What we offer</SectionLabel>

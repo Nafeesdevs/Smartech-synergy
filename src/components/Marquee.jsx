@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useScroll, useVelocity, useSpring, useTransform, useMotionValue, useAnimationFrame } from 'framer-motion'
+import { motion, useScroll, useVelocity, useSpring, useTransform, useMotionValue, useAnimationFrame, useInView } from 'framer-motion'
 
 const wrap = (min, max, v) => {
   const r = max - min
@@ -8,6 +8,8 @@ const wrap = (min, max, v) => {
 
 /* Scroll-velocity-reactive marquee — speeds up and skews as you scroll, like the reel's kinetic type bands */
 export function VelocityRow({ items, baseVelocity = 3, className = '', itemClass = '', sep = '•', sepClass = 'text-sun' }) {
+  const row = useRef(null)
+  const inView = useInView(row, { margin: '200px 0px' })
   const x = useMotionValue(0)
   const { scrollY } = useScroll()
   const vel = useVelocity(scrollY)
@@ -18,6 +20,7 @@ export function VelocityRow({ items, baseVelocity = 3, className = '', itemClass
   const pos = useTransform(x, (v) => `${wrap(-25, 0, v)}%`)
 
   useAnimationFrame((_, delta) => {
+    if (!inView || document.hidden) return
     let move = dir.current * baseVelocity * (delta / 1000)
     const f = factor.get()
     if (f < 0) dir.current = -1
@@ -37,7 +40,7 @@ export function VelocityRow({ items, baseVelocity = 3, className = '', itemClass
     </>
   )
   return (
-    <div className={`overflow-hidden whitespace-nowrap ${className}`}>
+    <div ref={row} className={`overflow-hidden whitespace-nowrap ${className}`}>
       <motion.div className="flex w-max flex-nowrap" style={{ x: pos, skewX: skew }}>
         {[0, 1, 2, 3].map((k) => (
           <div key={k} className="flex shrink-0">

@@ -93,7 +93,7 @@ function Radar() {
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease, delay: 0.15 + i * 0.05 }}
           >
-            <span className="flex items-center gap-1 rounded-full bg-steel/95 px-1.5 py-1 text-[8px] font-bold text-white shadow-lg ring-1 ring-white/20 backdrop-blur-md transition-all duration-300 hover:scale-105 hover:ring-sun/60 sm:gap-2 sm:whitespace-nowrap sm:px-3.5 sm:py-1.5 sm:text-xs">
+            <span className="flex items-center gap-1 rounded-full bg-steel/95 px-1.5 py-1 text-[8px] font-bold text-white shadow-lg ring-1 ring-white/20 transition-all duration-300 hover:scale-105 hover:ring-sun/60 sm:gap-2 sm:whitespace-nowrap sm:px-3.5 sm:py-1.5 sm:text-xs">
               <span className={`h-1 w-1 shrink-0 rounded-full sm:h-2 sm:w-2 ${city.dot}`} />
               <span className="text-center font-display leading-[1.05] tracking-tight uppercase text-white sm:text-left">
                 {city.name.split(' ').map((word, wordIndex, words) => (

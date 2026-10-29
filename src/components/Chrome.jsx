@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence, useScroll, useSpring, useMotionValue, useMotionValueEvent } from 'framer-motion'
 import { ease } from './Motion'
 import { brand, nav } from '../data/content'
@@ -14,6 +14,8 @@ export function Logo({ className = '', dark = false }) {
         src={dark ? '/logo-dark.png' : '/logo.png'}
         alt="Smartech"
         className="h-[1.45em] w-auto max-w-none object-contain"
+        decoding="async"
+        fetchPriority="high"
         draggable={false}
       />
     </span>
@@ -24,7 +26,7 @@ export function Logo({ className = '', dark = false }) {
 export function Preloader({ onDone }) {
   const [phase, setPhase] = useState(0)
   useEffect(() => {
-    const t = [setTimeout(() => setPhase(1), 450), setTimeout(() => setPhase(2), 1150), setTimeout(() => setPhase(3), 1750), setTimeout(() => setPhase(4), 2900)]
+    const t = [setTimeout(() => setPhase(1), 220), setTimeout(() => setPhase(2), 620), setTimeout(() => setPhase(3), 1020), setTimeout(() => setPhase(4), 1650)]
     return () => t.forEach(clearTimeout)
   }, [])
   useEffect(() => {
@@ -37,11 +39,13 @@ export function Preloader({ onDone }) {
         <motion.div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-ink"
           exit={{ clipPath: 'inset(0 0 100% 0)' }}
-          transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
+          transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
           initial={{ clipPath: 'inset(0 0 0% 0)' }}
         >
-          <div className="label absolute left-6 top-6 text-white/50">Smartech Synergys · IT Solutions</div>
-          <div className="label absolute right-6 top-6 text-white/50">KL · SEL · 24H</div>
+          <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-2 font-mono text-[8px] font-semibold uppercase tracking-[0.12em] text-white/50 sm:inset-x-6 sm:top-6 sm:text-[10px] sm:tracking-wider">
+            <span className="whitespace-nowrap">Smartech Synergys · IT Solutions</span>
+            <span className="whitespace-nowrap text-right">KL · SEL · 24H</span>
+          </div>
           <div className="label absolute bottom-6 right-6 text-white/50">Loading {Math.min(phase * 33, 100)}%</div>
 
           <div className="relative flex h-40 w-40 items-center justify-center">
@@ -114,8 +118,12 @@ export function Hud() {
   const { scrollYProgress } = useScroll()
   const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 30 })
   const [tc, setTc] = useState('00:00:00:00')
+  const lastHudUpdate = useRef(0)
   const { idx, total } = useSectionIndex()
   useMotionValueEvent(scrollYProgress, 'change', (v) => {
+    const now = performance.now()
+    if (now - lastHudUpdate.current < 70 && v > 0 && v < 1) return
+    lastHudUpdate.current = now
     const frames = Math.round(v * 60 * 24)
     const s = Math.floor(frames / 24)
     const f = frames % 24
@@ -145,6 +153,7 @@ export function Nav({ lenis }) {
   const [hidden, setHidden] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [logoTurns, setLogoTurns] = useState(0)
   const { scrollY } = useScroll()
   useMotionValueEvent(scrollY, 'change', (v) => {
     const prev = scrollY.getPrevious() ?? 0
@@ -165,10 +174,22 @@ export function Nav({ lenis }) {
         animate={{ y: hidden ? -110 : 0 }}
         transition={{ duration: 0.5, ease }}
       >
-        <div className={`container-x mt-4 flex items-center justify-between rounded-full py-3 transition-all duration-500 md:mt-6 ${scrolled ? 'bg-ink/70 backdrop-blur-xl ring-1 ring-white/10 md:!px-6' : ''}`}>
-          <a href="#top" onClick={(e) => go(e, '#top')} aria-label="Smartech Synergys home" className="flex items-center">
+        <div className={`container-x mt-4 flex items-center justify-between rounded-full py-3 transition-all duration-500 md:mt-6 ${scrolled ? 'bg-ink/95 ring-1 ring-white/10 md:bg-ink/70 md:backdrop-blur-xl md:!px-6' : ''}`}>
+          <motion.a
+            href="#top"
+            onClick={(e) => {
+              setLogoTurns((turns) => turns + 1)
+              go(e, '#top')
+            }}
+            aria-label="Smartech Synergys home"
+            className="flex items-center"
+            animate={{ rotateY: logoTurns * 360 }}
+            whileTap={{ rotateX: -10, scale: 0.92 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            style={{ transformPerspective: 800, transformStyle: 'preserve-3d' }}
+          >
             <Logo className="text-2xl sm:text-3xl" />
-          </a>
+          </motion.a>
           <nav className="hidden items-center gap-8 lg:flex">
             {nav.map((n) => (
               <a key={n.href} href={n.href} onClick={(e) => go(e, n.href)} className="group relative font-display text-sm font-semibold uppercase tracking-wider text-white/75 hover:text-white">
