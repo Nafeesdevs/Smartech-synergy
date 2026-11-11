@@ -315,7 +315,7 @@ export default function Problems() {
             viewport={{ once: true, margin: '-12%' }}
             transition={{ duration: reduceMotion ? 0 : 0.9, delay: reduceMotion ? 0 : 0.28, ease }}
           >
-            A slow workstation delays everyday tasks. A failed device interrupts an entire working day. When these issues recur, replacing equipment is not always the answer. We help identify what needs repairing, upgrading or replacing, so you can make informed decisions about your business technology.
+            A slow workstation delays everyday tasks. A failed device interrupts an entire working day. When these issues recur, replacing equipment is not always the answer. We identify what needs repairing, upgrading, or replacing, so you can make informed decisions about your business technology.
           </motion.p>
         </motion.div>
 

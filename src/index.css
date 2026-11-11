@@ -810,13 +810,13 @@
   font-family: var(--problem-font-display);
   border-radius: 999px;
   padding: .9rem 1.45rem;
-  background: var(--problem-hot);
+  background: var(--problem-yellow);
   color: #09090B;
   font-size: .9rem;
   font-weight: 700;
   letter-spacing: .08em;
   text-transform: uppercase;
-  box-shadow: 0 0 28px rgba(255,2,141,.16);
+  box-shadow: 0 0 28px rgba(255,198,40,.18);
 }
 .problems-cta span { font-size: 1.1rem; transition: transform .3s ease; }
 .problems-cta:hover span { transform: translate(3px, -3px); }

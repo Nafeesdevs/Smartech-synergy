@@ -256,6 +256,7 @@ export function Cursor() {
   const sx = useSpring(x, { stiffness: 500, damping: 40 })
   const sy = useSpring(y, { stiffness: 500, damping: 40 })
   const [hover, setHover] = useState(false)
+  const [cursorTone, setCursorTone] = useState('default')
   const [enabled, setEnabled] = useState(false)
   useEffect(() => {
     if (!window.matchMedia('(pointer: fine)').matches) return
@@ -265,6 +266,7 @@ export function Cursor() {
       x.set(e.clientX)
       y.set(e.clientY)
       setHover(!!e.target.closest('a,button,[data-hover]'))
+      setCursorTone(e.target.closest('[data-cursor]')?.dataset.cursor || 'default')
     }
     window.addEventListener('mousemove', move)
     return () => {
@@ -275,7 +277,7 @@ export function Cursor() {
   if (!enabled) return null
   return (
     <motion.div
-      className="pointer-events-none fixed left-0 top-0 z-[90] rounded-full bg-sun mix-blend-difference"
+      className={`pointer-events-none fixed left-0 top-0 z-[90] rounded-full ${cursorTone === 'pink' ? 'bg-hot/60 ring-2 ring-hot shadow-[0_0_18px_rgba(255,2,141,0.35)]' : 'bg-sun mix-blend-difference'}`}
       style={{ x: sx, y: sy, translateX: '-50%', translateY: '-50%' }}
       animate={{ width: hover ? 56 : 12, height: hover ? 56 : 12 }}
       transition={{ duration: 0.3, ease }}

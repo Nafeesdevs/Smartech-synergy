@@ -7,7 +7,6 @@ import { SectionLabel, MaskLines } from './Motion'
 const tones = {
   sun: 'bg-sun text-ink',
   volt: 'bg-volt text-white',
-  hot: 'bg-hot text-white',
   paper: 'bg-paper text-ink',
 }
 
@@ -19,6 +18,7 @@ function Card({ s, i, progress, total }) {
     <motion.article
       style={{ rotate }}
       data-hover
+      data-cursor="pink"
       className={`group relative flex h-[64vh] sm:h-[68vh] max-h-[600px] min-h-[380px] sm:min-h-[440px] md:min-h-[460px] w-[86vw] sm:w-[60vw] lg:w-[34vw] shrink-0 flex-col justify-between overflow-hidden rounded-[28px] p-6 sm:p-8 md:p-10 ${tones[s.tone]}`}
     >
       <div className="flex items-start justify-between">
@@ -28,7 +28,7 @@ function Card({ s, i, progress, total }) {
         </motion.span>
       </div>
       {/* decorative dot matrix */}
-      <div className="dot-grid pointer-events-none absolute -right-10 top-1/3 h-48 w-64 text-hot opacity-25 transition-transform duration-700 group-hover:translate-x-[-20px]" />
+      <div className="dot-grid pointer-events-none absolute -right-10 top-1/3 h-48 w-64 text-hot opacity-100 transition-transform duration-700 group-hover:translate-x-[-20px]" />
       <div className="relative">
         <h3 className="font-display text-2xl sm:text-3xl font-black uppercase leading-[0.95] tracking-tight md:text-[2.6rem]">{s.t}</h3>
         <p className="mt-3 sm:mt-4 max-w-sm text-sm sm:text-[15px] leading-relaxed opacity-75">{s.d}</p>

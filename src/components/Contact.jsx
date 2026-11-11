@@ -139,7 +139,7 @@ export function Footer({ lenis }) {
               <li><a className="break-all hover:text-sun" href={`mailto:${brand.email}`}>{brand.email}</a></li>
               <li><a className="hover:text-sun" href={brand.whatsapp} target="_blank" rel="noreferrer">WhatsApp</a></li>
             </ul>
-            <button onClick={() => lenis?.current?.scrollTo(0, { duration: 2 })} className="label mt-6 sm:mt-8 flex items-center gap-2 text-sun hover:text-white transition-colors">
+            <button onClick={() => lenis?.current?.scrollTo(0, { duration: 2 })} className="label mt-6 sm:mt-8 flex items-center gap-2 text-hot hover:text-white transition-colors">
               Back to top <Icon name="arrow" className="h-3.5 w-3.5 sm:h-4 sm:w-4 -rotate-90" />
             </button>
           </div>

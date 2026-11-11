@@ -9,7 +9,6 @@ export default function Hero({ ready, lenis }) {
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.88])
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
   const yText = useTransform(scrollYProgress, [0, 1], [0, 180])
   const stripeA = useTransform(scrollYProgress, [0, 1], [0, -320])
   const stripeB = useTransform(scrollYProgress, [0, 1], [0, -160])
@@ -22,7 +21,7 @@ export default function Hero({ ready, lenis }) {
 
   return (
     <section ref={ref} id="top" data-section className="relative min-h-[100svh] overflow-hidden bg-ink">
-      <motion.div style={{ scale, opacity }} className="relative origin-top">
+      <motion.div style={{ scale }} className="relative origin-top">
         {/* dot wave */}
         <motion.div style={{ y: dotsY }} className="absolute inset-x-0 bottom-0 top-[30%]">
           <DotField className="h-full w-full" />
@@ -103,7 +102,7 @@ export default function Hero({ ready, lenis }) {
                   animate={ready ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.8, ease, delay: 1.4 + i * 0.08 }}
                 >
-                  <div className="font-display text-xl sm:text-2xl font-black uppercase text-hot">{h.k}</div>
+                  <div className="font-display text-xl sm:text-2xl font-black uppercase text-white">{h.k}</div>
                   <div className="label mt-1 text-white">{h.v}</div>
                 </motion.div>
               ))}

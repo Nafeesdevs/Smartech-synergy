@@ -50,7 +50,7 @@ export default function About() {
           <div className="flex flex-col justify-start lg:col-span-5">
             <Reveal>
               <p className="text-base sm:text-lg leading-relaxed text-ink/75">
-              Based in Cheras, Kuala Lumpur, Smartech Synergys provides IT support and device supply for businesses across the Klang Valley. We help you resolve technical issues, improve existing equipment and equip new workspaces, with recommendations grounded in how your team works and what your business needs.
+              Based in Cheras, Kuala Lumpur, Smartech Synergys provides IT support and device supply for businesses across the Klang Valley. We support you resolve technical issues, improve existing equipment and equip new workspaces, with recommendations grounded in how your team works and what your business needs.
               </p>
             </Reveal>
             <ul className="mt-8 sm:mt-10 divide-y divide-ink/10 border-y border-ink/10">

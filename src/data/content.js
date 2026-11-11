@@ -88,7 +88,7 @@ export const problems = [
     symptom: 'Technical issues should not leave your team waiting for answers.',
     impact: 'Staff blocked by technical issues with no one to call.',
     solution: 'We provide on-site troubleshooting, repairs and office setup support when your team needs help.',
-    d: 'Without dependable IT support, small issues become downtime. We provide practical on-site help when you need it.',
+    d: 'Without dependable IT support, small issues become downtime. We provide practical on-site support when you need it.',
     image: '/problems-real/it-support.jpg?v=5',
     imagePosition: 'center center',
   },
@@ -117,7 +117,7 @@ export const services = [
     d: 'We supply, configure and deploy office-ready workstations so your team can log in and start working on day one.',
     tags: ['Supply', 'Configure', 'Deploy'],
     icon: 'office',
-    tone: 'hot',
+    tone: 'paper',
   },
   {
     n: '04',
