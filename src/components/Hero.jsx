@@ -53,13 +53,13 @@ export default function Hero({ ready, lenis }) {
             transition={{ duration: 0.8, ease, delay: 0.1 }}
           >
             <span className="rounded-full border border-white/20 px-3 py-1.5 text-white">IT Support · Tech Solutions</span>
-            <span>Kuala Lumpur &amp; Selangor</span>
+            <span className="text-hot">Kuala Lumpur &amp; Selangor</span>
           </motion.div>
 
           {ready && (
             <h1 className="display text-[14vw] sm:text-[11vw] lg:text-[9.4vw]">
               <KineticText text="Tech that" className="block" delay={0.1} />
-              <span className="relative inline-block px-[0.12em] text-sun">
+              <span className="relative inline-block px-[0.12em] text-sun drop-shadow-[0_0_32px_rgba(244,188,33,0.16)]">
                 <KineticText text="never skips" delay={0.35} chaos={1.4} />
                 <Brackets size={22} color="#F4BC21" />
               </span>
@@ -73,10 +73,10 @@ export default function Hero({ ready, lenis }) {
             animate={ready ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1, ease, delay: 1.2 }}
           >
-            <p className="max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
-              From a single device repair to a complete office setup, Smartech Synergys supports the technology your business depends on. We provide repairs, performance upgrades and on-site IT support across Kuala Lumpur and Selangor, helping your team spend less time troubleshooting and more time working.
+            <p className="max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
+              From a single device repair to a complete office setup, Smartech Synergys supports the technology your business depends on. We provide repairs, performance upgrades and on-site IT support across Kuala Lumpur and Selangor, Assist your team spend less time troubleshooting and more time working.
             </p>
-            <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+            <div className="flex flex-col sm:mb-10 sm:flex-row flex-wrap gap-3 xl:mb-12">
               <Magnetic>
                 <a href="#contact" onClick={go} className="btn btn-sun group justify-center sm:justify-start">
                   <span className="relative z-10">Get a free consultation</span>
@@ -103,8 +103,8 @@ export default function Hero({ ready, lenis }) {
                   animate={ready ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.8, ease, delay: 1.4 + i * 0.08 }}
                 >
-                  <div className="font-display text-xl sm:text-2xl font-black uppercase text-white">{h.k}</div>
-                  <div className="label mt-1 text-white/50">{h.v}</div>
+                  <div className="font-display text-xl sm:text-2xl font-black uppercase text-hot">{h.k}</div>
+                  <div className="label mt-1 text-white">{h.v}</div>
                 </motion.div>
               ))}
             </div>

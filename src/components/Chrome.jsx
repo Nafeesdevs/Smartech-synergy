@@ -13,6 +13,8 @@ export function Logo({ className = '', dark = false }) {
       <img
         src={dark ? '/logo-dark.png' : '/logo.png'}
         alt="Smartech"
+        width="268"
+        height="90"
         className="h-[1.45em] w-auto max-w-none object-contain"
         decoding="async"
         fetchPriority="high"
@@ -82,8 +84,12 @@ export function Preloader({ onDone }) {
               </motion.div>
             )}
             {phase === 3 && (
-              <motion.div initial={{ opacity: 0, letterSpacing: '0.4em', filter: 'blur(12px)' }} animate={{ opacity: 1, letterSpacing: '0em', filter: 'blur(0px)' }} transition={{ duration: 0.9, ease }}>
-                <Logo className="text-5xl sm:text-7xl" />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.65, ease }}
+              >
+                <Logo className="text-5xl sm:text-6xl" />
               </motion.div>
             )}
           </div>

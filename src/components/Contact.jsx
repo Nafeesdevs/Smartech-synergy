@@ -13,7 +13,7 @@ export function Contact() {
     const body = `Name: ${form.name}\nCompany: ${form.company}\nPhone: ${form.phone}\nService: ${form.need}\n\n${form.msg}`
     window.location.href = `mailto:${brand.email}?subject=${encodeURIComponent('Free Tech Consultation Request')}&body=${encodeURIComponent(body)}`
   }
-  const field = 'w-full border-b border-white/20 bg-transparent py-4 text-lg outline-none transition-colors placeholder:text-white/30 focus:border-sun'
+  const field = 'w-full border-b border-white/20 bg-transparent py-4 text-lg outline-none transition-colors placeholder:text-white/30 focus:border-hot'
   const cards = [
     { icon: 'phoneCall', k: 'Call us', v: brand.phone, href: `tel:${brand.phoneRaw}` },
     { icon: 'whatsapp', k: 'WhatsApp', v: 'Chat with us now', href: brand.whatsapp },
@@ -26,14 +26,14 @@ export function Contact() {
         <SectionLabel index="08">Let&rsquo;s work together</SectionLabel>
         <h2 className="display mt-6 sm:mt-8 text-[12vw] sm:text-6xl md:text-7xl lg:text-[8.5vw]">
           <KineticText text="Let's fix it" className="block" />
-          <KineticText text="together." className="block text-sun" delay={0.3} />
+          <KineticText text="together." className="block text-hot" delay={0.3} />
         </h2>
 
         <div className="mt-10 sm:mt-16 grid gap-10 sm:gap-16 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <Reveal>
               <p className="text-base sm:text-lg leading-relaxed text-white/70">
-                Get a <span className="font-bold text-white">FREE tech consultation</span> for your office today. Share your requirements and we&rsquo;ll recommend the best solution for your business  no obligations.
+                Get a <span className="font-bold text-hot">FREE tech consultation</span> for your office today. Share your requirements and we&rsquo;ll recommend the best solution for your business  no obligations.
               </p>
             </Reveal>
             <div className="mt-8 sm:mt-10 space-y-3">
@@ -77,8 +77,8 @@ export function Contact() {
             <form onSubmit={submit} className="relative rounded-[28px] bg-ink p-5 sm:p-7 ring-1 ring-white/10 md:p-12">
               <div className="label mb-4 flex items-center justify-between text-white/40">
                 <span>Request a free consultation</span>
-                <span className="flex items-center gap-2 text-sun">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-sun" /> Fast response
+                <span className="flex items-center gap-2 text-hot">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-hot" /> Fast response
                 </span>
               </div>
               <div className="grid gap-2 sm:grid-cols-2 sm:gap-x-8">
@@ -96,10 +96,10 @@ export function Contact() {
               <div className="mt-10 flex flex-wrap items-center justify-between gap-6">
                 <p className="label max-w-[16rem] text-white/40">No obligations. We usually reply within a few hours.</p>
                 <Magnetic>
-                  <button type="submit" className="btn btn-sun group">
+                  <button type="submit" className="btn group bg-hot text-white shadow-[0_14px_34px_rgba(255,2,141,0.22)]">
                     <span className="relative z-10">Send request</span>
                     <Icon name="arrow" className="relative z-10 h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
-                    <span className="absolute inset-0 origin-bottom scale-y-0 bg-white transition-transform duration-500 group-hover:scale-y-100" />
+                    <span className="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-500 group-hover:scale-y-100" />
                   </button>
                 </Magnetic>
               </div>
@@ -157,7 +157,7 @@ export function Footer({ lenis }) {
             backfaceVisibility: 'hidden',
           }}
         >
-          Smartech<span className="ml-[0.005em] inline-block h-[0.26em] w-[0.26em] bg-sun align-[0.08em]" style={{ clipPath: 'polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%)' }} aria-hidden="true" />
+          Smartech<span className="ml-[0.005em] inline-block h-[0.26em] w-[0.26em] bg-hot align-[0.08em]" style={{ clipPath: 'polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%)' }} aria-hidden="true" />
         </div>
       </motion.div>
       <div className="container-x label flex flex-col justify-between gap-2 py-6 text-white/40 sm:flex-row">

@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import Icon from './Icons'
 import { MaskLines, ScrollWords, Reveal, SectionLabel, Parallax, ease } from './Motion'
 
-export function RingText({ text, size = 220, className = '', dark = false, speed = 1 }) {
+export function RingText({ text, size = 220, className = '', dark = false, speed = 1, accentClass = 'bg-hot shadow-[0_0_24px_rgba(255,2,141,0.28)]' }) {
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const rot = useTransform(scrollYProgress, [0, 1], [0, 360 * speed])
@@ -18,7 +18,7 @@ export function RingText({ text, size = 220, className = '', dark = false, speed
         </text>
       </motion.svg>
       <motion.span
-        className="absolute left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sun"
+        className={`absolute left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2 rounded-full ${accentClass}`}
         animate={{ scale: [1, 1.25, 1] }}
         transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
       />
@@ -39,7 +39,7 @@ export default function About() {
       <div className="dot-grid pointer-events-none absolute inset-0 text-ink/[0.07]" />
       <div className="container-x relative">
         {/* Section label sits above both columns so both start flush */}
-        <SectionLabel index="01" dark={false}>About us</SectionLabel>
+        <SectionLabel index="01" dark={false} dotClass="bg-volt shadow-[0_0_12px_rgba(25,107,228,0.42)]">About us</SectionLabel>
 
         <div className="mt-8 grid items-start gap-10 sm:gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
@@ -63,7 +63,7 @@ export default function About() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, ease, delay: i * 0.08 }}
                 >
-                  <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full bg-ink text-sun transition-colors duration-300 group-hover:bg-volt group-hover:text-white">
+                  <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full bg-ink text-hot transition-colors duration-300 group-hover:bg-volt group-hover:text-hot">
                     <Icon name="check" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </span>
                   <span className="font-display text-sm sm:text-base font-bold uppercase tracking-wide">{p}</span>

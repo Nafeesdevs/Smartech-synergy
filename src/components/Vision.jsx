@@ -11,7 +11,7 @@ export default function Vision() {
 
   return (
     <section ref={ref} data-section className="relative bg-ink">
-      <motion.div style={{ clipPath: clip }} className="relative overflow-hidden bg-sun py-28 text-ink md:py-40">
+      <motion.div style={{ clipPath: clip }} className="relative overflow-hidden bg-gradient-to-br from-sun via-sun to-hot py-28 text-ink md:py-40">
         <motion.div style={{ x: x1 }} className="display pointer-events-none whitespace-nowrap text-[20vw] text-ink/[0.07]">
           Trusted · Fast · Reliable · Trusted
         </motion.div>
@@ -20,7 +20,7 @@ export default function Vision() {
           <SectionLabel index="07" dark={false}>Vision &amp; Mission</SectionLabel>
           <div className="mt-10 sm:mt-14 grid gap-8 sm:gap-14 lg:grid-cols-2 lg:gap-20">
             <Reveal>
-              <div className="relative rounded-[28px] bg-ink p-6 sm:p-8 text-white md:p-12">
+              <div className="relative rounded-[28px] border-t-4 border-hot bg-ink p-6 sm:p-8 text-white md:p-12">
                 <Brackets size={18} color="#F4BC21" className="m-3 sm:m-4" />
                 <div className="label text-sun">Our vision</div>
                 <p className="mt-4 sm:mt-6 font-display text-xl sm:text-2xl font-bold leading-snug tracking-tight md:text-[2rem]">
@@ -30,8 +30,8 @@ export default function Vision() {
             </Reveal>
             <Reveal delay={0.15}>
               <div className="relative rounded-[28px] bg-volt p-6 sm:p-8 text-white md:p-12 lg:mt-24">
-                <Brackets size={18} color="#fff" className="m-3 sm:m-4" />
-                <div className="label text-white/70">Our mission</div>
+                <Brackets size={18} color="#FF028D" className="m-3 sm:m-4" />
+                <div className="label text-hot">Our mission</div>
                 <p className="mt-4 sm:mt-6 font-display text-xl sm:text-2xl font-bold leading-snug tracking-tight md:text-[2rem]">
                   To deliver reliable IT support and quality technology solutions that help businesses stay productive, connected and running without disruption.
                 </p>

@@ -57,7 +57,7 @@ export default function Process() {
             <SectionLabel index="06">How it works</SectionLabel>
           </div>
           <h2 className="display mt-6 sm:mt-8 text-[11vw] sm:text-6xl md:text-7xl lg:text-[6vw]">
-            <MaskLines lines={['Simple. Fast.', <span key="h" className="text-sun">Hassle-free.</span>]} />
+            <MaskLines lines={['Simple. Fast.', <span key="h" className="text-hot">Hassle-free.</span>]} />
           </h2>
           <Reveal>
             <p className="mx-auto mt-4 sm:mt-6 max-w-lg text-sm sm:text-base text-white/60">Know what happens next. We assess your requirements, explain the recommended solution and carry out the work, then test the results before handover. Follow-up support gives you a point of contact once the job is complete.</p>
@@ -68,10 +68,10 @@ export default function Process() {
           <svg viewBox={`0 0 ${box.w} ${box.h}`} className="absolute inset-0 h-full w-full pointer-events-none" aria-hidden="true">
             <path ref={pathRef} d={d} fill="none" stroke="rgba(255,255,255,.08)" strokeWidth="14" />
             <motion.path d={d} fill="none" stroke="#F4BC21" strokeWidth="14" strokeLinecap="round" pathLength={1} strokeDasharray="1 1" style={{ strokeDashoffset: dash }} />
-            <motion.path d={d} fill="none" stroke="#196BE4" strokeWidth="4" strokeLinecap="round" pathLength={1} strokeDasharray="1 1" style={{ strokeDashoffset: dash }} />
+            <motion.path d={d} fill="none" stroke="#FF028D" strokeWidth="4" strokeLinecap="round" pathLength={1} strokeDasharray="1 1" style={{ strokeDashoffset: dash }} />
           </svg>
           <motion.span
-            className="pointer-events-none absolute left-0 top-0 z-10 h-6 w-6 rounded-full border-4 border-ink bg-white shadow-[0_0_0_6px_rgba(244,188,33,.35)] will-change-transform sm:h-7 sm:w-7"
+            className="pointer-events-none absolute left-0 top-0 z-10 h-6 w-6 rounded-full border-4 border-ink bg-white shadow-[0_0_0_6px_rgba(255,2,141,.30)] will-change-transform sm:h-7 sm:w-7"
             style={{ x: dotX, y: dotY, translateX: '-50%', translateY: '-50%' }}
           />
 

@@ -98,7 +98,7 @@ export default function FAQ() {
           {/* Left Column: Heading & Sticky Context */}
           <div className="lg:col-span-6 xl:col-span-5">
             <div className="lg:sticky lg:top-32">
-              <SectionLabel index="09">Clarity & Assurance</SectionLabel>
+              <SectionLabel index="09" dotClass="bg-sun shadow-[0_0_12px_rgba(244,188,33,0.48)]">Clarity & Assurance</SectionLabel>
               <h2 className="display mt-6 sm:mt-8 text-4xl sm:text-5xl md:text-6xl lg:text-[4.6vw] xl:text-[4.3vw] tracking-tight">
                 <KineticText text="Frequently" className="block" />
                 <KineticText text="asked" className="block" delay={0.2} />

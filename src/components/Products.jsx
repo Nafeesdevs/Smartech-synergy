@@ -35,7 +35,7 @@ function Tile({ p, i }) {
       >
         <div className="flex items-start justify-between">
           <span className="label text-ink/40 group-hover:text-white/40">P/0{i + 1}</span>
-          <Icon name="arrowUR" className="h-5 w-5 -translate-x-2 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:text-sun group-hover:opacity-100" />
+          <Icon name="arrowUR" className="h-5 w-5 -translate-x-2 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:text-volt group-hover:opacity-100" />
         </div>
         <div style={{ transform: 'translateZ(40px)' }} className="flex h-20 w-20 items-center justify-center rounded-2xl bg-paper text-ink transition-all duration-500 group-hover:scale-110 group-hover:bg-sun">
           <Icon name={p.icon} className="h-10 w-10" />
@@ -52,7 +52,7 @@ export default function Products() {
       <div className="container-x">
         <div className="grid items-end gap-10 lg:grid-cols-12">
           <div className="lg:col-span-8">
-            <SectionLabel index="05" dark={false}>Products we sell</SectionLabel>
+            <SectionLabel index="05" dark={false} dotClass="bg-volt shadow-[0_0_12px_rgba(25,107,228,0.42)]">Products we sell</SectionLabel>
             <h2 className="display mt-6 sm:mt-8 text-[12vw] sm:text-6xl md:text-7xl lg:text-[6vw]">
               <MaskLines lines={[<span>Quality<span className="inline-block w-[0.25em]" />tech</span>, <span key="s">sourced <span className="text-volt">for you.</span></span>]} />
             </h2>
@@ -64,7 +64,7 @@ export default function Products() {
               </p>
             </Reveal>
             <div className="hidden sm:block">
-              <RingText dark text="Business Ready • Warrantied • Quality Checked • Trusted • " size={140} className="md:scale-110" speed={-1.2} />
+              <RingText dark text="Business Ready • Warrantied • Quality Checked • Trusted • " size={140} className="md:scale-110" speed={-1.2} accentClass="bg-volt shadow-[0_0_24px_rgba(25,107,228,0.28)]" />
             </div>
           </div>
         </div>
@@ -75,14 +75,14 @@ export default function Products() {
           ))}
         </div>
 
-        <Reveal className="mt-8 sm:mt-10 flex flex-col gap-4 rounded-3xl bg-ink p-5 sm:p-7 text-white md:flex-row md:items-center md:justify-between md:p-10">
+        <Reveal className="mt-8 sm:mt-10 flex flex-col gap-4 rounded-3xl bg-ink p-5 sm:p-7 text-white ring-1 ring-volt/20 md:flex-row md:items-center md:justify-between md:p-10">
           <div className="flex items-center gap-4">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-sun text-ink">
               <Icon name="check" className="h-5 w-5" />
             </span>
             <p className="max-w-xl text-white/80">All products are sourced through verified suppliers and fully tested to ensure quality and authenticity before delivery.</p>
           </div>
-          <span className="label text-sun">Authenticity guaranteed</span>
+          <span className="label text-volt">Authenticity guaranteed</span>
         </Reveal>
       </div>
 

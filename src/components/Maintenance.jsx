@@ -24,7 +24,7 @@ export default function Maintenance() {
                 <KineticText text="Preventive" className="block" />
                 <KineticText text="care &" className="block" delay={0.2} />
                 <KineticText text="hardware" className="block" delay={0.4} />
-                <KineticText text="tuning." className="block text-sun" delay={0.6} />
+                <KineticText text="tuning." className="block text-hot" delay={0.6} />
               </h2>
               <Reveal delay={0.2}>
                 <p className="mt-6 sm:mt-8 max-w-md text-sm sm:text-base leading-relaxed text-white/65">
@@ -33,7 +33,7 @@ export default function Maintenance() {
               </Reveal>
 
               <Reveal delay={0.25} className="mt-8 sm:mt-10">
-                <div className="group relative overflow-hidden rounded-3xl border border-sun/30 bg-coal/80 p-5 sm:p-7 shadow-xl md:backdrop-blur transition-all duration-500 hover:border-sun/60">
+                <div className="group relative overflow-hidden rounded-3xl border border-hot/45 bg-coal/80 p-5 sm:p-7 shadow-[0_18px_50px_rgba(255,2,141,0.08)] md:backdrop-blur transition-all duration-500 hover:border-hot/80">
                   <div className="flex items-start gap-3.5 sm:gap-4">
                     <span className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-2xl bg-sun text-ink shadow-md">
                       <Icon name="check" className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -66,7 +66,7 @@ export default function Maintenance() {
           <div className="lg:col-span-7">
             <div className="flex items-center justify-between border-y border-white/10 py-4">
               <span className="label text-white/45">Complete service directory</span>
-              <span className="font-mono text-xs font-bold tracking-widest text-sun">09 services</span>
+              <span className="font-mono text-xs font-bold tracking-widest text-hot">09 services</span>
             </div>
 
             <div>
@@ -80,7 +80,7 @@ export default function Maintenance() {
                   style={{ backfaceVisibility: 'hidden', willChange: 'transform, opacity' }}
                   className="group relative overflow-hidden border-b border-white/10"
                 >
-                  <span className="absolute inset-0 origin-left scale-x-0 bg-sun transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-x-100" />
+                  <span className="absolute inset-0 origin-left scale-x-0 bg-hot transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-x-100" />
 
                   <div className="relative grid grid-cols-[auto_1fr_auto] gap-x-4 px-2 py-6 sm:gap-x-6 sm:px-4 sm:py-8">
                     <span className="font-display text-2xl font-black leading-none text-sun transition-colors duration-300 group-hover:text-ink sm:text-3xl">
@@ -104,7 +104,7 @@ export default function Maintenance() {
 
                       <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-wider">
                         <span className="text-white/35 transition-colors duration-300 group-hover:text-ink/55">On-site / In-shop</span>
-                        <span className="text-sun/80 transition-colors duration-300 group-hover:text-ink">Quality guaranteed</span>
+                        <span className="text-hot/90 transition-colors duration-300 group-hover:text-ink">Quality guaranteed</span>
                       </div>
                     </div>
 

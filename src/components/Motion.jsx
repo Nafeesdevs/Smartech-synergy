@@ -187,10 +187,10 @@ export function Brackets({ className = '', size = 14, color = 'currentColor', an
   )
 }
 
-export function SectionLabel({ index, children, dark = true }) {
+export function SectionLabel({ index, children, dark = true, dotClass = 'bg-hot shadow-[0_0_12px_rgba(255,2,141,0.55)]' }) {
   return (
     <div className={`label flex items-center gap-3 ${dark ? 'text-white/60' : 'text-ink/60'}`}>
-      <span className="inline-block h-2 w-2 rounded-full bg-sun" />
+      <span className={`inline-block h-2 w-2 rounded-full ${dotClass}`} />
       <span>{index}</span>
       <span className={`h-px w-10 ${dark ? 'bg-white/25' : 'bg-ink/25'}`} />
       <span>{children}</span>

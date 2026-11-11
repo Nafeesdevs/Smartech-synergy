@@ -7,6 +7,7 @@ import { SectionLabel, MaskLines } from './Motion'
 const tones = {
   sun: 'bg-sun text-ink',
   volt: 'bg-volt text-white',
+  hot: 'bg-hot text-white',
   paper: 'bg-paper text-ink',
 }
 
@@ -27,7 +28,7 @@ function Card({ s, i, progress, total }) {
         </motion.span>
       </div>
       {/* decorative dot matrix */}
-      <div className="dot-grid pointer-events-none absolute -right-10 top-1/3 h-48 w-64 opacity-20 transition-transform duration-700 group-hover:translate-x-[-20px]" />
+      <div className="dot-grid pointer-events-none absolute -right-10 top-1/3 h-48 w-64 text-hot opacity-25 transition-transform duration-700 group-hover:translate-x-[-20px]" />
       <div className="relative">
         <h3 className="font-display text-2xl sm:text-3xl font-black uppercase leading-[0.95] tracking-tight md:text-[2.6rem]">{s.t}</h3>
         <p className="mt-3 sm:mt-4 max-w-sm text-sm sm:text-[15px] leading-relaxed opacity-75">{s.d}</p>
@@ -116,7 +117,7 @@ export default function Services() {
         </motion.div>
         <div className="container-x absolute bottom-10 left-0 right-0">
           <div className="h-px w-full bg-white/10">
-            <motion.div className="h-px bg-sun" style={{ width: bar }} />
+            <motion.div className="h-px bg-gradient-to-r from-sun via-hot to-volt" style={{ width: bar }} />
           </div>
         </div>
       </div>

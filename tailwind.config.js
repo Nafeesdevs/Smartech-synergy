@@ -9,6 +9,7 @@ export default {
         steel: '#1C1D21',
         sun: '#F4BC21',
         volt: '#196BE4',
+        hot: '#FF028D',
         paper: '#F1EFE9',
         mute: '#8A8B92',
       },

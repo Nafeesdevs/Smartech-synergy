@@ -6,16 +6,16 @@ import Icon from './Icons'
 const cities = [
   { name: 'Cheras', ring: 0.15, bearing: 90, dot: 'bg-sun' },
 
-  { name: 'Kuala Lumpur', ring: 0.38, bearing: 350, dot: 'bg-volt' },
+  { name: 'Kuala Lumpur', ring: 0.38, bearing: 350, dot: 'bg-hot' },
   { name: 'Ampang', ring: 0.75, bearing: 340, dot: 'bg-sun' },
 
   { name: 'Petaling Jaya', ring: 0.5, bearing: 201, dot: 'bg-sun' },
-  { name: 'Sunway', ring: 0.46, bearing: 240, dot: 'bg-volt' },
+  { name: 'Sunway', ring: 0.46, bearing: 240, dot: 'bg-hot' },
   { name: 'Subang', ring: 0.78, bearing: 245, dot: 'bg-sun' },
   { name: 'Puchong', ring: 0.72, bearing: 95, dot: 'bg-volt' },
 
   { name: 'Shah Alam', ring: 0.58, bearing: 279, dot: 'bg-sun' },
-  { name: 'Cyberjaya', ring: 0.63, bearing: 140, dot: 'bg-volt' },
+  { name: 'Cyberjaya', ring: 0.63, bearing: 140, dot: 'bg-hot' },
   { name: 'Klang', ring: 0.82, bearing: 284, dot: 'bg-sun' },
 ]
 
@@ -118,7 +118,7 @@ export default function Coverage() {
         <div>
           <SectionLabel index="08">Coverage</SectionLabel>
           <h2 className="display mt-6 sm:mt-8 text-[12vw] sm:text-6xl md:text-7xl lg:text-[6vw]">
-            <MaskLines lines={['We come', <span key="t" className="text-sun">to you.</span>]} />
+            <MaskLines lines={['We come', <span key="t" className="text-hot">to you.</span>]} />
           </h2>
           <Reveal>
             <p className="mt-6 sm:mt-8 max-w-md text-base sm:text-lg leading-relaxed text-white/65">
@@ -132,7 +132,7 @@ export default function Coverage() {
               { t: 'Homes', sub: 'Remote & WFH' },
             ].map((item, i) => (
               <Reveal key={item.t} delay={i * 0.08} className="w-full">
-                <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-coal/50 px-5 py-3.5 sm:px-6 sm:py-4 transition-all duration-300 hover:border-sun/40 hover:bg-steel/70">
+                <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-coal/50 px-5 py-3.5 sm:px-6 sm:py-4 transition-all duration-300 hover:border-hot/50 hover:bg-steel/70">
                   <span className="font-display text-sm sm:text-base font-black uppercase tracking-tight text-white shrink-0">
                     {item.t}
                   </span>
