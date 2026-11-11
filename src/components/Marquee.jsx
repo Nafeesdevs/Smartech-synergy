@@ -52,11 +52,14 @@ export function VelocityRow({ items, baseVelocity = 3, className = '', itemClass
   )
 }
 
-export default function MarqueeBand({ a }) {
+export default function MarqueeBand({ a, b }) {
   return (
     <section className="relative overflow-hidden bg-ink py-10 md:py-16" aria-label="What we do">
       <div className="-rotate-2 bg-sun py-4 text-ink md:py-6">
         <VelocityRow items={a} baseVelocity={1.75} itemClass="display text-5xl md:text-8xl" sepClass="text-ink" sep="✦" />
+      </div>
+      <div className="mt-2 rotate-1 bg-sun py-3 text-ink md:py-5">
+        <VelocityRow items={b} baseVelocity={-1.4} itemClass="display text-4xl text-ink md:text-7xl" sepClass="text-volt" />
       </div>
     </section>
   )
