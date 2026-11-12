@@ -23,8 +23,8 @@ function Card({ s, i, progress, total }) {
     >
       <div className="flex items-start justify-between">
         <span className="font-display text-6xl sm:text-7xl font-black leading-none tracking-tightest opacity-90 md:text-8xl">{s.n}</span>
-        <motion.span style={{ rotate: iconRot }} className="flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl border-2 border-current bg-transparent">
-          <Icon name={s.icon} className="h-6 w-6 text-hot sm:h-7 sm:w-7 md:h-8 md:w-8" />
+        <motion.span style={{ rotate: iconRot }} className="flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl border-2 border-hot bg-transparent">
+          <Icon name={s.icon} className="h-6 w-6 text-ink sm:h-7 sm:w-7 md:h-8 md:w-8" />
         </motion.span>
       </div>
       {/* decorative dot matrix */}
@@ -34,7 +34,7 @@ function Card({ s, i, progress, total }) {
         <p className="mt-3 sm:mt-4 max-w-sm text-sm sm:text-[15px] leading-relaxed opacity-75">{s.d}</p>
         <div className="mt-5 sm:mt-6 flex flex-wrap gap-1.5 sm:gap-2">
           {s.tags.map((t) => (
-            <span key={t} className="label rounded-full border border-current/30 px-2.5 py-1 text-[10px] sm:text-[11px] sm:px-3 sm:py-1.5" style={{ borderColor: 'currentColor' }}>
+            <span key={t} className="label rounded-full border-2 border-hot bg-hot/10 px-2.5 py-1 text-[10px] shadow-[0_0_12px_rgba(255,2,141,0.28)] transition-all duration-300 group-hover:bg-hot/15 group-hover:shadow-[0_0_18px_rgba(255,2,141,0.38)] sm:px-3 sm:py-1.5 sm:text-[11px]">
               {t}
             </span>
           ))}

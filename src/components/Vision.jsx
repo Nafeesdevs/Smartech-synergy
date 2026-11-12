@@ -18,8 +18,8 @@ export default function Vision() {
 
         <div className="container-x relative -mt-[12vw]">
           <SectionLabel index="07" dark={false}>Vision &amp; Mission</SectionLabel>
-          <div className="mt-10 sm:mt-14 grid gap-8 sm:gap-14 lg:grid-cols-2 lg:gap-20">
-            <Reveal>
+          <div className="mt-10 flex flex-col items-end gap-8 sm:mt-14 sm:gap-10">
+            <Reveal className="w-full lg:w-[54%] xl:w-1/2">
               <div className="relative rounded-[28px] border-t-4 border-hot bg-ink p-6 sm:p-8 text-white md:p-12">
                 <Brackets size={18} color="#F4BC21" className="m-3 sm:m-4" />
                 <div className="label text-sun">Our vision</div>
@@ -28,8 +28,8 @@ export default function Vision() {
                 </p>
               </div>
             </Reveal>
-            <Reveal delay={0.15}>
-              <div className="relative rounded-[28px] bg-volt p-6 sm:p-8 text-white md:p-12 lg:mt-24">
+            <Reveal className="w-full lg:w-[54%] xl:w-1/2" delay={0.15}>
+              <div className="relative rounded-[28px] bg-volt p-6 sm:p-8 text-white md:p-12">
                 <Brackets size={18} color="#FF028D" className="m-3 sm:m-4" />
                 <div className="label text-hot">Our mission</div>
                 <p className="mt-4 sm:mt-6 font-display text-xl sm:text-2xl font-bold leading-snug tracking-tight md:text-[2rem]">
