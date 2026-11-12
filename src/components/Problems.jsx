@@ -445,8 +445,8 @@ export default function Problems() {
             >
               Describe your problem <span aria-hidden="true">↗</span>
             </motion.a>
-            <a className="problems-call" href={`tel:${brand.phoneRaw}`} data-hover>
-              Call {brand.phone}
+            <a className="problems-call" href={brand.whatsapp} target="_blank" rel="noreferrer" data-hover>
+              Chat on WhatsApp
             </a>
           </div>
         </motion.div>
