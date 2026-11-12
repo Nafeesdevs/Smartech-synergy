@@ -42,7 +42,6 @@ function LaptopObject({ reduceMotion }) {
                   </span>
                 ))}
               </div>
-              <span className="laptop-scan-line" />
             </div>
             <span className="laptop-screen-glow" />
           </div>
@@ -189,7 +188,6 @@ function ProblemCard({ problem, index, featured = false, active = false, onSelec
           <span /> Active diagnosis
         </div>
       )}
-      {active && <span className="problem-card__scan" aria-hidden="true" />}
 
       <AnimatePresence mode="wait" initial={false}>
         <motion.div

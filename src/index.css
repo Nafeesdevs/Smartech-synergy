@@ -350,24 +350,6 @@
   background: var(--problem-hot);
   box-shadow: 0 0 10px rgba(255,2,141,.7);
 }
-.problem-card__scan {
-  position: absolute;
-  z-index: 2;
-  top: 28%;
-  right: 8%;
-  left: 8%;
-  height: 1px;
-  opacity: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,2,141,.12), rgba(255,198,40,.78), rgba(255,2,141,.12), transparent);
-  box-shadow: 0 0 14px rgba(255,198,40,.24);
-  pointer-events: none;
-  animation: diagnostic-scan 4.6s cubic-bezier(.45,0,.55,1) infinite;
-}
-@keyframes diagnostic-scan {
-  0%, 12%, 100% { opacity: 0; transform: translateY(0); }
-  22%, 76% { opacity: .78; }
-  88% { opacity: 0; transform: translateY(19rem); }
-}
 .problem-card--featured { min-height: 41.75rem; height: 100%; }
 .problem-card--selectable {
   width: 100%;
@@ -415,7 +397,7 @@
 .problem-photo-wrap {
   position: absolute;
   z-index: 1;
-  inset: 31% 9% 23%;
+  inset: 22% 9% 31%;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,.12);
   border-radius: .55rem;
@@ -457,9 +439,9 @@
   pointer-events: none;
 }
 .problem-object-ground-shadow--hardware-breakdowns { right: 39%; bottom: 24%; left: 39%; height: 7%; filter: blur(6px); }
-.problem-object-ground-shadow--software-errors { right: 29%; bottom: 10%; left: 29%; height: 6%; filter: blur(6px); }
-.problem-object-ground-shadow--device-supplier { right: 32%; bottom: 20%; left: 32%; height: 7%; }
-.problem-object-ground-shadow--it-support { right: 35%; bottom: 19%; left: 35%; height: 7%; }
+.problem-object-ground-shadow--software-errors { right: 29%; bottom: 15%; left: 29%; height: 6%; filter: blur(6px); }
+.problem-object-ground-shadow--device-supplier { right: 32%; bottom: 24%; left: 32%; height: 7%; }
+.problem-object-ground-shadow--it-support { right: 35%; bottom: 24%; left: 35%; height: 7%; }
 .problem-object {
   position: absolute;
   z-index: 1;
@@ -477,7 +459,7 @@
 .problem-card__object {
   position: absolute;
   z-index: 1;
-  top: 39%;
+  top: 35%;
   right: 13%;
   left: 13%;
   height: 22%;
@@ -486,6 +468,12 @@
   perspective: 900px;
 }
 .problem-card__object--software-errors { top: 35%; }
+.problem-photo-wrap--object .problem-object--device-supplier .supply-object {
+  transform: translateY(-8%);
+}
+.problem-photo-wrap--object .problem-object--it-support .support-object {
+  transform: translateY(-8%);
+}
 .problem-object--compact .laptop-object { width: min(46%, 10rem); }
 .laptop-scene {
   position: absolute;
@@ -604,18 +592,6 @@
   animation-delay: calc(var(--diagnostic-index) * 1s);
 }
 .laptop-diagnostic-row svg { width: 48%; height: 48%; stroke-width: 1.9; }
-.laptop-scan-line {
-  position: absolute;
-  z-index: 3;
-  left: -4%;
-  right: -4%;
-  top: 0;
-  height: 1px;
-  opacity: .42;
-  background: linear-gradient(90deg, transparent, #111216 20% 80%, transparent);
-  box-shadow: 0 0 7px rgba(17,18,22,.28);
-  animation: laptop-scan 4.5s ease-in-out infinite;
-}
 .laptop-screen-glow {
   position: absolute;
   inset: 0;
@@ -628,7 +604,6 @@
   0%, 16%, 100% { color: #111216; background: rgba(255,255,255,.08); transform: translateY(0); }
   8% { color: #ffc628; background: #111216; transform: translateY(-5%); box-shadow: 0 4px 12px rgba(9,9,11,.24); }
 }
-@keyframes laptop-scan { 0%, 100% { top: 0; opacity: 0; } 15%, 85% { opacity: .42; } 50% { top: 100%; } }
 .laptop-hinge {
   position: absolute;
   z-index: 4;
@@ -824,7 +799,7 @@
 }
 .problem-photo-wrap--object .problem-object--software-errors .software-stage {
   width: 52%;
-  transform: translateY(10%);
+  transform: translateY(-8%);
 }
 .error-window {
   position: absolute;
@@ -1178,7 +1153,7 @@
     padding: 1.35rem;
   }
   .problems-desktop-explorer .problem-card--featured .problem-photo-wrap {
-    inset: 24% 8% 36%;
+    inset: 16% 8% 44%;
   }
   .problems-desktop-explorer .problem-card--featured .laptop-object {
     width: min(56%, 19rem);
@@ -1188,7 +1163,7 @@
   }
   .problems-desktop-explorer .problem-card--featured .software-stage {
     width: 46%;
-    transform: translateY(2%);
+    transform: translateY(0);
   }
   .problems-desktop-explorer .problem-card--featured .supply-box {
     width: min(22%, 6.25rem);
