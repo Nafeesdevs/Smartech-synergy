@@ -77,19 +77,20 @@ export default function Maintenance() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-10%' }}
                   transition={{ duration: 0.9, ease, delay: i * 0.05 }}
+                  whileHover={{ x: 6 }}
                   style={{ backfaceVisibility: 'hidden', willChange: 'transform, opacity' }}
                   className="group relative overflow-hidden border-b border-white/10"
                 >
-                  <span className="absolute inset-0 origin-left scale-x-0 bg-hot transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-x-100" />
+                  <span className="absolute inset-0 origin-left scale-x-0 bg-sun transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-x-100" />
 
                   <div className="relative grid grid-cols-[auto_1fr_auto] gap-x-4 px-2 py-6 sm:gap-x-6 sm:px-4 sm:py-8">
-                    <span className="font-display text-2xl font-black leading-none text-sun transition-colors duration-300 group-hover:text-ink sm:text-3xl">
+                    <span className="origin-center font-display text-2xl font-black leading-none text-volt transition-all duration-500 group-hover:scale-110 group-hover:text-volt group-hover:drop-shadow-[0_0_12px_rgba(25,107,228,0.5)] sm:text-3xl">
                       {item.n}
                     </span>
 
-                    <div className="min-w-0">
+                    <div className="min-w-0 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-x-1">
                       <div className="flex flex-wrap items-center gap-2.5">
-                        <span className="h-1 w-1 rounded-full bg-white/20 transition-colors duration-300 group-hover:bg-ink/20" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-volt shadow-[0_0_10px_rgba(25,107,228,0.65)] transition-all duration-500 group-hover:scale-125 group-hover:bg-volt" />
                         <span className="label text-white/40 transition-colors duration-300 group-hover:text-ink/55">
                           {item.tag}
                         </span>

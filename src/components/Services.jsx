@@ -23,8 +23,8 @@ function Card({ s, i, progress, total }) {
     >
       <div className="flex items-start justify-between">
         <span className="font-display text-6xl sm:text-7xl font-black leading-none tracking-tightest opacity-90 md:text-8xl">{s.n}</span>
-        <motion.span style={{ rotate: iconRot }} className="flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl border-2 border-current">
-          <Icon name={s.icon} className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8" />
+        <motion.span style={{ rotate: iconRot }} className="flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl border-2 border-current bg-transparent">
+          <Icon name={s.icon} className="h-6 w-6 text-hot sm:h-7 sm:w-7 md:h-8 md:w-8" />
         </motion.span>
       </div>
       {/* decorative dot matrix */}

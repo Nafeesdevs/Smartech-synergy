@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { AnimatePresence, LayoutGroup, motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
+import { AnimatePresence, LayoutGroup, motion, useInView, useReducedMotion } from 'framer-motion'
 import { brand, problems } from '../data/content'
 import Icon from './Icons'
 import { ease, SectionLabel } from './Motion'
@@ -23,8 +23,8 @@ function LaptopObject({ reduceMotion }) {
   return (
     <motion.div
       className="laptop-scene"
-      animate={reduceMotion ? undefined : { y: [0, -5, 0] }}
-      transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+      animate={reduceMotion ? { y: 0 } : { y: [0, -5, 0] }}
+      transition={reduceMotion ? { duration: 0.2 } : { duration: 6, repeat: Infinity, ease: 'easeInOut' }}
     >
       <div className="laptop-object">
         <div className="laptop-display">
@@ -127,8 +127,11 @@ function SupportObject() {
 }
 
 function ProblemObject({ id, compact = false, reduceMotion }) {
+  const objectRef = useRef(null)
+  const objectInView = useInView(objectRef, { margin: '160px 0px', amount: 0.1 })
+  const shouldAnimate = !reduceMotion && objectInView && !compact
   const objects = {
-    'slow-computers': <LaptopObject reduceMotion={reduceMotion} />,
+    'slow-computers': <LaptopObject reduceMotion={!shouldAnimate} />,
     'hardware-breakdowns': <HardwareObject />,
     'software-errors': <SoftwareObject />,
     'device-supplier': <SupplyObject />,
@@ -140,16 +143,19 @@ function ProblemObject({ id, compact = false, reduceMotion }) {
 
   return (
     <motion.div
-      className={`problem-object problem-object--${id} ${compact ? 'problem-object--compact' : ''}`}
-      animate={reduceMotion || id === 'slow-computers' ? undefined : objectMotion}
-      transition={{ duration: id === 'device-supplier' ? 7 : 5.5, repeat: Infinity, ease: 'easeInOut' }}
+      ref={objectRef}
+      className={`problem-object problem-object--${id} ${compact ? 'problem-object--compact' : ''} ${objectInView ? 'problem-object--in-view' : ''}`}
+      animate={shouldAnimate && id !== 'slow-computers' ? objectMotion : { y: 0, rotateY: 0 }}
+      transition={shouldAnimate && id !== 'slow-computers'
+        ? { duration: id === 'device-supplier' ? 7 : 5.5, repeat: Infinity, ease: 'easeInOut' }
+        : { duration: 0.2 }}
     >
       {objects[id]}
     </motion.div>
   )
 }
 
-function ProblemCard({ problem, index, featured = false, onSelect, reduceMotion }) {
+function ProblemCard({ problem, index, featured = false, active = false, onSelect, reduceMotion }) {
   const Card = featured ? motion.article : motion.button
 
   return (
@@ -167,7 +173,7 @@ function ProblemCard({ problem, index, featured = false, onSelect, reduceMotion 
       viewport={{ once: true, margin: '-8%' }}
       whileHover={reduceMotion ? undefined : { y: -6, scale: 1.006 }}
       transition={{ layout: { duration: 0.55, ease }, type: 'spring', stiffness: 280, damping: 24 }}
-      className={`problem-card group ${featured ? 'problem-card--featured' : 'problem-card--selectable'} ${problem.accent ? 'problem-card--accent' : ''}`}
+      className={`problem-card group ${featured ? 'problem-card--featured' : 'problem-card--selectable'} ${active ? 'problem-card--active' : ''} ${problem.accent ? 'problem-card--accent' : ''}`}
     >
       <motion.span
         className="problem-card__reveal-line"
@@ -177,6 +183,13 @@ function ProblemCard({ problem, index, featured = false, onSelect, reduceMotion 
         viewport={{ once: true }}
         transition={{ duration: 1.05, delay: 0.22 + index * 0.085, times: [0, 0.58, 1], ease }}
       />
+
+      {active && (
+        <div className="problem-card__active-badge" aria-hidden="true">
+          <span /> Active diagnosis
+        </div>
+      )}
+      {active && <span className="problem-card__scan" aria-hidden="true" />}
 
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
@@ -235,12 +248,34 @@ function ProblemCard({ problem, index, featured = false, onSelect, reduceMotion 
             exit={reduceMotion ? undefined : { opacity: 0, y: -10 }}
             transition={{ duration: reduceMotion ? 0 : 0.48, delay: featured && !reduceMotion ? 0.12 : 0, ease }}
           >
-            <p className="problem-card__help">Problem &amp; how we help</p>
-            <p className="problem-card__description">{problem.d}</p>
+            {featured ? (
+              <>
+                <p className="problem-card__help">Spot the signs early</p>
+                <div className="problem-card__diagnosis-grid">
+                  <div>
+                    <span>01 / You may notice</span>
+                    <p>{problem.symptom}</p>
+                  </div>
+                  <div>
+                    <span>02 / Why it matters</span>
+                    <p>{problem.impact}</p>
+                  </div>
+                  <div className="is-solution">
+                    <span>03 / Our next step</span>
+                    <p>{problem.solution}</p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="problem-card__help">Common warning sign</p>
+                <p className="problem-card__description">{problem.symptom}</p>
+              </>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
-      {!featured && <span className="problem-card__select" aria-hidden="true">↗</span>}
+      {!featured && <span className="problem-card__select" aria-hidden="true">Explore <b>↗</b></span>}
     </Card>
   )
 }
@@ -250,10 +285,8 @@ export default function Problems() {
   const activeCardRef = useRef(null)
   const reduceMotion = useReducedMotion()
   const [activeId, setActiveId] = useState(problems[0].id)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ['-8%', '10%'])
-  const headingY = useTransform(scrollYProgress, [0.08, 0.5], [32, 0])
   const activeProblem = problems.find((problem) => problem.id === activeId) ?? problems[0]
+  const activeIndex = Math.max(0, problems.findIndex((problem) => problem.id === activeProblem.id))
   const otherProblems = problems.filter((problem) => problem.id !== activeProblem.id)
 
   const selectProblem = (problemId) => {
@@ -278,11 +311,10 @@ export default function Problems() {
 
   return (
     <section ref={ref} id="problems" data-section className="problems-section">
-      <motion.div style={{ y: backgroundY }} className="problems-section__halo" aria-hidden="true" />
+      <div className="problems-section__halo" aria-hidden="true" />
 
       <div className="container-x relative z-10">
         <motion.div
-          style={{ y: headingY }}
           initial={reduceMotion ? false : { opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-15%' }}
@@ -305,7 +337,7 @@ export default function Problems() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: reduceMotion ? 0 : 0.9, delay: reduceMotion ? 0 : 0.08, ease }}
           >
-            Are your <span>devices</span> slowing you down?
+            Is slow tech <span>holding you back?</span>
           </motion.h2>
 
           <motion.p
@@ -315,29 +347,62 @@ export default function Problems() {
             viewport={{ once: true, margin: '-12%' }}
             transition={{ duration: reduceMotion ? 0 : 0.9, delay: reduceMotion ? 0 : 0.28, ease }}
           >
-            A slow workstation delays everyday tasks. A failed device interrupts an entire working day. When these issues recur, replacing equipment is not always the answer. We identify what needs repairing, upgrading, or replacing, so you can make informed decisions about your business technology.
+            Choose the problem affecting your PC, laptop, or device. We check the cause and recommend the right next step: repair, upgrade, replacement, or on-site support.
           </motion.p>
         </motion.div>
 
         <div className="problems-desktop-explorer">
-          <LayoutGroup id="problems-layout">
-            <div className="problems-layout">
-              <div ref={activeCardRef} aria-live="polite" className="h-full">
-                <ProblemCard problem={activeProblem} index={0} featured reduceMotion={reduceMotion} />
-              </div>
-              <div className="problems-grid" aria-label="Choose a problem to explore">
-                {otherProblems.map((problem, index) => (
-                  <ProblemCard
-                    key={problem.id}
-                    problem={problem}
-                    index={index + 1}
-                    onSelect={selectProblem}
-                    reduceMotion={reduceMotion}
-                  />
-                ))}
-              </div>
+          <div className="problems-console">
+            <div className="problems-console__status">
+              <div className="problems-console__live"><span /> Diagnostic desk online</div>
+              <div className="problems-console__readout">Business technology risk scan</div>
+              <div className="problems-console__count">Active signal <strong>{String(activeIndex + 1).padStart(2, '0')}</strong> / 05</div>
             </div>
-          </LayoutGroup>
+
+            <div className="problems-console__nav" role="tablist" aria-label="Select a technology problem">
+              {problems.map((problem) => {
+                const selected = problem.id === activeProblem.id
+                return (
+                  <button
+                    key={`signal-${problem.id}`}
+                    type="button"
+                    role="tab"
+                    aria-selected={selected}
+                    className={selected ? 'is-active' : ''}
+                    onClick={() => selectProblem(problem.id)}
+                  >
+                    <span>{problem.n}</span>
+                    <em>{problem.category}</em>
+                  </button>
+                )
+              })}
+            </div>
+
+            <LayoutGroup id="problems-layout">
+              <div className="problems-layout">
+                <div ref={activeCardRef} aria-live="polite" className="h-full">
+                  <ProblemCard problem={activeProblem} index={0} featured active reduceMotion={reduceMotion} />
+                </div>
+                <div className="problems-grid" aria-label="Choose a problem to explore">
+                  {otherProblems.map((problem, index) => (
+                    <ProblemCard
+                      key={problem.id}
+                      problem={problem}
+                      index={index + 1}
+                      onSelect={selectProblem}
+                      reduceMotion={reduceMotion}
+                    />
+                  ))}
+                </div>
+              </div>
+            </LayoutGroup>
+
+            <div className="problems-console__hint" aria-hidden="true">
+              <span>Select a signal to inspect</span>
+              <i />
+              <span>Diagnosis → practical next step</span>
+            </div>
+          </div>
         </div>
 
         <div className="problems-mobile-list" aria-label="Problems we solve">
@@ -359,21 +424,31 @@ export default function Problems() {
           viewport={{ once: true }}
           transition={{ duration: reduceMotion ? 0 : 0.75, delay: reduceMotion ? 0 : 0.2, ease }}
         >
-          <p className="problems-location">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.1 7-13a7 7 0 1 0-14 0c0 6.9 7 13 7 13Zm0-9.5A3.5 3.5 0 1 1 12 5a3.5 3.5 0 0 1 0 7.5Z" /></svg>
-            Kuala Lumpur &amp; Selangor
-          </p>
-          <motion.a
-            href={brand.whatsapp}
-            target="_blank"
-            rel="noreferrer"
-            className="problems-cta"
-            data-hover
-            whileHover={{ scale: 1.025 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            Discuss your IT needs <span aria-hidden="true">↗</span>
-          </motion.a>
+          <div className="problems-footer__copy">
+            <p className="problems-footer__eyebrow"><span /> Recognise one of these signs?</p>
+            <h3>You do not need to diagnose it yourself.</h3>
+            <p>Tell us what your PC, laptop, or device is doing. We will help you understand the problem and the most practical next step.</p>
+            <p className="problems-location">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.1 7-13a7 7 0 1 0-14 0c0 6.9 7 13 7 13Zm0-9.5A3.5 3.5 0 1 1 12 5a3.5 3.5 0 0 1 0 7.5Z" /></svg>
+              Kuala Lumpur &amp; Selangor
+            </p>
+          </div>
+          <div className="problems-footer__actions">
+            <motion.a
+              href={brand.whatsapp}
+              target="_blank"
+              rel="noreferrer"
+              className="problems-cta"
+              data-hover
+              whileHover={{ scale: 1.025 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Describe your problem <span aria-hidden="true">↗</span>
+            </motion.a>
+            <a className="problems-call" href={`tel:${brand.phoneRaw}`} data-hover>
+              Call {brand.phone}
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>
