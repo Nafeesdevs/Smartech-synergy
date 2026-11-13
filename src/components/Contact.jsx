@@ -74,7 +74,7 @@ export function Contact() {
           </div>
 
           <Reveal className="lg:col-span-7" delay={0.1}>
-            <form onSubmit={submit} className="relative rounded-[28px] bg-ink p-5 sm:p-7 ring-1 ring-white/10 md:p-12">
+            <form onSubmit={submit} className="relative rounded-[28px] bg-ink p-5 sm:p-7 ring-1 ring-white/10 md:p-12" aria-describedby="consultation-note">
               <div className="label mb-4 flex items-center justify-between text-white/40">
                 <span>Request a free consultation</span>
                 <span className="flex items-center gap-2 text-hot">
@@ -82,19 +82,20 @@ export function Contact() {
                 </span>
               </div>
               <div className="grid gap-2 sm:grid-cols-2 sm:gap-x-8">
-                <input required className={field} placeholder="Your name" value={form.name} onChange={set('name')} aria-label="Your name" />
-                <input className={field} placeholder="Company" value={form.company} onChange={set('company')} aria-label="Company" />
-                <input required className={field} placeholder="Phone / WhatsApp" value={form.phone} onChange={set('phone')} aria-label="Phone" />
-                <select className={`${field} appearance-none`} value={form.need} onChange={set('need')} aria-label="Service needed">
+                <div><label className="sr-only" htmlFor="consultation-name">Your name</label><input id="consultation-name" name="name" type="text" autoComplete="name" required className={field} placeholder="Your name" value={form.name} onChange={set('name')} /></div>
+                <div><label className="sr-only" htmlFor="consultation-company">Company</label><input id="consultation-company" name="organization" type="text" autoComplete="organization" className={field} placeholder="Company" value={form.company} onChange={set('company')} /></div>
+                <div><label className="sr-only" htmlFor="consultation-phone">Phone or WhatsApp number</label><input id="consultation-phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" required className={field} placeholder="Phone / WhatsApp" value={form.phone} onChange={set('phone')} /></div>
+                <div><label className="sr-only" htmlFor="consultation-service">Service needed</label><select id="consultation-service" name="service" className={`${field} appearance-none`} value={form.need} onChange={set('need')}>
                   {services.map((s) => (
                     <option key={s.t} className="bg-ink">{s.t}</option>
                   ))}
                   <option className="bg-ink">Buy devices / products</option>
-                </select>
+                </select></div>
               </div>
-              <textarea rows={4} className={`${field} mt-2 resize-none`} placeholder="Tell us what you need…" value={form.msg} onChange={set('msg')} aria-label="Message" />
+              <label className="sr-only" htmlFor="consultation-message">Tell us what you need</label>
+              <textarea id="consultation-message" name="message" rows={4} className={`${field} mt-2 resize-none`} placeholder="Tell us what you need…" value={form.msg} onChange={set('msg')} />
               <div className="mt-10 flex flex-wrap items-center justify-between gap-6">
-                <p className="label max-w-[16rem] text-white/40">No obligations. We usually reply within a few hours.</p>
+                <p id="consultation-note" className="label max-w-[16rem] text-white/40">No obligations. We usually reply within a few hours.</p>
                 <Magnetic>
                   <button type="submit" className="btn group bg-hot text-white shadow-[0_14px_34px_rgba(255,2,141,0.22)]">
                     <span className="relative z-10">Send request</span>
@@ -125,7 +126,7 @@ export function Footer({ lenis }) {
             <p className="mt-4 sm:mt-6 max-w-sm text-sm sm:text-base text-white/55 leading-relaxed">Business IT support and device supply across Kuala Lumpur and Selangor. Repairs, upgrades and office setups, with on-site assistance throughout the Klang Valley.</p>
           </div>
           <div>
-            <div className="label text-white/40">Services</div>
+            <div className="label text-white/60">Services</div>
             <ul className="mt-3 sm:mt-4 space-y-2 text-sm sm:text-base text-white/70">
               {services.map((s) => (
                 <li key={s.t}>{s.t}</li>
@@ -133,7 +134,7 @@ export function Footer({ lenis }) {
             </ul>
           </div>
           <div>
-            <div className="label text-white/40">Contact</div>
+            <div className="label text-white/60">Contact</div>
             <ul className="mt-3 sm:mt-4 space-y-2 text-sm sm:text-base text-white/70">
               <li><a className="hover:text-sun" href={`tel:${brand.phoneRaw}`}>{brand.phone}</a></li>
               <li><a className="break-all hover:text-sun" href={`mailto:${brand.email}`}>{brand.email}</a></li>
@@ -160,7 +161,7 @@ export function Footer({ lenis }) {
           Smartech<span className="ml-[0.005em] inline-block h-[0.26em] w-[0.26em] bg-sun align-[0.08em]" style={{ clipPath: 'polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%)' }} aria-hidden="true" />
         </div>
       </motion.div>
-      <div className="container-x label flex flex-col justify-between gap-2 py-6 text-white/40 sm:flex-row">
+      <div className="container-x label flex flex-col justify-between gap-2 py-6 text-white/60 sm:flex-row">
         <span>© {new Date().getFullYear()} Smartech Synergys. All rights reserved.</span>
         <span>PC · Laptop · Phone · Custom Builds · On-site Service</span>
       </div>

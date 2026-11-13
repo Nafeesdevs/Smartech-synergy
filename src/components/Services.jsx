@@ -31,7 +31,7 @@ function Card({ s, i, progress, total }) {
       <div className="dot-grid pointer-events-none absolute -right-10 top-1/3 h-48 w-64 text-hot opacity-100 transition-transform duration-700 group-hover:translate-x-[-20px]" />
       <div className="relative">
         <h3 className="font-display text-2xl sm:text-3xl font-black uppercase leading-[0.95] tracking-tight md:text-[2.6rem]">{s.t}</h3>
-        <p className="mt-3 sm:mt-4 max-w-sm text-sm sm:text-[15px] leading-relaxed opacity-75">{s.d}</p>
+        <p className="mt-3 sm:mt-4 max-w-sm text-sm sm:text-[15px] leading-relaxed">{s.d}</p>
         <div className="mt-5 sm:mt-6 flex flex-wrap gap-1.5 sm:gap-2">
           {s.tags.map((t) => (
             <span key={t} className="label rounded-full border-2 border-hot bg-hot/10 px-2.5 py-1 text-[10px] shadow-[0_0_12px_rgba(255,2,141,0.28)] transition-all duration-300 group-hover:bg-hot/15 group-hover:shadow-[0_0_18px_rgba(255,2,141,0.38)] sm:px-3 sm:py-1.5 sm:text-[11px]">
@@ -105,7 +105,7 @@ export default function Services() {
             <p className="mt-6 sm:mt-8 max-w-sm text-sm sm:text-base leading-relaxed text-white/60">
             Device repairs, performance upgrades, office setups, custom PC builds and on-site support. Our five core services address the practical needs of your workplace, whether you are resolving an immediate fault or preparing for your next stage of growth.
             </p>
-            <div className="label mt-8 sm:mt-10 flex items-center gap-3 text-white/40">
+            <div className="label mt-8 sm:mt-10 flex items-center gap-3 text-white/60">
               Scroll <span className="inline-block h-px w-12 sm:w-16 bg-white/30" /> →
             </div>
           </div>

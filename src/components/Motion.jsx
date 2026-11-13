@@ -26,7 +26,8 @@ export function KineticText({ text, className = '', delay = 0, stagger = 0.035, 
   )
   const Tag = motion[as]
   return (
-    <Tag ref={ref} className={className} aria-label={text}>
+    <Tag ref={ref} className={className}>
+      <span className="sr-only">{text}</span>
       {text.split(' ').map((word, wi, arr) => {
         const offset = arr.slice(0, wi).join(' ').length + (wi ? 1 : 0)
         return (

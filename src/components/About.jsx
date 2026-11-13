@@ -1,10 +1,12 @@
 import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'framer-motion'
 import Icon from './Icons'
 import { MaskLines, ScrollWords, Reveal, SectionLabel, Parallax, ease } from './Motion'
 
 export function RingText({ text, size = 220, className = '', dark = false, speed = 1, accentClass = 'bg-hot shadow-[0_0_24px_rgba(255,2,141,0.28)]' }) {
   const ref = useRef(null)
+  const inView = useInView(ref, { margin: '120px 0px' })
+  const reduceMotion = useReducedMotion()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const rot = useTransform(scrollYProgress, [0, 1], [0, 360 * speed])
   return (
@@ -19,8 +21,8 @@ export function RingText({ text, size = 220, className = '', dark = false, speed
       </motion.svg>
       <motion.span
         className={`absolute left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2 rounded-full ${accentClass}`}
-        animate={{ scale: [1, 1.25, 1] }}
-        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ scale: inView && !reduceMotion ? [1, 1.25, 1] : 1 }}
+        transition={{ duration: 1.8, repeat: inView && !reduceMotion ? Infinity : 0, ease: 'easeInOut' }}
       />
     </div>
   )

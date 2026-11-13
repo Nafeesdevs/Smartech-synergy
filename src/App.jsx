@@ -61,11 +61,17 @@ export default function App() {
 
   return (
     <div className="grain">
+      <a
+        href="#main-content"
+        className="fixed left-4 top-4 z-[120] -translate-y-24 rounded-full bg-sun px-5 py-3 font-display text-sm font-bold text-ink shadow-xl transition-transform focus:translate-y-0"
+      >
+        Skip to main content
+      </a>
       <Preloader onDone={onDone} />
       <Cursor />
       <Hud />
       <Nav lenis={lenis} />
-      <main>
+      <main id="main-content" tabIndex="-1">
         <Hero ready={ready} lenis={lenis} />
         <MarqueeBand a={marqueeA} b={marqueeB} />
         <About />

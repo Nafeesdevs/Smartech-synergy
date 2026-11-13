@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence, useScroll, useSpring, useMotionValue, useMotionValueEvent } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useSpring, useMotionValue, useMotionValueEvent, useReducedMotion } from 'framer-motion'
 import { ease } from './Motion'
 import { brand, nav } from '../data/content'
 import Icon from './Icons'
@@ -7,17 +7,18 @@ import Icon from './Icons'
 const navScrollEase = (t) =>
   t < 0.5 ? 8 * t ** 4 : 1 - ((-2 * t + 2) ** 4) / 2
 
-export function Logo({ className = '', dark = false }) {
+export function Logo({ className = '', dark = false, priority = false }) {
   return (
     <span className={`inline-flex items-center select-none ${className}`}>
       <img
         src={dark ? '/logo-dark.png' : '/logo.png'}
-        alt="Smartech"
+        alt="Smartech Synergys"
         width="268"
         height="90"
         className="h-[1.45em] w-auto max-w-none object-contain"
         decoding="async"
-        fetchPriority="high"
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
         draggable={false}
       />
     </span>
@@ -27,10 +28,15 @@ export function Logo({ className = '', dark = false }) {
 /* Intro: dot → orbiting dots → rotating square → wordmark (mirrors the reel's opening & closing beats) */
 export function Preloader({ onDone }) {
   const [phase, setPhase] = useState(0)
+  const reduceMotion = useReducedMotion()
   useEffect(() => {
+    if (reduceMotion) {
+      setPhase(4)
+      return undefined
+    }
     const t = [setTimeout(() => setPhase(1), 220), setTimeout(() => setPhase(2), 620), setTimeout(() => setPhase(3), 1020), setTimeout(() => setPhase(4), 1650)]
     return () => t.forEach(clearTimeout)
-  }, [])
+  }, [reduceMotion])
   useEffect(() => {
     if (phase === 4) onDone?.()
   }, [phase, onDone])
@@ -39,6 +45,7 @@ export function Preloader({ onDone }) {
     <AnimatePresence>
       {phase < 4 && (
         <motion.div
+          aria-hidden="true"
           className="fixed inset-0 z-[100] flex items-center justify-center bg-ink"
           exit={{ clipPath: 'inset(0 0 100% 0)' }}
           transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
@@ -160,12 +167,56 @@ export function Nav({ lenis }) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const [logoTurns, setLogoTurns] = useState(0)
+  const menuButtonRef = useRef(null)
+  const menuRef = useRef(null)
+  const hiddenRef = useRef(false)
+  const scrolledRef = useRef(false)
   const { scrollY } = useScroll()
   useMotionValueEvent(scrollY, 'change', (v) => {
     const prev = scrollY.getPrevious() ?? 0
-    setHidden(v > prev && v > 200 && !open)
-    setScrolled(v > 40)
+    const nextHidden = v > prev && v > 200 && !open
+    const nextScrolled = v > 40
+    if (nextHidden !== hiddenRef.current) {
+      hiddenRef.current = nextHidden
+      setHidden(nextHidden)
+    }
+    if (nextScrolled !== scrolledRef.current) {
+      scrolledRef.current = nextScrolled
+      setScrolled(nextScrolled)
+    }
   })
+  useEffect(() => {
+    if (!open) return undefined
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    lenis?.current?.stop()
+    requestAnimationFrame(() => menuRef.current?.querySelector('a')?.focus())
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setOpen(false)
+        return
+      }
+      if (event.key !== 'Tab') return
+      const focusable = [...menuRef.current.querySelectorAll('a[href], button:not([disabled])')]
+      if (!focusable.length) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.body.style.overflow = previousOverflow
+      lenis?.current?.start()
+      menuButtonRef.current?.focus()
+    }
+  }, [open, lenis])
   const go = (e, href) => {
     e.preventDefault()
     setOpen(false)
@@ -194,7 +245,7 @@ export function Nav({ lenis }) {
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             style={{ transformPerspective: 800, transformStyle: 'preserve-3d' }}
           >
-            <Logo className="text-2xl sm:text-3xl" />
+            <Logo className="text-2xl sm:text-3xl" priority />
           </motion.a>
           <nav className="hidden items-center gap-8 lg:flex">
             {nav.map((n) => (
@@ -208,7 +259,14 @@ export function Nav({ lenis }) {
             <a href="#contact" onClick={(e) => go(e, '#contact')} className="btn btn-sun hidden !py-3 sm:inline-flex">
               Free Consultation <Icon name="arrowUR" className="h-4 w-4" />
             </a>
-            <button onClick={() => setOpen((o) => !o)} className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 lg:hidden" aria-label="Menu">
+            <button
+              ref={menuButtonRef}
+              onClick={() => setOpen((o) => !o)}
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 lg:hidden"
+              aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={open}
+              aria-controls="mobile-navigation"
+            >
               <Icon name={open ? 'x' : 'bolt'} className="h-5 w-5" />
             </button>
           </div>
@@ -217,6 +275,11 @@ export function Nav({ lenis }) {
       <AnimatePresence>
         {open && (
           <motion.div
+            ref={menuRef}
+            id="mobile-navigation"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation"
             className="fixed inset-0 z-40 flex flex-col justify-between overflow-y-auto bg-sun p-6 pb-10 pt-24 text-ink lg:hidden"
             initial={{ clipPath: 'circle(0% at 92% 6%)' }}
             animate={{ clipPath: 'circle(150% at 92% 6%)' }}
@@ -258,6 +321,8 @@ export function Cursor() {
   const [hover, setHover] = useState(false)
   const [cursorTone, setCursorTone] = useState('default')
   const [enabled, setEnabled] = useState(false)
+  const hoverRef = useRef(false)
+  const toneRef = useRef('default')
   useEffect(() => {
     if (!window.matchMedia('(pointer: fine)').matches) return
     setEnabled(true)
@@ -265,8 +330,16 @@ export function Cursor() {
     const move = (e) => {
       x.set(e.clientX)
       y.set(e.clientY)
-      setHover(!!e.target.closest('a,button,[data-hover]'))
-      setCursorTone(e.target.closest('[data-cursor]')?.dataset.cursor || 'default')
+      const nextHover = !!e.target.closest('a,button,[data-hover]')
+      const nextTone = e.target.closest('[data-cursor]')?.dataset.cursor || 'default'
+      if (nextHover !== hoverRef.current) {
+        hoverRef.current = nextHover
+        setHover(nextHover)
+      }
+      if (nextTone !== toneRef.current) {
+        toneRef.current = nextTone
+        setCursorTone(nextTone)
+      }
     }
     window.addEventListener('mousemove', move)
     return () => {

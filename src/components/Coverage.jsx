@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { useMemo, useRef } from 'react'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { SectionLabel, MaskLines, Reveal, ease } from './Motion'
 import Icon from './Icons'
 
@@ -28,17 +29,20 @@ function toScreen(bearing, ring) {
 }
 
 function Radar() {
+  const ref = useRef(null)
+  const inView = useInView(ref, { margin: '150px 0px', amount: 0.05 })
+  const reduceMotion = useReducedMotion()
   // 4 Concentric circles radiating outward from Sunway Visio Tower
   const rings = [0.22, 0.44, 0.64, 0.82]
 
-  const particles = Array.from({ length: 160 }, (_, i) => {
+  const particles = useMemo(() => Array.from({ length: 160 }, (_, i) => {
     const r = 0.14 + ((Math.sin(i * 91.7) + 1) / 2) * 0.84
     const ang = i * 2.399
     return { x: 50 + Math.cos(ang) * r * 50, y: 50 + Math.sin(ang) * r * 50, s: 1 + ((i * 7) % 3) * 0.5 }
-  })
+  }), [])
 
   return (
-    <div className="relative mx-auto aspect-square w-[94%] max-w-[620px] select-none sm:w-full">
+    <div ref={ref} className="relative mx-auto aspect-square w-[94%] max-w-[620px] select-none sm:w-full">
       {/* 4 Concentric distance rings radiating from Cheras HQ */}
       {rings.map((r) => (
         <span
@@ -52,15 +56,15 @@ function Radar() {
       <motion.div
         className="pointer-events-none absolute inset-0 rounded-full"
         style={{ background: 'conic-gradient(from 0deg, rgba(244,188,33,.28), transparent 22%)' }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+        animate={{ rotate: inView && !reduceMotion ? 360 : 0 }}
+        transition={{ duration: 6, repeat: inView && !reduceMotion ? Infinity : 0, ease: 'linear' }}
       />
 
       {/* Orbiting particles */}
       <motion.div
         className="pointer-events-none absolute inset-0"
-        animate={{ rotate: -360 }}
-        transition={{ duration: 130, repeat: Infinity, ease: 'linear' }}
+        animate={{ rotate: inView && !reduceMotion ? -360 : 0 }}
+        transition={{ duration: 130, repeat: inView && !reduceMotion ? Infinity : 0, ease: 'linear' }}
       >
         {particles.map((p, i) => (
           <span
@@ -73,7 +77,7 @@ function Radar() {
 
       {/* Center Location Map Pin with pulsing radar glow */}
       <div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
-        <span className="absolute inset-0 animate-ping rounded-full bg-sun/60" />
+        <span className={`${inView && !reduceMotion ? 'animate-ping' : ''} absolute inset-0 rounded-full bg-sun/60`} />
         <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-sun text-ink shadow-[0_0_24px_rgba(244,188,33,0.7)] sm:h-12 sm:w-12 sm:shadow-[0_0_30px_rgba(244,188,33,0.7)]">
           <Icon name="pin" className="h-4 w-4 sm:h-5 sm:w-5" />
         </span>

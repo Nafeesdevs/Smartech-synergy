@@ -29,6 +29,8 @@ function FaqItem({ item, index, isOpen, toggle, open }) {
         type="button"
         className="relative z-10 flex w-full items-start gap-4 p-5 text-left sm:gap-6 sm:p-7 md:p-8"
         aria-expanded={isOpen}
+        aria-controls={`faq-panel-${index}`}
+        id={`faq-button-${index}`}
       >
         <span className={`font-display text-2xl font-black leading-none transition-colors duration-300 sm:text-3xl ${isOpen ? 'text-ink' : 'text-sun group-hover:text-ink'}`}>
           0{index + 1}
@@ -39,9 +41,9 @@ function FaqItem({ item, index, isOpen, toggle, open }) {
             <span className={`h-1 w-1 rounded-full transition-colors duration-300 ${isOpen ? 'bg-ink/20' : 'bg-white/20 group-hover:bg-ink/20'}`} />
             <span className={`label transition-colors duration-300 ${isOpen ? 'text-ink/60' : 'text-white/40 group-hover:text-ink/60'}`}>{item.tag}</span>
           </div>
-          <h3 className={`mt-3 font-display text-base font-bold leading-tight transition-colors duration-300 sm:text-xl md:text-2xl ${isOpen ? 'text-ink' : 'text-white group-hover:text-ink'}`}>
+          <span className={`mt-3 block font-display text-base font-bold leading-tight transition-colors duration-300 sm:text-xl md:text-2xl ${isOpen ? 'text-ink' : 'text-white group-hover:text-ink'}`}>
             {item.q}
-          </h3>
+          </span>
         </div>
 
         <span
@@ -59,6 +61,9 @@ function FaqItem({ item, index, isOpen, toggle, open }) {
         {isOpen && (
           <motion.div
             key="content"
+            id={`faq-panel-${index}`}
+            role="region"
+            aria-labelledby={`faq-button-${index}`}
             initial={{ height: 0, opacity: 0, y: -6 }}
             animate={{ height: 'auto', opacity: 1, y: 0 }}
             exit={{ height: 0, opacity: 0, y: -4 }}

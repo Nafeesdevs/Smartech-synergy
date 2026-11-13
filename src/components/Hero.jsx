@@ -55,16 +55,14 @@ export default function Hero({ ready, lenis }) {
             <span className="text-hot">Kuala Lumpur &amp; Selangor</span>
           </motion.div>
 
-          {ready && (
-            <h1 className="display text-[14vw] sm:text-[11vw] lg:text-[9.4vw]">
-              <KineticText text="Tech that" className="block" delay={0.1} />
-              <span className="relative inline-block px-[0.12em] text-sun drop-shadow-[0_0_32px_rgba(244,188,33,0.16)]">
-                <KineticText text="never skips" delay={0.35} chaos={1.4} />
-                <Brackets size={22} color="#F4BC21" />
-              </span>
-              <KineticText text="a beat." className="block" delay={0.7} />
-            </h1>
-          )}
+          <h1 className="display text-[14vw] sm:text-[11vw] lg:text-[9.4vw]">
+            <KineticText key={`tech-${ready}`} text="Tech that" className="block" delay={ready ? 0.1 : 0} />
+            <span className="relative inline-block px-[0.12em] text-sun drop-shadow-[0_0_32px_rgba(244,188,33,0.16)]">
+              <KineticText key={`never-${ready}`} text="never skips" delay={ready ? 0.35 : 0} chaos={1.4} />
+              <Brackets size={22} color="#F4BC21" />
+            </span>
+            <KineticText key={`beat-${ready}`} text="a beat." className="block" delay={ready ? 0.7 : 0} />
+          </h1>
 
           <motion.div
             className="mt-8 sm:mt-10 flex max-w-2xl flex-col gap-8 sm:flex-row sm:items-end sm:justify-between lg:max-w-none"
