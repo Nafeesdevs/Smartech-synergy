@@ -34,7 +34,7 @@ export function Preloader({ onDone }) {
       setPhase(4)
       return undefined
     }
-    const t = [setTimeout(() => setPhase(1), 220), setTimeout(() => setPhase(2), 620), setTimeout(() => setPhase(3), 1020), setTimeout(() => setPhase(4), 1650)]
+    const t = [setTimeout(() => setPhase(1), 180), setTimeout(() => setPhase(2), 500), setTimeout(() => setPhase(3), 820), setTimeout(() => setPhase(4), 1350)]
     return () => t.forEach(clearTimeout)
   }, [reduceMotion])
   useEffect(() => {
@@ -42,15 +42,16 @@ export function Preloader({ onDone }) {
   }, [phase, onDone])
 
   return (
-    <AnimatePresence>
-      {phase < 4 && (
-        <motion.div
-          aria-hidden="true"
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-ink"
-          exit={{ clipPath: 'inset(0 0 100% 0)' }}
-          transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
-          initial={{ clipPath: 'inset(0 0 0% 0)' }}
-        >
+    <motion.div
+      aria-hidden="true"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-ink"
+      initial={{ clipPath: 'inset(0 0 0% 0)' }}
+      animate={phase < 4
+        ? { clipPath: 'inset(0 0 0% 0)', visibility: 'visible' }
+        : { clipPath: 'inset(0 0 100% 0)', transitionEnd: { visibility: 'hidden' } }}
+      transition={{ duration: reduceMotion ? 0 : 0.45, ease: [0.76, 0, 0.24, 1] }}
+      style={{ pointerEvents: phase < 4 ? 'auto' : 'none' }}
+    >
           <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-2 font-mono text-[8px] font-semibold uppercase tracking-[0.12em] text-white/50 sm:inset-x-6 sm:top-6 sm:text-[10px] sm:tracking-wider">
             <span className="whitespace-nowrap">Smartech Synergys · IT Solutions</span>
             <span className="whitespace-nowrap text-right">KL · SEL · 24H</span>
@@ -100,9 +101,7 @@ export function Preloader({ onDone }) {
               </motion.div>
             )}
           </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    </motion.div>
   )
 }
 

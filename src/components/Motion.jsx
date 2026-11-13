@@ -24,7 +24,7 @@ export function KineticText({ text, className = '', delay = 0, stagger = 0.035, 
       })),
     [text]
   )
-  const Tag = motion[as]
+  const Tag = as
   return (
     <Tag ref={ref} className={className}>
       <span className="sr-only">{text}</span>
@@ -35,21 +35,18 @@ export function KineticText({ text, className = '', delay = 0, stagger = 0.035, 
             {word.split('').map((ch, ci) => {
               const L = letters[offset + ci]
               return (
-                <motion.span
+                <span
                   key={ci}
-                  className="inline-block will-change-transform"
-                  initial={{
-                    opacity: 0,
-                    x: L.x * 120 * chaos,
-                    y: -60 * chaos + L.y * 140 * chaos,
-                    rotate: L.r * 70 * chaos,
-                    filter: 'blur(10px)',
+                  className={`kinetic-letter ${inView ? 'kinetic-letter--visible' : ''}`}
+                  style={{
+                    '--kinetic-x': `${L.x * 120 * chaos}px`,
+                    '--kinetic-y': `${-60 * chaos + L.y * 140 * chaos}px`,
+                    '--kinetic-r': `${L.r * 70 * chaos}deg`,
+                    '--kinetic-delay': `${delay + (offset + ci) * stagger}s`,
                   }}
-                  animate={inView ? { opacity: 1, x: 0, y: 0, rotate: 0, filter: 'blur(0px)' } : {}}
-                  transition={{ duration: 1.1, ease, delay: delay + (offset + ci) * stagger }}
                 >
                   {ch}
-                </motion.span>
+                </span>
               )
             })}
             {wi < arr.length - 1 && <span className="inline-block">&nbsp;</span>}

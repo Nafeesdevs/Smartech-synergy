@@ -11,6 +11,7 @@ const scalePath = (w, h) =>
 export default function Process() {
   const ref = useRef(null)
   const pathRef = useRef(null)
+  const activeRef = useRef(-1)
   const dotX = useMotionValue(500)
   const dotY = useMotionValue(0)
   const [box, setBox] = useState({ w: 1000, h: 1300 })
@@ -27,7 +28,10 @@ export default function Process() {
   const dash = useTransform(p, (v) => 1 - Math.max(0, Math.min(1, v)))
 
   useEffect(() => {
-    const ro = new ResizeObserver(([e]) => setBox({ w: e.contentRect.width, h: e.contentRect.height }))
+    const ro = new ResizeObserver(([e]) => {
+      const { width: w, height: h } = e.contentRect
+      setBox((current) => current.w === w && current.h === h ? current : { w, h })
+    })
     ro.observe(ref.current)
     return () => ro.disconnect()
   }, [])
@@ -46,7 +50,11 @@ export default function Process() {
     const pt = pathRef.current.getPointAtLength(Math.max(0, Math.min(1, v)) * len)
     dotX.set(pt.x)
     dotY.set(pt.y)
-    setActive(Math.floor(v * steps.length - 0.15))
+    const nextActive = Math.floor(v * steps.length - 0.15)
+    if (nextActive !== activeRef.current) {
+      activeRef.current = nextActive
+      setActive(nextActive)
+    }
   })
 
   return (
@@ -86,7 +94,7 @@ export default function Process() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.15 }}
                     transition={{ duration: 0.9, ease }}
-                    style={{ backfaceVisibility: 'hidden', willChange: 'transform, opacity' }}
+                    style={{ backfaceVisibility: 'hidden' }}
                     className={`relative w-[84%] sm:w-[48%] md:w-[45%] rounded-3xl border p-6 sm:p-7 md:p-8 md:backdrop-blur-md transition-[border-color,background-color,box-shadow] duration-700 ease-[cubic-bezier(.16,1,.3,1)] ${on ? 'border-sun/60 bg-steel/95 shadow-[0_10px_30px_rgba(244,188,33,0.08)]' : 'border-white/10 bg-coal/85'}`}
                   >
                     <div className="flex items-center gap-3 sm:gap-4">

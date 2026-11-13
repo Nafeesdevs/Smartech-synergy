@@ -1,20 +1,42 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, LayoutGroup, motion, useInView, useReducedMotion } from 'framer-motion'
 import { brand, problems } from '../data/content'
 import Icon from './Icons'
 import { ease, SectionLabel } from './Motion'
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 64, scale: 0.972, filter: 'blur(10px)' },
+  hidden: { opacity: 0, y: 64, scale: 0.972 },
   visible: ({ index, reduceMotion }) => ({
     opacity: 1,
     y: 0,
     scale: 1,
-    filter: 'blur(0px)',
     transition: reduceMotion
       ? { duration: 0 }
       : { duration: 0.95, delay: 0.12 + index * 0.085, ease },
   }),
+}
+
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches)
+
+  useEffect(() => {
+    const media = window.matchMedia(query)
+    const update = () => setMatches(media.matches)
+    update()
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [query])
+
+  return matches
+}
+
+function useLowPowerMode() {
+  const [lowPower] = useState(() => {
+    const limitedCpu = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4
+    const limitedMemory = navigator.deviceMemory && navigator.deviceMemory <= 4
+    return Boolean(limitedCpu || limitedMemory || navigator.connection?.saveData)
+  })
+  return lowPower
 }
 
 const laptopKeys = Array.from({ length: 54 })
@@ -164,14 +186,14 @@ function ProblemCard({ problem, index, featured = false, active = false, onSelec
         onClick: () => onSelect(problem.id),
       })}
       aria-label={featured ? `${problem.t}. ${problem.symptom}` : `Show ${problem.t}. ${problem.symptom}`}
-      layout="position"
+      layout={reduceMotion ? false : 'position'}
       custom={{ index, reduceMotion }}
       variants={cardVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-8%' }}
-      whileHover={reduceMotion ? undefined : { y: -6, scale: 1.006 }}
-      transition={{ layout: { duration: 0.55, ease }, type: 'spring', stiffness: 280, damping: 24 }}
+      whileHover={reduceMotion ? undefined : { y: -6, transition: { duration: 0.22, ease } }}
+      transition={{ layout: reduceMotion ? { duration: 0 } : { duration: 0.55, ease }, type: 'spring', stiffness: 280, damping: 24 }}
       className={`problem-card group ${featured ? 'problem-card--featured' : 'problem-card--selectable'} ${active ? 'problem-card--active' : ''} ${problem.accent ? 'problem-card--accent' : ''}`}
     >
       <motion.span
@@ -193,9 +215,9 @@ function ProblemCard({ problem, index, featured = false, active = false, onSelec
         <motion.div
           key={`copy-${problem.id}`}
           className="relative z-10"
-          initial={reduceMotion ? false : { opacity: 0, y: 18, filter: 'blur(6px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          exit={reduceMotion ? undefined : { opacity: 0, y: -12, filter: 'blur(4px)' }}
+          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reduceMotion ? undefined : { opacity: 0, y: -12 }}
           transition={{ duration: reduceMotion ? 0 : 0.52, ease }}
         >
           <p className="problem-card__eyebrow">
@@ -282,6 +304,9 @@ export default function Problems() {
   const ref = useRef(null)
   const activeCardRef = useRef(null)
   const reduceMotion = useReducedMotion()
+  const isMobile = useMediaQuery('(max-width: 767px)')
+  const lowPower = useLowPowerMode()
+  const simplifiedMotion = reduceMotion || lowPower
   const [activeId, setActiveId] = useState(problems[0].id)
   const activeProblem = problems.find((problem) => problem.id === activeId) ?? problems[0]
   const activeIndex = Math.max(0, problems.findIndex((problem) => problem.id === activeProblem.id))
@@ -308,7 +333,7 @@ export default function Problems() {
   }
 
   return (
-    <section ref={ref} id="problems" data-section className="problems-section">
+    <section ref={ref} id="problems" data-section className={`problems-section ${lowPower ? 'problems-section--lite' : ''}`}>
       <div className="problems-section__halo" aria-hidden="true" />
 
       <div className="container-x relative z-10">
@@ -340,8 +365,8 @@ export default function Problems() {
 
           <motion.p
             className="problems-subtitle"
-            initial={reduceMotion ? false : { opacity: 0, y: 22, filter: 'blur(7px)' }}
-            whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            initial={reduceMotion ? false : { opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-12%' }}
             transition={{ duration: reduceMotion ? 0 : 0.9, delay: reduceMotion ? 0 : 0.28, ease }}
           >
@@ -349,7 +374,7 @@ export default function Problems() {
           </motion.p>
         </motion.div>
 
-        <div className="problems-desktop-explorer">
+        {!isMobile && <div className="problems-desktop-explorer">
           <div className="problems-console">
             <div className="problems-console__status">
               <div className="problems-console__live"><span /> Diagnostic desk online</div>
@@ -379,7 +404,7 @@ export default function Problems() {
             <LayoutGroup id="problems-layout">
               <div className="problems-layout">
                 <div ref={activeCardRef} aria-live="polite" className="h-full">
-                  <ProblemCard problem={activeProblem} index={0} featured active reduceMotion={reduceMotion} />
+                  <ProblemCard problem={activeProblem} index={0} featured active reduceMotion={simplifiedMotion} />
                 </div>
                 <div className="problems-grid" aria-label="Choose a problem to explore">
                   {otherProblems.map((problem, index) => (
@@ -388,7 +413,7 @@ export default function Problems() {
                       problem={problem}
                       index={index + 1}
                       onSelect={selectProblem}
-                      reduceMotion={reduceMotion}
+                      reduceMotion={simplifiedMotion}
                     />
                   ))}
                 </div>
@@ -401,19 +426,19 @@ export default function Problems() {
               <span>Diagnosis → practical next step</span>
             </div>
           </div>
-        </div>
+        </div>}
 
-        <div className="problems-mobile-list" aria-label="Problems we solve">
+        {isMobile && <div className="problems-mobile-list" aria-label="Problems we solve">
           {problems.map((problem, index) => (
             <ProblemCard
               key={`mobile-${problem.id}`}
               problem={problem}
               index={index}
               featured
-              reduceMotion={reduceMotion}
+              reduceMotion={simplifiedMotion}
             />
           ))}
-        </div>
+        </div>}
 
         <motion.div
           className="problems-footer"

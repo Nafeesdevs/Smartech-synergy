@@ -51,37 +51,30 @@ export default function Services() {
   const [dist, setDist] = useState(0)
 
   useEffect(() => {
+    let frame = 0
     const calc = () => {
+      frame = 0
       if (track.current && lastCardRef.current) {
-        // Measure exact distance to bring the last card completely into center/full view
-        const trackRect = track.current.getBoundingClientRect()
-        const lastCardRect = lastCardRef.current.getBoundingClientRect()
-        // Current position of last card right edge relative to track start
-        const lastCardEndRelativeToTrack = lastCardRect.right - trackRect.left
-        // Target: last card is centered or has ample margin from viewport right edge
         const viewportWidth = window.innerWidth
-        const targetMargin = Math.max(32, (viewportWidth - lastCardRect.width) / 2)
-        const travel = lastCardEndRelativeToTrack - viewportWidth + targetMargin
-        setDist(Math.max(0, travel))
-      } else if (track.current) {
-        setDist(Math.max(0, track.current.scrollWidth - window.innerWidth + 120))
+        const lastCardCenter = lastCardRef.current.offsetLeft + lastCardRef.current.offsetWidth / 2
+        const travel = Math.max(0, lastCardCenter - viewportWidth / 2)
+        setDist((current) => Math.abs(current - travel) > 0.5 ? travel : current)
       }
     }
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(calc)
+    }
 
-    calc()
-    document.fonts?.ready.then(calc)
-    const t1 = setTimeout(calc, 250)
-    const t2 = setTimeout(calc, 800)
-
-    const ro = new ResizeObserver(calc)
+    const ro = new ResizeObserver(schedule)
     if (track.current) ro.observe(track.current)
+    if (lastCardRef.current) ro.observe(lastCardRef.current)
 
-    window.addEventListener('resize', calc)
+    schedule()
+    window.addEventListener('resize', schedule, { passive: true })
     return () => {
-      clearTimeout(t1)
-      clearTimeout(t2)
+      if (frame) cancelAnimationFrame(frame)
       ro.disconnect()
-      window.removeEventListener('resize', calc)
+      window.removeEventListener('resize', schedule)
     }
   }, [])
 

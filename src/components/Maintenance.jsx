@@ -78,7 +78,7 @@ export default function Maintenance() {
                   viewport={{ once: true, margin: '-10%' }}
                   transition={{ duration: 0.9, ease, delay: i * 0.05 }}
                   whileHover={{ x: 6 }}
-                  style={{ backfaceVisibility: 'hidden', willChange: 'transform, opacity' }}
+                  style={{ backfaceVisibility: 'hidden' }}
                   className="group relative overflow-hidden border-b border-white/10"
                 >
                   <span className="absolute inset-0 origin-left scale-x-0 bg-sun transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-x-100" />

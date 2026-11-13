@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { SectionLabel, MaskLines, Reveal, ease } from './Motion'
 import Icon from './Icons'
@@ -20,6 +20,47 @@ const cities = [
   { name: 'Klang', ring: 0.82, bearing: 284, dot: 'bg-sun' },
 ]
 
+const radarParticles = Array.from({ length: 160 }, (_, i) => {
+  const r = 0.14 + ((Math.sin(i * 91.7) + 1) / 2) * 0.84
+  const ang = i * 2.399
+  return { x: 50 + Math.cos(ang) * r * 50, y: 50 + Math.sin(ang) * r * 50, s: 1 + ((i * 7) % 3) * 0.5 }
+})
+
+function RadarParticles({ active }) {
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const context = canvas.getContext('2d')
+    const draw = ({ width, height }) => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
+      canvas.width = Math.round(width * dpr)
+      canvas.height = Math.round(height * dpr)
+      context.setTransform(dpr, 0, 0, dpr, 0, 0)
+      context.clearRect(0, 0, width, height)
+      context.fillStyle = 'rgba(255,255,255,.3)'
+      radarParticles.forEach((particle) => {
+        context.beginPath()
+        context.arc((particle.x / 100) * width, (particle.y / 100) * height, particle.s / 2, 0, Math.PI * 2)
+        context.fill()
+      })
+    }
+    const observer = new ResizeObserver(([entry]) => draw(entry.contentRect))
+    observer.observe(canvas)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <motion.canvas
+      ref={canvasRef}
+      className="pointer-events-none absolute inset-0 h-full w-full"
+      animate={{ rotate: active ? -360 : 0 }}
+      transition={{ duration: 130, repeat: active ? Infinity : 0, ease: 'linear' }}
+      aria-hidden="true"
+    />
+  )
+}
+
 function toScreen(bearing, ring) {
   const rad = ((bearing - 90) * Math.PI) / 180
   return {
@@ -34,12 +75,6 @@ function Radar() {
   const reduceMotion = useReducedMotion()
   // 4 Concentric circles radiating outward from Sunway Visio Tower
   const rings = [0.22, 0.44, 0.64, 0.82]
-
-  const particles = useMemo(() => Array.from({ length: 160 }, (_, i) => {
-    const r = 0.14 + ((Math.sin(i * 91.7) + 1) / 2) * 0.84
-    const ang = i * 2.399
-    return { x: 50 + Math.cos(ang) * r * 50, y: 50 + Math.sin(ang) * r * 50, s: 1 + ((i * 7) % 3) * 0.5 }
-  }), [])
 
   return (
     <div ref={ref} className="relative mx-auto aspect-square w-[94%] max-w-[620px] select-none sm:w-full">
@@ -61,19 +96,7 @@ function Radar() {
       />
 
       {/* Orbiting particles */}
-      <motion.div
-        className="pointer-events-none absolute inset-0"
-        animate={{ rotate: inView && !reduceMotion ? -360 : 0 }}
-        transition={{ duration: 130, repeat: inView && !reduceMotion ? Infinity : 0, ease: 'linear' }}
-      >
-        {particles.map((p, i) => (
-          <span
-            key={i}
-            className="absolute rounded-full bg-white/30"
-            style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.s, height: p.s }}
-          />
-        ))}
-      </motion.div>
+      <RadarParticles active={inView && !reduceMotion} />
 
       {/* Center Location Map Pin with pulsing radar glow */}
       <div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">

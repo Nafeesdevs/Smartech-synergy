@@ -12,7 +12,7 @@ function FaqItem({ item, index, isOpen, toggle, open }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-10%' }}
       transition={{ duration: 0.9, ease, delay: index * 0.05 }}
-      style={{ backfaceVisibility: 'hidden', willChange: 'transform, opacity' }}
+      style={{ backfaceVisibility: 'hidden' }}
       className={`group relative overflow-hidden rounded-[20px] border bg-coal/55 transition-[border-color,box-shadow] duration-500 ease-out ${
         isOpen
           ? 'border-sun/70 shadow-[0_18px_60px_rgba(0,0,0,0.28)]'

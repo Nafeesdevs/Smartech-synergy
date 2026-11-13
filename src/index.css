@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Archivo';
+  src: url('/archivo-latin-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/manrope-latin-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/jetbrains-mono-latin-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
 @layer base {
   html { scroll-behavior: auto; }
   html.lenis, html.lenis body { height: auto; }
@@ -54,8 +79,23 @@
   background-size: 22px 22px;
 }
 
+.kinetic-letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(var(--kinetic-x), var(--kinetic-y), 0) rotate(var(--kinetic-r));
+  transition:
+    opacity 1.1s cubic-bezier(.16, 1, .3, 1) var(--kinetic-delay),
+    transform 1.1s cubic-bezier(.16, 1, .3, 1) var(--kinetic-delay);
+}
+
+.kinetic-letter--visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) rotate(0deg);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  .kinetic-letter { opacity: 1; transform: none; }
 }
 
 :focus-visible {
@@ -293,8 +333,9 @@ main:focus {
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.018),
     0 18px 42px rgba(0,0,0,.1);
-  transition: border-color .4s ease, background-color .4s ease, box-shadow .4s ease;
+  transition: border-color .3s ease, background-color .3s ease;
   contain: layout paint;
+  backface-visibility: hidden;
 }
 .problem-card::before {
   content: '';
@@ -317,7 +358,7 @@ main:focus {
   box-shadow: 0 0 18px rgba(255,198,40,.24);
   pointer-events: none;
 }
-.problem-card:hover { border-color: #4a4a51; box-shadow: 0 22px 55px rgba(0,0,0,.24); }
+.problem-card:hover { border-color: #4a4a51; }
 .problem-card:hover::before { opacity: 1; }
 .problem-card--active {
   border-color: rgba(255,2,141,.62);
@@ -330,7 +371,7 @@ main:focus {
     0 0 0 1px rgba(255,2,141,.06),
     inset 0 1px 0 rgba(255,255,255,.05);
 }
-.problem-card--active:hover { border-color: rgba(255,2,141,.86); box-shadow: 0 36px 85px rgba(0,0,0,.46), 0 0 34px rgba(255,2,141,.08); }
+.problem-card--active:hover { border-color: rgba(255,2,141,.86); }
 .problem-card--active::before { opacity: 1; background: linear-gradient(135deg, rgba(255,255,255,.035), transparent 34%); }
 .problem-card__active-badge {
   position: absolute;
@@ -461,9 +502,18 @@ main:focus {
 .problem-object--compact * {
   animation-play-state: paused !important;
 }
-.problem-card--selectable:hover .problem-object--compact *,
-.problem-card--selectable:focus-visible .problem-object--compact * {
-  animation-play-state: running !important;
+.problem-card--selectable .problem-object--compact,
+.problem-card--selectable .broken-tower,
+.problem-card--selectable .supply-box,
+.problem-card--selectable .headset { backface-visibility: hidden; }
+
+.problems-section--lite .problem-object * {
+  animation-play-state: paused !important;
+}
+
+.problems-section--lite .problem-card__active-badge {
+  backdrop-filter: none;
+  background: rgba(12,12,15,.94);
 }
 .problem-card__object {
   position: absolute;
@@ -695,6 +745,17 @@ main:focus {
   transform-style: preserve-3d;
   transition: transform .7s cubic-bezier(.16,1,.3,1);
 }
+.broken-tower::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: -9%;
+  right: -23%;
+  width: 34%;
+  height: 15%;
+  background: linear-gradient(135deg, #3b3c43 0 32%, #17181d 64%, #0b0c0e 100%);
+  clip-path: polygon(0 38%, 100% 0, 100% 100%, 0 100%);
+}
 .problem-card:hover .broken-tower { transform: rotateX(0) rotateY(-9deg) rotateZ(-1deg) translateZ(29px) scale(1.035); }
 .broken-tower__front {
   position: absolute;
@@ -710,28 +771,28 @@ main:focus {
 .broken-tower__top {
   position: absolute;
   z-index: 2;
-  left: 3%;
-  right: 3%;
-  bottom: 100%;
-  height: 10%;
+  left: 2%;
+  right: 1%;
+  bottom: calc(100% - 4px);
+  height: 11%;
   background: linear-gradient(180deg, #55565d, #292a2f);
-  clip-path: polygon(7% 0, 100% 0, 92% 100%, 0 100%);
+  clip-path: polygon(7% 0, 100% 0, 94% 100%, 0 100%);
   transform: skewX(-34deg);
   transform-origin: bottom;
 }
 .broken-tower__side {
   position: absolute;
   z-index: -1;
-  top: 3%;
-  bottom: 3%;
-  left: 100%;
+  top: -1%;
+  bottom: 2%;
+  left: calc(100% - 3px);
   width: 22%;
   display: flex;
   flex-direction: column;
   gap: 8%;
   padding: 35% 16%;
   background: linear-gradient(90deg, #23242a, #0b0c0e);
-  clip-path: polygon(0 3%, 100% 0, 100% 96%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 96%, 0 100%);
   transform: skewY(-14deg);
   transform-origin: left;
 }
@@ -1234,6 +1295,8 @@ main:focus {
   .problems-mobile-list .problem-card--featured {
     min-height: 45rem;
     padding: 1.1rem;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 45rem;
   }
   .problems-mobile-list .problem-card__eyebrow { font-size: .56rem; }
   .problems-mobile-list .problem-card__title--featured {
