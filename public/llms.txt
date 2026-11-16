@@ -1,0 +1,22 @@
+# Smartech Synergys
+
+> Smartech Synergys provides IT support, computer repair, hardware upgrades, office device setup, custom PC builds, and on-site IT assistance across Kuala Lumpur and Selangor, Malaysia.
+
+## Website
+
+- [Official website](https://smartechsynergys.com/): Business information, services, coverage, frequently asked questions, and contact options.
+
+## Services
+
+- [Hardware and software repair](https://smartechsynergys.com/#services): Diagnosis and repair for PCs, laptops, smartphones, and operating-system issues.
+- [PC upgrades and maintenance](https://smartechsynergys.com/#maintenance): RAM and SSD upgrades, servicing, cleaning, thermal maintenance, and performance optimisation.
+- [Office PC and device setup](https://smartechsynergys.com/#services): Supply, configuration, and deployment of office-ready workstations and devices.
+- [Custom PC builds](https://smartechsynergys.com/#services): Purpose-built computers for gaming, creative work, and professional workloads.
+- [On-site IT support](https://smartechsynergys.com/#services): Troubleshooting, repairs, and setup assistance at business and residential premises.
+- [Technology products](https://smartechsynergys.com/#products): New and pre-owned computers, monitors, smartphones, accessories, components, and peripherals.
+
+## Service area and contact
+
+- [Kuala Lumpur and Selangor coverage](https://smartechsynergys.com/#coverage): Service coverage information for the Klang Valley.
+- [Frequently asked questions](https://smartechsynergys.com/#faq): Information about visits, availability, quotations, device supply, and upgrades.
+- [Contact Smartech Synergys](https://smartechsynergys.com/#contact): Request a consultation or use the published phone, email, and WhatsApp links.

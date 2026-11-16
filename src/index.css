@@ -67,6 +67,10 @@
   animation: grain 1.2s steps(6) infinite;
   will-change: transform;
 }
+.grain.performance-lite::after {
+  animation: none;
+  will-change: auto;
+}
 @keyframes grain {
   0% { transform: translate(0,0) } 20% { transform: translate(-3%,2%) } 40% { transform: translate(2%,-3%) }
   60% { transform: translate(-2%,-1%) } 80% { transform: translate(3%,3%) } 100% { transform: translate(0,0) }
@@ -236,7 +240,9 @@ main:focus {
   background: var(--problem-hot);
   box-shadow: 0 0 0 4px rgba(255,2,141,.1), 0 0 14px rgba(255,2,141,.7);
   animation: diagnostic-live 1.8s ease-in-out infinite;
+  animation-play-state: paused;
 }
+.problems-section--motion-active .problems-console__live span { animation-play-state: running; }
 .problems-console__readout { color: var(--problem-yellow); text-align: center; }
 .problems-console__count { justify-self: end; }
 .problems-console__count strong { color: #fff; font-size: .72rem; }
@@ -498,9 +504,29 @@ main:focus {
   inset: 0;
   transform-style: preserve-3d;
 }
-.problem-object:not(.problem-object--in-view) *,
-.problem-object--compact * {
+.problem-object--compositor-motion:not(.problem-object--compact):not(.problem-object--slow-computers):not(.problem-object--device-supplier) {
+  animation: problem-object-float-3d 5.5s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.problem-object--compositor-motion:not(.problem-object--compact).problem-object--device-supplier {
+  animation: problem-object-float-y 7s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.problem-object--compositor-motion.problem-object--animated:not(.problem-object--compact) {
+  animation-play-state: running;
+}
+.problem-object:not(.problem-object--animated) *,
+.problem-object:not(.problem-object--animated) *::before,
+.problem-object:not(.problem-object--animated) *::after {
   animation-play-state: paused !important;
+}
+@keyframes problem-object-float-3d {
+  0%, 100% { transform: translateY(0) rotateY(-2deg); }
+  50% { transform: translateY(-5px) rotateY(3deg); }
+}
+@keyframes problem-object-float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }
 .problem-card--selectable .problem-object--compact,
 .problem-card--selectable .broken-tower,
@@ -540,6 +566,15 @@ main:focus {
   display: grid;
   place-items: center;
   transform-style: preserve-3d;
+}
+.problem-object--compositor-motion .laptop-scene {
+  animation: laptop-scene-float 6s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.problem-object--compositor-motion.problem-object--animated .laptop-scene { animation-play-state: running; }
+@keyframes laptop-scene-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 .laptop-object {
   position: relative;
@@ -883,7 +918,6 @@ main:focus {
   backface-visibility: hidden;
   isolation: isolate;
   transform-style: flat;
-  will-change: transform;
 }
 .error-window--1 { z-index: 1; transform: translate3d(-22%, 8%, 0) rotateZ(-6deg); }
 .error-window--2 { z-index: 3; transform: translate3d(7%, -3%, 0) rotateZ(2deg); }
@@ -930,7 +964,6 @@ main:focus {
   background: linear-gradient(145deg, #292a30, #0d0e11);
   box-shadow: 8px 12px 22px rgba(0,0,0,.38), 0 0 12px rgba(255,198,40,.2);
   backface-visibility: hidden;
-  will-change: transform;
 }
 .supply-monitor { width: 14%; aspect-ratio: 1.2; transform: translate3d(-145%, -60%, 0) rotateZ(-9deg); }
 .supply-phone { width: 8%; aspect-ratio: .65; transform: translate3d(185%, -50%, 0) rotateZ(12deg); }

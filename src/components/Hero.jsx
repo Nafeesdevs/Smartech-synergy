@@ -82,7 +82,7 @@ export default function Hero({ ready, lenis }) {
                 </a>
               </Magnetic>
               <Magnetic>
-                <a href={brand.whatsapp} target="_blank" rel="noreferrer" className="btn btn-ghost justify-center sm:justify-start">
+                <a href={brand.whatsapp} target="_blank" rel="noopener noreferrer" className="btn btn-ghost justify-center sm:justify-start">
                   <Icon name="whatsapp" className="h-4 w-4" /> WhatsApp
                 </a>
               </Magnetic>

@@ -11,7 +11,7 @@ export function RingText({ text, size = 220, className = '', dark = false, speed
   const rot = useTransform(scrollYProgress, [0, 1], [0, 360 * speed])
   return (
     <div ref={ref} className={`relative ${className}`} style={{ width: size, height: size }}>
-      <motion.svg viewBox="0 0 200 200" className="h-full w-full" style={{ rotate: rot }}>
+      <motion.svg viewBox="0 0 200 200" className="h-full w-full" style={{ rotate: reduceMotion ? 0 : rot }}>
         <defs>
           <path id="ring" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" />
         </defs>

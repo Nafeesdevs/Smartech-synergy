@@ -15,15 +15,25 @@ import FAQ from './components/FAQ'
 import { Contact, Footer } from './components/Contact'
 import { marqueeA, marqueeB } from './data/content'
 
+function getPerformanceLiteMode() {
+  const limitedCpu = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4
+  const limitedMemory = navigator.deviceMemory && navigator.deviceMemory <= 4
+  const saveData = navigator.connection?.saveData
+  const coarsePointer = window.matchMedia('(pointer: coarse)').matches
+  return Boolean(limitedCpu || limitedMemory || saveData || coarsePointer)
+}
+
 export default function App() {
   const lenis = useRef(null)
   const [ready, setReady] = useState(false)
+  const [performanceLite] = useState(getPerformanceLiteMode)
 
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const simplifyScroll = reduceMotion || performanceLite
     const l = new Lenis({
-      lerp: reduceMotion ? 1 : 0.085,
-      smoothWheel: !reduceMotion,
+      lerp: simplifyScroll ? 1 : 0.085,
+      smoothWheel: !simplifyScroll,
       syncTouch: false,
       wheelMultiplier: 1,
     })
@@ -52,7 +62,7 @@ export default function App() {
       l.destroy()
       delete window.__lenis
     }
-  }, [])
+  }, [performanceLite])
 
   const onDone = useCallback(() => {
     setReady(true)
@@ -60,27 +70,27 @@ export default function App() {
   }, [])
 
   return (
-    <div className="grain">
+    <div className={`grain ${performanceLite ? 'performance-lite' : ''}`}>
       <a
         href="#main-content"
         className="fixed left-4 top-4 z-[120] -translate-y-24 rounded-full bg-sun px-5 py-3 font-display text-sm font-bold text-ink shadow-xl transition-transform focus:translate-y-0"
       >
         Skip to main content
       </a>
-      <Preloader onDone={onDone} />
-      <Cursor />
-      <Hud />
+      <Preloader onDone={onDone} performanceLite={performanceLite} />
+      <Cursor performanceLite={performanceLite} />
+      <Hud performanceLite={performanceLite} />
       <Nav lenis={lenis} />
       <main id="main-content" tabIndex="-1">
         <Hero ready={ready} lenis={lenis} />
-        <MarqueeBand a={marqueeA} b={marqueeB} />
+        <MarqueeBand a={marqueeA} b={marqueeB} performanceLite={performanceLite} />
         <About />
         <Problems />
         <Services />
         <Maintenance />
         <Products />
         <Process />
-        <Vision />
+        <Vision performanceLite={performanceLite} />
         <Coverage />
         <FAQ />
         <Contact />

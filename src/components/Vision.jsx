@@ -2,23 +2,26 @@ import { useRef } from 'react'
 import { motion, useInView, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
 import { SectionLabel, Reveal, Brackets, KineticText } from './Motion'
 
-export default function Vision() {
+export default function Vision({ performanceLite = false }) {
   const ref = useRef(null)
   const reduceMotion = useReducedMotion()
+  const simplifiedMotion = reduceMotion || performanceLite
   const sectionInView = useInView(ref, { margin: '180px 0px', amount: 0.08 })
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const smoothScroll = useSpring(scrollYProgress, { stiffness: 95, damping: 30, mass: 0.22, restDelta: 0.0005 })
   const x1 = useTransform(smoothScroll, [0, 1], ['-20%', '5%'])
   const x2 = useTransform(smoothScroll, [0, 1], ['5%', '-25%'])
-  const clip = useTransform(smoothScroll, [0.1, 0.4], ['inset(18% 14% 18% 14% round 48px)', 'inset(0% 0% 0% 0% round 0px)'])
-  const artworkY = useTransform(smoothScroll, [0, 1], reduceMotion ? [0, 0] : [24, -24])
+  const clip = useTransform(smoothScroll, [0.1, 0.4], simplifiedMotion
+    ? ['inset(0% 0% 0% 0% round 0px)', 'inset(0% 0% 0% 0% round 0px)']
+    : ['inset(18% 14% 18% 14% round 48px)', 'inset(0% 0% 0% 0% round 0px)'])
+  const artworkY = useTransform(smoothScroll, [0, 1], simplifiedMotion ? [0, 0] : [24, -24])
   const tiltX = useMotionValue(0)
   const tiltY = useMotionValue(0)
   const smoothTiltX = useSpring(tiltX, { stiffness: 150, damping: 22, mass: 0.45 })
   const smoothTiltY = useSpring(tiltY, { stiffness: 150, damping: 22, mass: 0.45 })
 
   const handleArtworkMove = (event) => {
-    if (reduceMotion || event.pointerType !== 'mouse') return
+    if (simplifiedMotion || event.pointerType !== 'mouse') return
     const bounds = event.currentTarget.getBoundingClientRect()
     const x = (event.clientX - bounds.left) / bounds.width - 0.5
     const y = (event.clientY - bounds.top) / bounds.height - 0.5
@@ -34,7 +37,7 @@ export default function Vision() {
   return (
     <section ref={ref} data-section className="relative bg-ink">
       <motion.div
-        style={{ clipPath: clip, willChange: 'clip-path' }}
+        style={{ clipPath: clip, willChange: simplifiedMotion ? 'auto' : 'clip-path' }}
         className="relative transform-gpu overflow-hidden bg-gradient-to-br from-sun via-sun to-hot py-28 text-ink [contain:layout_paint] md:py-40"
       >
         <motion.div
@@ -53,10 +56,10 @@ export default function Vision() {
             >
               <motion.div
                 className="relative w-full"
-                initial={reduceMotion ? false : { opacity: 0, y: 35, scale: 0.94 }}
+                initial={simplifiedMotion ? false : { opacity: 0, y: 35, scale: 0.94 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: reduceMotion ? 0 : 1.05, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: simplifiedMotion ? 0 : 1.05, ease: [0.16, 1, 0.3, 1] }}
               >
                 <motion.div
                   className="relative w-full [transform-style:preserve-3d]"
@@ -68,30 +71,33 @@ export default function Vision() {
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-[12%] rounded-full"
                     style={{ background: 'radial-gradient(circle, rgba(255,198,40,.42) 0%, rgba(255,2,141,.16) 44%, transparent 72%)' }}
-                    animate={!reduceMotion && sectionInView
+                    animate={!simplifiedMotion && sectionInView
                       ? { opacity: [0.55, 0.82, 0.55], scale: [0.96, 1.04, 0.96] }
                       : { opacity: 0.68, scale: 1 }}
-                    transition={!reduceMotion && sectionInView
+                    transition={!simplifiedMotion && sectionInView
                       ? { duration: 7, repeat: Infinity, ease: 'easeInOut' }
                       : { duration: 0.25 }}
                   />
                   <motion.div
                     className="relative z-10 w-full will-change-transform"
-                    animate={!reduceMotion && sectionInView ? { y: [0, -10, 0] } : { y: 0 }}
-                    transition={!reduceMotion && sectionInView
+                    animate={!simplifiedMotion && sectionInView ? { y: [0, -10, 0] } : { y: 0 }}
+                    transition={!simplifiedMotion && sectionInView
                       ? { duration: 6.5, repeat: Infinity, ease: 'easeInOut' }
                       : { duration: 0.25 }}
                   >
-                    <img
-                      src="/images/vision-collaboration.png"
-                      alt="Three technology specialists working together to drive business growth"
-                      className="block h-auto w-full select-none object-contain"
-                      width="1254"
-                      height="1254"
-                      loading="lazy"
-                      decoding="async"
-                      draggable="false"
-                    />
+                    <picture className="block">
+                      <source srcSet="/images/vision-collaboration.webp" type="image/webp" />
+                      <img
+                        src="/images/vision-collaboration.png"
+                        alt="Illustration of three technology specialists improving business systems together"
+                        className="block h-auto w-full select-none object-contain"
+                        width="1254"
+                        height="1254"
+                        loading="lazy"
+                        decoding="async"
+                        draggable="false"
+                      />
+                    </picture>
                   </motion.div>
                 </motion.div>
               </motion.div>
@@ -127,9 +133,9 @@ export default function Vision() {
           Quality · Speed · Reliability
         </motion.div>
         <div className="container-x">
-          <h3 className="display mt-4 text-3xl sm:text-4xl md:text-6xl">
+          <h2 className="display mt-4 text-3xl sm:text-4xl md:text-6xl">
             <KineticText text="Every fix, on purpose." />
-          </h3>
+          </h2>
         </div>
       </motion.div>
     </section>

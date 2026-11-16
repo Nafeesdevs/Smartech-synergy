@@ -1,17 +1,77 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { brand, services } from '../data/content'
 import Icon from './Icons'
 import { KineticText, SectionLabel, Reveal, Magnetic, ease } from './Motion'
 import { Logo } from './Chrome'
 
+const getInitialForm = () => ({ name: '', company: '', phone: '', need: services[0].t, msg: '' })
+
 export function Contact() {
-  const [form, setForm] = useState({ name: '', company: '', phone: '', need: services[0].t, msg: '' })
-  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value })
-  const submit = (e) => {
+  const [form, setForm] = useState(getInitialForm)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [status, setStatus] = useState(null)
+  const submittingRef = useRef(false)
+  useEffect(() => {
+    if (!status) return undefined
+
+    const timer = window.setTimeout(() => setStatus(null), 30000)
+    return () => window.clearTimeout(timer)
+  }, [status])
+
+  const set = (k) => (e) => {
+    setForm((current) => ({ ...current, [k]: e.target.value }))
+    setStatus(null)
+  }
+  const submit = async (e) => {
     e.preventDefault()
-    const body = `Name: ${form.name}\nCompany: ${form.company}\nPhone: ${form.phone}\nService: ${form.need}\n\n${form.msg}`
-    window.location.href = `mailto:${brand.email}?subject=${encodeURIComponent('Free Tech Consultation Request')}&body=${encodeURIComponent(body)}`
+
+    const formElement = e.currentTarget
+    if (!formElement.checkValidity()) {
+      formElement.reportValidity()
+      return
+    }
+
+    if (submittingRef.current) return
+
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY?.trim()
+    if (!accessKey) {
+      setStatus({ type: 'error', message: 'The contact form is not configured yet. Please call, WhatsApp, or email us instead.' })
+      return
+    }
+
+    submittingRef.current = true
+    setIsSubmitting(true)
+    setStatus(null)
+
+    const data = new FormData(formElement)
+    data.set('access_key', accessKey)
+    data.set('subject', 'New Website Enquiry - Smartech Synergys')
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: data,
+      })
+      const result = await response.json().catch(() => null)
+
+      if (!response.ok || result?.success !== true) {
+        setStatus({
+          type: 'error',
+          message: result?.message || 'We could not send your request. Please try again.',
+        })
+        return
+      }
+
+      setForm(getInitialForm())
+      formElement.reset()
+      setStatus({ type: 'success', message: 'Thank you. Your request has been sent successfully.' })
+    } catch {
+      setStatus({ type: 'error', message: 'A network error prevented your request from being sent. Please try again.' })
+    } finally {
+      submittingRef.current = false
+      setIsSubmitting(false)
+    }
   }
   const field = 'w-full border-b border-white/20 bg-transparent py-4 text-lg outline-none transition-colors placeholder:text-white/30 focus:border-hot'
   const cards = [
@@ -42,7 +102,7 @@ export function Contact() {
                   key={c.k}
                   href={c.href}
                   target={c.href.startsWith('http') ? '_blank' : undefined}
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="group flex items-center gap-3.5 sm:gap-5 rounded-2xl border border-white/10 bg-ink/50 p-4 sm:p-5 transition-colors duration-300 hover:border-sun hover:bg-sun hover:text-ink"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -74,7 +134,8 @@ export function Contact() {
           </div>
 
           <Reveal className="lg:col-span-7" delay={0.1}>
-            <form onSubmit={submit} className="relative rounded-[28px] bg-ink p-5 sm:p-7 ring-1 ring-white/10 md:p-12" aria-describedby="consultation-note">
+            <form onSubmit={submit} className="relative rounded-[28px] bg-ink p-5 sm:p-7 ring-1 ring-white/10 md:p-12" aria-describedby="consultation-note" aria-busy={isSubmitting}>
+              <input type="checkbox" name="botcheck" className="hidden" tabIndex="-1" autoComplete="off" aria-hidden="true" />
               <div className="label mb-4 flex items-center justify-between text-white/40">
                 <span>Request a free consultation</span>
                 <span className="flex items-center gap-2 text-hot">
@@ -82,9 +143,9 @@ export function Contact() {
                 </span>
               </div>
               <div className="grid gap-2 sm:grid-cols-2 sm:gap-x-8">
-                <div><label className="sr-only" htmlFor="consultation-name">Your name</label><input id="consultation-name" name="name" type="text" autoComplete="name" required className={field} placeholder="Your name" value={form.name} onChange={set('name')} /></div>
-                <div><label className="sr-only" htmlFor="consultation-company">Company</label><input id="consultation-company" name="organization" type="text" autoComplete="organization" className={field} placeholder="Company" value={form.company} onChange={set('company')} /></div>
-                <div><label className="sr-only" htmlFor="consultation-phone">Phone or WhatsApp number</label><input id="consultation-phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" required className={field} placeholder="Phone / WhatsApp" value={form.phone} onChange={set('phone')} /></div>
+                <div><label className="sr-only" htmlFor="consultation-name">Your name</label><input id="consultation-name" name="name" type="text" autoComplete="name" required maxLength={100} className={field} placeholder="Your name" value={form.name} onChange={set('name')} /></div>
+                <div><label className="sr-only" htmlFor="consultation-company">Company</label><input id="consultation-company" name="company" type="text" autoComplete="organization" maxLength={150} className={field} placeholder="Company" value={form.company} onChange={set('company')} /></div>
+                <div><label className="sr-only" htmlFor="consultation-phone">Phone or WhatsApp number</label><input id="consultation-phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" required maxLength={30} className={field} placeholder="Phone / WhatsApp" value={form.phone} onChange={set('phone')} /></div>
                 <div><label className="sr-only" htmlFor="consultation-service">Service needed</label><select id="consultation-service" name="service" className={`${field} appearance-none`} value={form.need} onChange={set('need')}>
                   {services.map((s) => (
                     <option key={s.t} className="bg-ink">{s.t}</option>
@@ -93,16 +154,26 @@ export function Contact() {
                 </select></div>
               </div>
               <label className="sr-only" htmlFor="consultation-message">Tell us what you need</label>
-              <textarea id="consultation-message" name="message" rows={4} className={`${field} mt-2 resize-none`} placeholder="Tell us what you need…" value={form.msg} onChange={set('msg')} />
+              <textarea id="consultation-message" name="message" rows={4} maxLength={2000} className={`${field} mt-2 resize-none`} placeholder="Tell us what you need…" value={form.msg} onChange={set('msg')} />
               <div className="mt-10 flex flex-wrap items-center justify-between gap-6">
                 <p id="consultation-note" className="label max-w-[16rem] text-white/40">No obligations. We usually reply within a few hours.</p>
                 <Magnetic>
-                  <button type="submit" className="btn group bg-hot text-white shadow-[0_14px_34px_rgba(255,2,141,0.22)]">
-                    <span className="relative z-10">Send request</span>
+                  <button type="submit" disabled={isSubmitting} className="btn group bg-hot text-white shadow-[0_14px_34px_rgba(255,2,141,0.22)] disabled:cursor-not-allowed disabled:opacity-60">
+                    <span className="relative z-10">{isSubmitting ? 'Sending...' : 'Send request'}</span>
                     <Icon name="arrow" className="relative z-10 h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
                     <span className="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-500 group-hover:scale-y-100" />
                   </button>
                 </Magnetic>
+              </div>
+              <div aria-live={status?.type === 'error' ? 'assertive' : 'polite'} aria-atomic="true">
+                {status && (
+                  <p
+                    role={status.type === 'error' ? 'alert' : 'status'}
+                    className={`fixed bottom-4 left-4 right-4 z-50 rounded-2xl border bg-ink px-5 py-4 text-sm text-white shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:max-w-sm ${status.type === 'error' ? 'border-hot/60' : 'border-volt/60'}`}
+                  >
+                    {status.message}
+                  </p>
+                )}
               </div>
             </form>
           </Reveal>
@@ -138,7 +209,7 @@ export function Footer({ lenis }) {
             <ul className="mt-3 sm:mt-4 space-y-2 text-sm sm:text-base text-white/70">
               <li><a className="hover:text-sun" href={`tel:${brand.phoneRaw}`}>{brand.phone}</a></li>
               <li><a className="break-all hover:text-sun" href={`mailto:${brand.email}`}>{brand.email}</a></li>
-              <li><a className="hover:text-sun" href={brand.whatsapp} target="_blank" rel="noreferrer">WhatsApp</a></li>
+              <li><a className="hover:text-sun" href={brand.whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
             </ul>
             <button onClick={() => lenis?.current?.scrollTo(0, { duration: 2 })} className="label mt-6 sm:mt-8 flex items-center gap-2 text-hot hover:text-white transition-colors">
               Back to top <Icon name="arrow" className="h-3.5 w-3.5 sm:h-4 sm:w-4 -rotate-90" />

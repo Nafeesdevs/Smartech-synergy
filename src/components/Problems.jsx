@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, LayoutGroup, motion, useInView, useReducedMotion } from 'framer-motion'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { brand, problems } from '../data/content'
 import Icon from './Icons'
 import { ease, SectionLabel } from './Motion'
@@ -39,14 +39,30 @@ function useLowPowerMode() {
   return lowPower
 }
 
+function usePageVisibility() {
+  const [isPageVisible, setIsPageVisible] = useState(() => !document.hidden)
+
+  useEffect(() => {
+    const updateVisibility = () => setIsPageVisible(!document.hidden)
+    document.addEventListener('visibilitychange', updateVisibility)
+    return () => document.removeEventListener('visibilitychange', updateVisibility)
+  }, [])
+
+  return isPageVisible
+}
+
 const laptopKeys = Array.from({ length: 54 })
 
-function LaptopObject({ reduceMotion }) {
+function LaptopObject({ reduceMotion, compositorMotion }) {
+  const Scene = compositorMotion ? 'div' : motion.div
+
   return (
-    <motion.div
+    <Scene
       className="laptop-scene"
-      animate={reduceMotion ? { y: 0 } : { y: [0, -5, 0] }}
-      transition={reduceMotion ? { duration: 0.2 } : { duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+      {...(!compositorMotion && {
+        animate: reduceMotion ? { y: 0 } : { y: [0, -5, 0] },
+        transition: reduceMotion ? { duration: 0.2 } : { duration: 6, repeat: Infinity, ease: 'easeInOut' },
+      })}
     >
       <div className="laptop-object">
         <div className="laptop-display">
@@ -77,7 +93,7 @@ function LaptopObject({ reduceMotion }) {
         </div>
         <span className="laptop-front-lip" />
       </div>
-    </motion.div>
+    </Scene>
   )
 }
 
@@ -147,36 +163,53 @@ function SupportObject() {
   )
 }
 
-function ProblemObject({ id, compact = false, reduceMotion }) {
+function ProblemObject({ id, compact = false, reduceMotion, pageVisible, compositorMotion }) {
   const objectRef = useRef(null)
   const objectInView = useInView(objectRef, { margin: '160px 0px', amount: 0.1 })
-  const shouldAnimate = !reduceMotion && objectInView && !compact
-  const objects = {
-    'slow-computers': <LaptopObject reduceMotion={!shouldAnimate} />,
-    'hardware-breakdowns': <HardwareObject />,
-    'software-errors': <SoftwareObject />,
-    'device-supplier': <SupplyObject />,
-    'it-support': <SupportObject />,
-  }
+  const shouldAnimate = !reduceMotion && pageVisible && objectInView && !compact
   const objectMotion = id === 'device-supplier'
     ? { y: [0, -4, 0] }
     : { y: [0, -5, 0], rotateY: [-2, 3, -2] }
+  const ObjectRoot = compositorMotion ? 'div' : motion.div
+  let object
+
+  switch (id) {
+    case 'slow-computers':
+      object = <LaptopObject reduceMotion={!shouldAnimate} compositorMotion={compositorMotion} />
+      break
+    case 'hardware-breakdowns':
+      object = <HardwareObject />
+      break
+    case 'software-errors':
+      object = <SoftwareObject />
+      break
+    case 'device-supplier':
+      object = <SupplyObject />
+      break
+    case 'it-support':
+      object = <SupportObject />
+      break
+    default:
+      object = null
+  }
 
   return (
-    <motion.div
+    <ObjectRoot
       ref={objectRef}
-      className={`problem-object problem-object--${id} ${compact ? 'problem-object--compact' : ''} ${objectInView ? 'problem-object--in-view' : ''}`}
-      animate={shouldAnimate && id !== 'slow-computers' ? objectMotion : { y: 0, rotateY: 0 }}
-      transition={shouldAnimate && id !== 'slow-computers'
-        ? { duration: id === 'device-supplier' ? 7 : 5.5, repeat: Infinity, ease: 'easeInOut' }
-        : { duration: 0.2 }}
+      className={`problem-object problem-object--${id} ${compact ? 'problem-object--compact' : ''} ${shouldAnimate ? 'problem-object--animated' : ''} ${compositorMotion ? 'problem-object--compositor-motion' : ''}`}
+      {...(!compositorMotion && {
+        animate: shouldAnimate && id !== 'slow-computers' ? objectMotion : { y: 0, rotateY: 0 },
+        transition: shouldAnimate && id !== 'slow-computers'
+          ? { duration: id === 'device-supplier' ? 7 : 5.5, repeat: Infinity, ease: 'easeInOut' }
+          : { duration: 0.2 },
+      })}
     >
-      {objects[id]}
-    </motion.div>
+      {object}
+    </ObjectRoot>
   )
 }
 
-function ProblemCard({ problem, index, featured = false, active = false, onSelect, reduceMotion }) {
+function ProblemCard({ problem, index, featured = false, active = false, onSelect, reduceMotion, pageVisible, compositorMotion }) {
   const Card = featured ? motion.article : motion.button
 
   return (
@@ -186,14 +219,12 @@ function ProblemCard({ problem, index, featured = false, active = false, onSelec
         onClick: () => onSelect(problem.id),
       })}
       aria-label={featured ? `${problem.t}. ${problem.symptom}` : `Show ${problem.t}. ${problem.symptom}`}
-      layout={reduceMotion ? false : 'position'}
       custom={{ index, reduceMotion }}
       variants={cardVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-8%' }}
       whileHover={reduceMotion ? undefined : { y: -6, transition: { duration: 0.22, ease } }}
-      transition={{ layout: reduceMotion ? { duration: 0 } : { duration: 0.55, ease }, type: 'spring', stiffness: 280, damping: 24 }}
       className={`problem-card group ${featured ? 'problem-card--featured' : 'problem-card--selectable'} ${active ? 'problem-card--active' : ''} ${problem.accent ? 'problem-card--accent' : ''}`}
     >
       <motion.span
@@ -211,89 +242,80 @@ function ProblemCard({ problem, index, featured = false, active = false, onSelec
         </div>
       )}
 
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={`copy-${problem.id}`}
-          className="relative z-10"
-          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={reduceMotion ? undefined : { opacity: 0, y: -12 }}
-          transition={{ duration: reduceMotion ? 0 : 0.52, ease }}
-        >
-          <p className="problem-card__eyebrow">
-            <span>{problem.n}</span>
-            <span aria-hidden="true">/</span>
-            <span>{problem.category}</span>
-          </p>
-          <h3 className={featured ? 'problem-card__title problem-card__title--featured' : 'problem-card__title'}>
-            {problem.t}
-          </h3>
-        </motion.div>
-      </AnimatePresence>
+      <motion.div
+        key={`copy-${problem.id}`}
+        className="relative z-10"
+        initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: reduceMotion ? 0 : 0.38, ease }}
+      >
+        <p className="problem-card__eyebrow">
+          <span>{problem.n}</span>
+          <span aria-hidden="true">/</span>
+          <span>{problem.category}</span>
+        </p>
+        <h3 className={featured ? 'problem-card__title problem-card__title--featured' : 'problem-card__title'}>
+          {problem.t}
+        </h3>
+      </motion.div>
 
       {featured && (
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={`object-${problem.id}`}
-            className="problem-photo-wrap problem-photo-wrap--object"
-            aria-hidden="true"
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.96, clipPath: 'inset(0 0 100% 0 round .55rem)' }}
-            animate={{ opacity: 1, scale: 1, clipPath: 'inset(0 0 0% 0 round .55rem)' }}
-            exit={reduceMotion ? undefined : { opacity: 0, scale: 1.025, clipPath: 'inset(100% 0 0 0 round .55rem)' }}
-            transition={{ duration: reduceMotion ? 0 : 0.78, ease }}
-          >
-            <motion.span
-              className={`problem-object-ground-shadow problem-object-ground-shadow--${problem.id}`}
-              initial={reduceMotion ? false : { opacity: 0, scaleX: 0.65 }}
-              animate={{ opacity: 1, scaleX: 1 }}
-              transition={{ duration: reduceMotion ? 0 : 0.7, delay: reduceMotion ? 0 : 0.18, ease }}
-            />
-            <ProblemObject id={problem.id} reduceMotion={reduceMotion} />
-          </motion.div>
-        </AnimatePresence>
+        <motion.div
+          key={`object-${problem.id}`}
+          className="problem-photo-wrap problem-photo-wrap--object"
+          aria-hidden="true"
+          initial={reduceMotion ? false : { opacity: 0, scale: 0.97, y: 8 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.48, ease }}
+        >
+          <motion.span
+            className={`problem-object-ground-shadow problem-object-ground-shadow--${problem.id}`}
+            initial={reduceMotion ? false : { opacity: 0, scaleX: 0.65 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            transition={{ duration: reduceMotion ? 0 : 0.7, delay: reduceMotion ? 0 : 0.18, ease }}
+          />
+          <ProblemObject id={problem.id} reduceMotion={reduceMotion} pageVisible={pageVisible} compositorMotion={compositorMotion} />
+        </motion.div>
       )}
 
       {!featured && (
         <div className={`problem-card__object problem-card__object--${problem.id}`} aria-hidden="true">
-          <ProblemObject id={problem.id} compact reduceMotion={reduceMotion} />
+          <ProblemObject id={problem.id} compact reduceMotion={reduceMotion} pageVisible={pageVisible} compositorMotion={compositorMotion} />
         </div>
       )}
 
       <div className="problem-card__answer">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={`answer-${problem.id}`}
-            initial={reduceMotion ? false : { opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, y: -10 }}
-            transition={{ duration: reduceMotion ? 0 : 0.48, delay: featured && !reduceMotion ? 0.12 : 0, ease }}
-          >
-            {featured ? (
-              <>
-                <p className="problem-card__help">Spot the signs early</p>
-                <div className="problem-card__diagnosis-grid">
-                  <div>
-                    <span>01 / You may notice</span>
-                    <p>{problem.symptom}</p>
-                  </div>
-                  <div>
-                    <span>02 / Why it matters</span>
-                    <p>{problem.impact}</p>
-                  </div>
-                  <div className="is-solution">
-                    <span>03 / Our next step</span>
-                    <p>{problem.solution}</p>
-                  </div>
+        <motion.div
+          key={`answer-${problem.id}`}
+          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.36, delay: featured && !reduceMotion ? 0.06 : 0, ease }}
+        >
+          {featured ? (
+            <>
+              <p className="problem-card__help">Spot the signs early</p>
+              <div className="problem-card__diagnosis-grid">
+                <div>
+                  <span>01 / You may notice</span>
+                  <p>{problem.symptom}</p>
                 </div>
-              </>
-            ) : (
-              <>
-                <p className="problem-card__help">Common warning sign</p>
-                <p className="problem-card__description">{problem.symptom}</p>
-              </>
-            )}
-          </motion.div>
-        </AnimatePresence>
+                <div>
+                  <span>02 / Why it matters</span>
+                  <p>{problem.impact}</p>
+                </div>
+                <div className="is-solution">
+                  <span>03 / Our next step</span>
+                  <p>{problem.solution}</p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="problem-card__help">Common warning sign</p>
+              <p className="problem-card__description">{problem.symptom}</p>
+            </>
+          )}
+        </motion.div>
       </div>
       {!featured && <span className="problem-card__select" aria-hidden="true">Explore <b>↗</b></span>}
     </Card>
@@ -304,16 +326,19 @@ export default function Problems() {
   const ref = useRef(null)
   const activeCardRef = useRef(null)
   const reduceMotion = useReducedMotion()
+  const sectionInView = useInView(ref, { margin: '200px 0px', amount: 0.05 })
   const isMobile = useMediaQuery('(max-width: 767px)')
   const lowPower = useLowPowerMode()
+  const pageVisible = usePageVisibility()
   const simplifiedMotion = reduceMotion || lowPower
+  const allowSectionMotion = pageVisible && sectionInView && !simplifiedMotion
   const [activeId, setActiveId] = useState(problems[0].id)
   const activeProblem = problems.find((problem) => problem.id === activeId) ?? problems[0]
   const activeIndex = Math.max(0, problems.findIndex((problem) => problem.id === activeProblem.id))
   const otherProblems = problems.filter((problem) => problem.id !== activeProblem.id)
 
-  const selectProblem = (problemId) => {
-    setActiveId(problemId)
+  const selectProblem = useCallback((problemId) => {
+    setActiveId((currentId) => currentId === problemId ? currentId : problemId)
 
     if (!window.matchMedia('(min-width: 768px) and (max-width: 1023px)').matches) return
 
@@ -330,10 +355,10 @@ export default function Problems() {
         target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
       }
     })
-  }
+  }, [reduceMotion])
 
   return (
-    <section ref={ref} id="problems" data-section className={`problems-section ${lowPower ? 'problems-section--lite' : ''}`}>
+    <section ref={ref} id="problems" data-section className={`problems-section ${lowPower ? 'problems-section--lite' : ''} ${allowSectionMotion ? 'problems-section--motion-active' : ''}`}>
       <div className="problems-section__halo" aria-hidden="true" />
 
       <div className="container-x relative z-10">
@@ -401,24 +426,24 @@ export default function Problems() {
               })}
             </div>
 
-            <LayoutGroup id="problems-layout">
-              <div className="problems-layout">
-                <div ref={activeCardRef} aria-live="polite" className="h-full">
-                  <ProblemCard problem={activeProblem} index={0} featured active reduceMotion={simplifiedMotion} />
-                </div>
-                <div className="problems-grid" aria-label="Choose a problem to explore">
-                  {otherProblems.map((problem, index) => (
-                    <ProblemCard
-                      key={problem.id}
-                      problem={problem}
-                      index={index + 1}
-                      onSelect={selectProblem}
-                      reduceMotion={simplifiedMotion}
-                    />
-                  ))}
-                </div>
+            <div className="problems-layout">
+              <div ref={activeCardRef} aria-live="polite" className="h-full">
+                <ProblemCard problem={activeProblem} index={0} featured active reduceMotion={simplifiedMotion} pageVisible={allowSectionMotion} compositorMotion />
               </div>
-            </LayoutGroup>
+              <div className="problems-grid" aria-label="Choose a problem to explore">
+                {otherProblems.map((problem, index) => (
+                  <ProblemCard
+                    key={problem.id}
+                    problem={problem}
+                    index={index + 1}
+                    onSelect={selectProblem}
+                    reduceMotion={simplifiedMotion}
+                    pageVisible={allowSectionMotion}
+                    compositorMotion
+                  />
+                ))}
+              </div>
+            </div>
 
             <div className="problems-console__hint" aria-hidden="true">
               <span>Select a signal to inspect</span>
@@ -436,6 +461,8 @@ export default function Problems() {
               index={index}
               featured
               reduceMotion={simplifiedMotion}
+              pageVisible={allowSectionMotion}
+              compositorMotion={false}
             />
           ))}
         </div>}
@@ -460,7 +487,7 @@ export default function Problems() {
             <motion.a
               href={brand.whatsapp}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="problems-cta"
               data-hover
               whileHover={{ scale: 1.025 }}
@@ -468,7 +495,7 @@ export default function Problems() {
             >
               Describe your problem <span aria-hidden="true">↗</span>
             </motion.a>
-            <a className="problems-call" href={brand.whatsapp} target="_blank" rel="noreferrer" data-hover>
+            <a className="problems-call" href={brand.whatsapp} target="_blank" rel="noopener noreferrer" data-hover>
               Chat on WhatsApp
             </a>
           </div>

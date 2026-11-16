@@ -7,6 +7,20 @@ import Icon from './Icons'
 const navScrollEase = (t) =>
   t < 0.5 ? 8 * t ** 4 : 1 - ((-2 * t + 2) ** 4) / 2
 
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches)
+
+  useEffect(() => {
+    const media = window.matchMedia(query)
+    const update = () => setMatches(media.matches)
+    update()
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [query])
+
+  return matches
+}
+
 export function Logo({ className = '', dark = false, priority = false }) {
   return (
     <span className={`inline-flex items-center select-none ${className}`}>
@@ -26,17 +40,18 @@ export function Logo({ className = '', dark = false, priority = false }) {
 }
 
 /* Intro: dot → orbiting dots → rotating square → wordmark (mirrors the reel's opening & closing beats) */
-export function Preloader({ onDone }) {
+export function Preloader({ onDone, performanceLite = false }) {
   const [phase, setPhase] = useState(0)
   const reduceMotion = useReducedMotion()
+  const simplifiedMotion = reduceMotion || performanceLite
   useEffect(() => {
-    if (reduceMotion) {
+    if (simplifiedMotion) {
       setPhase(4)
       return undefined
     }
     const t = [setTimeout(() => setPhase(1), 180), setTimeout(() => setPhase(2), 500), setTimeout(() => setPhase(3), 820), setTimeout(() => setPhase(4), 1350)]
     return () => t.forEach(clearTimeout)
-  }, [reduceMotion])
+  }, [simplifiedMotion])
   useEffect(() => {
     if (phase === 4) onDone?.()
   }, [phase, onDone])
@@ -49,7 +64,7 @@ export function Preloader({ onDone }) {
       animate={phase < 4
         ? { clipPath: 'inset(0 0 0% 0)', visibility: 'visible' }
         : { clipPath: 'inset(0 0 100% 0)', transitionEnd: { visibility: 'hidden' } }}
-      transition={{ duration: reduceMotion ? 0 : 0.45, ease: [0.76, 0, 0.24, 1] }}
+      transition={{ duration: simplifiedMotion ? 0 : 0.45, ease: [0.76, 0, 0.24, 1] }}
       style={{ pointerEvents: phase < 4 ? 'auto' : 'none' }}
     >
           <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-2 font-mono text-[8px] font-semibold uppercase tracking-[0.12em] text-white/50 sm:inset-x-6 sm:top-6 sm:text-[10px] sm:tracking-wider">
@@ -126,7 +141,12 @@ function useSectionIndex() {
 }
 
 /* Fixed viewfinder HUD with scroll-driven timecode */
-export function Hud() {
+export function Hud({ performanceLite = false }) {
+  const enabled = useMediaQuery('(min-width: 768px)')
+  return enabled ? <DesktopHud performanceLite={performanceLite} /> : null
+}
+
+function DesktopHud({ performanceLite }) {
   const { scrollYProgress } = useScroll()
   const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 30 })
   const [tc, setTc] = useState('00:00:00:00')
@@ -134,7 +154,7 @@ export function Hud() {
   const { idx, total } = useSectionIndex()
   useMotionValueEvent(scrollYProgress, 'change', (v) => {
     const now = performance.now()
-    if (now - lastHudUpdate.current < 70 && v > 0 && v < 1) return
+    if (now - lastHudUpdate.current < (performanceLite ? 140 : 70) && v > 0 && v < 1) return
     lastHudUpdate.current = now
     const frames = Math.round(v * 60 * 24)
     const s = Math.floor(frames / 24)
@@ -246,7 +266,7 @@ export function Nav({ lenis }) {
           >
             <Logo className="text-2xl sm:text-3xl" priority />
           </motion.a>
-          <nav className="hidden items-center gap-8 lg:flex">
+          <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary navigation">
             {nav.map((n) => (
               <a key={n.href} href={n.href} onClick={(e) => go(e, n.href)} className="group relative font-display text-sm font-semibold uppercase tracking-wider text-white/75 hover:text-white">
                 {n.label}
@@ -312,19 +332,21 @@ export function Nav({ lenis }) {
   )
 }
 
-export function Cursor() {
+export function Cursor({ performanceLite = false }) {
+  const enabled = useMediaQuery('(pointer: fine)')
+  return enabled && !performanceLite ? <FinePointerCursor /> : null
+}
+
+function FinePointerCursor() {
   const x = useMotionValue(-100)
   const y = useMotionValue(-100)
   const sx = useSpring(x, { stiffness: 500, damping: 40 })
   const sy = useSpring(y, { stiffness: 500, damping: 40 })
   const [hover, setHover] = useState(false)
   const [cursorTone, setCursorTone] = useState('default')
-  const [enabled, setEnabled] = useState(false)
   const hoverRef = useRef(false)
   const toneRef = useRef('default')
   useEffect(() => {
-    if (!window.matchMedia('(pointer: fine)').matches) return
-    setEnabled(true)
     document.body.classList.add('has-cursor')
     const move = (e) => {
       x.set(e.clientX)
@@ -346,7 +368,6 @@ export function Cursor() {
       document.body.classList.remove('has-cursor')
     }
   }, [x, y])
-  if (!enabled) return null
   return (
     <motion.div
       className={`pointer-events-none fixed left-0 top-0 z-[90] rounded-full ${cursorTone === 'pink' ? 'bg-hot/60 ring-2 ring-hot shadow-[0_0_18px_rgba(255,2,141,0.35)]' : 'bg-sun mix-blend-difference'}`}
