@@ -1,20 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { brand, problems } from '../data/content'
 import Icon from './Icons'
 import { ease, SectionLabel } from './Motion'
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 64, scale: 0.972 },
-  visible: ({ index, reduceMotion }) => ({
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: reduceMotion
-      ? { duration: 0 }
-      : { duration: 0.95, delay: 0.12 + index * 0.085, ease },
-  }),
-}
 
 function useMediaQuery(query) {
   const [matches, setMatches] = useState(() => window.matchMedia(query).matches)
@@ -37,18 +25,6 @@ function useLowPowerMode() {
     return Boolean(limitedCpu || limitedMemory || navigator.connection?.saveData)
   })
   return lowPower
-}
-
-function usePageVisibility() {
-  const [isPageVisible, setIsPageVisible] = useState(() => !document.hidden)
-
-  useEffect(() => {
-    const updateVisibility = () => setIsPageVisible(!document.hidden)
-    document.addEventListener('visibilitychange', updateVisibility)
-    return () => document.removeEventListener('visibilitychange', updateVisibility)
-  }, [])
-
-  return isPageVisible
 }
 
 const laptopKeys = Array.from({ length: 54 })
@@ -163,19 +139,13 @@ function SupportObject() {
   )
 }
 
-function ProblemObject({ id, compact = false, reduceMotion, pageVisible, compositorMotion }) {
-  const objectRef = useRef(null)
-  const objectInView = useInView(objectRef, { margin: '160px 0px', amount: 0.1 })
-  const shouldAnimate = !reduceMotion && pageVisible && objectInView && !compact
-  const objectMotion = id === 'device-supplier'
-    ? { y: [0, -4, 0] }
-    : { y: [0, -5, 0], rotateY: [-2, 3, -2] }
-  const ObjectRoot = compositorMotion ? 'div' : motion.div
+function ProblemObject({ id, compact = false, compositorMotion }) {
+  // Keep the detailed 3D composition static while scrolling; card hover and selection effects remain interactive.
   let object
 
   switch (id) {
     case 'slow-computers':
-      object = <LaptopObject reduceMotion={!shouldAnimate} compositorMotion={compositorMotion} />
+      object = <LaptopObject reduceMotion compositorMotion={compositorMotion} />
       break
     case 'hardware-breakdowns':
       object = <HardwareObject />
@@ -194,22 +164,13 @@ function ProblemObject({ id, compact = false, reduceMotion, pageVisible, composi
   }
 
   return (
-    <ObjectRoot
-      ref={objectRef}
-      className={`problem-object problem-object--${id} ${compact ? 'problem-object--compact' : ''} ${shouldAnimate ? 'problem-object--animated' : ''} ${compositorMotion ? 'problem-object--compositor-motion' : ''}`}
-      {...(!compositorMotion && {
-        animate: shouldAnimate && id !== 'slow-computers' ? objectMotion : { y: 0, rotateY: 0 },
-        transition: shouldAnimate && id !== 'slow-computers'
-          ? { duration: id === 'device-supplier' ? 7 : 5.5, repeat: Infinity, ease: 'easeInOut' }
-          : { duration: 0.2 },
-      })}
-    >
+    <div className={`problem-object problem-object--${id} ${compact ? 'problem-object--compact' : ''} ${compositorMotion ? 'problem-object--compositor-motion' : ''}`}>
       {object}
-    </ObjectRoot>
+    </div>
   )
 }
 
-function ProblemCard({ problem, index, featured = false, active = false, onSelect, reduceMotion, pageVisible, compositorMotion }) {
+function ProblemCard({ problem, featured = false, active = false, onSelect, reduceMotion, compositorMotion }) {
   const Card = featured ? motion.article : motion.button
 
   return (
@@ -219,23 +180,9 @@ function ProblemCard({ problem, index, featured = false, active = false, onSelec
         onClick: () => onSelect(problem.id),
       })}
       aria-label={featured ? `${problem.t}. ${problem.symptom}` : `Show ${problem.t}. ${problem.symptom}`}
-      custom={{ index, reduceMotion }}
-      variants={cardVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: '-8%' }}
       whileHover={reduceMotion ? undefined : { y: -6, transition: { duration: 0.22, ease } }}
       className={`problem-card group ${featured ? 'problem-card--featured' : 'problem-card--selectable'} ${active ? 'problem-card--active' : ''} ${problem.accent ? 'problem-card--accent' : ''}`}
     >
-      <motion.span
-        className="problem-card__reveal-line"
-        aria-hidden="true"
-        initial={reduceMotion ? false : { scaleX: 0, opacity: 0 }}
-        whileInView={reduceMotion ? undefined : { scaleX: [0, 1, 1], opacity: [0, 0.8, 0] }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.05, delay: 0.22 + index * 0.085, times: [0, 0.58, 1], ease }}
-      />
-
       {active && (
         <div className="problem-card__active-badge" aria-hidden="true">
           <span /> Active diagnosis
@@ -274,13 +221,13 @@ function ProblemCard({ problem, index, featured = false, active = false, onSelec
             animate={{ opacity: 1, scaleX: 1 }}
             transition={{ duration: reduceMotion ? 0 : 0.7, delay: reduceMotion ? 0 : 0.18, ease }}
           />
-          <ProblemObject id={problem.id} reduceMotion={reduceMotion} pageVisible={pageVisible} compositorMotion={compositorMotion} />
+          <ProblemObject id={problem.id} compositorMotion={compositorMotion} />
         </motion.div>
       )}
 
       {!featured && (
         <div className={`problem-card__object problem-card__object--${problem.id}`} aria-hidden="true">
-          <ProblemObject id={problem.id} compact reduceMotion={reduceMotion} pageVisible={pageVisible} compositorMotion={compositorMotion} />
+          <ProblemObject id={problem.id} compact compositorMotion={compositorMotion} />
         </div>
       )}
 
@@ -326,12 +273,9 @@ export default function Problems() {
   const ref = useRef(null)
   const activeCardRef = useRef(null)
   const reduceMotion = useReducedMotion()
-  const sectionInView = useInView(ref, { margin: '200px 0px', amount: 0.05 })
   const isMobile = useMediaQuery('(max-width: 767px)')
   const lowPower = useLowPowerMode()
-  const pageVisible = usePageVisibility()
   const simplifiedMotion = reduceMotion || lowPower
-  const allowSectionMotion = pageVisible && sectionInView && !simplifiedMotion
   const [activeId, setActiveId] = useState(problems[0].id)
   const activeProblem = problems.find((problem) => problem.id === activeId) ?? problems[0]
   const activeIndex = Math.max(0, problems.findIndex((problem) => problem.id === activeProblem.id))
@@ -358,7 +302,7 @@ export default function Problems() {
   }, [reduceMotion])
 
   return (
-    <section ref={ref} id="problems" data-section className={`problems-section ${lowPower ? 'problems-section--lite' : ''} ${allowSectionMotion ? 'problems-section--motion-active' : ''}`}>
+    <section ref={ref} id="problems" data-section className={`problems-section ${lowPower ? 'problems-section--lite' : ''}`}>
       <div className="problems-section__halo" aria-hidden="true" />
 
       <div className="container-x relative z-10">
@@ -428,17 +372,15 @@ export default function Problems() {
 
             <div className="problems-layout">
               <div ref={activeCardRef} aria-live="polite" className="h-full">
-                <ProblemCard problem={activeProblem} index={0} featured active reduceMotion={simplifiedMotion} pageVisible={allowSectionMotion} compositorMotion />
+                <ProblemCard problem={activeProblem} featured active reduceMotion={simplifiedMotion} compositorMotion />
               </div>
               <div className="problems-grid" aria-label="Choose a problem to explore">
-                {otherProblems.map((problem, index) => (
+                {otherProblems.map((problem) => (
                   <ProblemCard
                     key={problem.id}
                     problem={problem}
-                    index={index + 1}
                     onSelect={selectProblem}
                     reduceMotion={simplifiedMotion}
-                    pageVisible={allowSectionMotion}
                     compositorMotion
                   />
                 ))}
@@ -454,26 +396,18 @@ export default function Problems() {
         </div>}
 
         {isMobile && <div className="problems-mobile-list" aria-label="Problems we solve">
-          {problems.map((problem, index) => (
+          {problems.map((problem) => (
             <ProblemCard
               key={`mobile-${problem.id}`}
               problem={problem}
-              index={index}
               featured
               reduceMotion={simplifiedMotion}
-              pageVisible={allowSectionMotion}
               compositorMotion={false}
             />
           ))}
         </div>}
 
-        <motion.div
-          className="problems-footer"
-          initial={reduceMotion ? false : { opacity: 0, y: 22 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: reduceMotion ? 0 : 0.75, delay: reduceMotion ? 0 : 0.2, ease }}
-        >
+        <div className="problems-footer">
           <div className="problems-footer__copy">
             <p className="problems-footer__eyebrow"><span /> Recognise one of these signs?</p>
             <h3>You do not need to diagnose it yourself.</h3>
@@ -499,7 +433,7 @@ export default function Problems() {
               Chat on WhatsApp
             </a>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

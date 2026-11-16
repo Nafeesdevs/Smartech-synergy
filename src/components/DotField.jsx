@@ -7,7 +7,7 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
   useEffect(() => {
     const canvas = ref.current
     const ctx = canvas.getContext('2d')
-    let w = 0, h = 0, raf = 0, visible = false, lastPaint = 0
+    let w = 0, h = 0, raf = 0, visible = false, lastPaint = 0, points = []
     const lowPower = window.matchMedia('(pointer: coarse)').matches ||
       (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
       (navigator.deviceMemory && navigator.deviceMemory <= 4)
@@ -15,6 +15,30 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
     const mouse = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 }
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+    const cols = lowPower ? Math.min(density, 26) : density
+    const rows = Math.round(cols * 0.6)
+    const rebuildPoints = () => {
+      const fov = 520
+      points = []
+      for (let j = 0; j < rows; j++) {
+        for (let i = 0; i < cols; i++) {
+          const u = i / (cols - 1) - 0.5
+          const v = j / (rows - 1)
+          const z = 120 + v * 1100
+          const scale = fov / z
+          points.push({
+            u,
+            v,
+            px: w / 2 + u * 1500 * scale,
+            baseY: h * 0.36 + 170 * scale,
+            scale,
+            size: Math.max(0.6, 2.6 * scale),
+            alpha: Math.min(1, 0.15 + (1 - v) * 0.15 + scale * 0.6),
+            wavePhase: u * 5 - v * 3,
+          })
+        }
+      }
+    }
     const resize = () => {
       const r = canvas.getBoundingClientRect()
       w = r.width
@@ -22,6 +46,7 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
       canvas.width = Math.round(w * dpr)
       canvas.height = Math.round(h * dpr)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      rebuildPoints()
     }
     resize()
     const ro = new ResizeObserver(resize)
@@ -33,8 +58,6 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
     }
     window.addEventListener('pointermove', onMove, { passive: true })
 
-    const cols = lowPower ? Math.min(density, 26) : density
-    const rows = Math.round(cols * 0.6)
     let t = 0
     const draw = (now = 0) => {
       raf = 0
@@ -48,37 +71,25 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
       mouse.x += (mouse.tx - mouse.x) * 0.05
       mouse.y += (mouse.ty - mouse.y) * 0.05
       ctx.clearRect(0, 0, w, h)
-      const fov = 520
-      const camY = -170
-      const horizon = h * 0.36
-      for (let j = 0; j < rows; j++) {
-        for (let i = 0; i < cols; i++) {
-          const u = i / (cols - 1) - 0.5
-          const v = j / (rows - 1)
-          const X = u * 1500
-          const Z = 120 + v * 1100
-          const dx = u - (mouse.x - 0.5)
-          const dz = v - mouse.y
+      for (const point of points) {
+          const dx = point.u - (mouse.x - 0.5)
+          const dz = point.v - mouse.y
           const dist = Math.sqrt(dx * dx + dz * dz)
-          const Y =
-            Math.sin(u * 6 + t * 2) * 34 +
-            Math.cos(v * 7 - t * 1.6) * 30 +
+          const y =
+            Math.sin(point.u * 6 + t * 2) * 34 +
+            Math.cos(point.v * 7 - t * 1.6) * 30 +
             Math.sin(dist * 14 - t * 4) * 46 * Math.exp(-dist * 2.4)
-          const s = fov / Z
-          const px = w / 2 + X * s
-          const py = horizon + (Y - camY) * s
-          if (px < -10 || px > w + 10 || py < -10 || py > h + 10) continue
-          const size = Math.max(0.6, 2.6 * s)
-          const wave = Math.sin(u * 5 - v * 3 + t * 2.2)
+          const py = point.baseY + y * point.scale
+          if (point.px < -10 || point.px > w + 10 || py < -10 || py > h + 10) continue
+          const wave = Math.sin(point.wavePhase + t * 2.2)
           let fill = base
           if (wave > 0.86) fill = accent
           else if (wave < -0.93) fill = accent2
-          ctx.globalAlpha = Math.min(1, 0.15 + (1 - v) * 0.15 + s * 0.6)
+          ctx.globalAlpha = point.alpha
           ctx.fillStyle = fill
           ctx.beginPath()
-          ctx.arc(px, py, size, 0, Math.PI * 2)
+          ctx.arc(point.px, py, point.size, 0, Math.PI * 2)
           ctx.fill()
-        }
       }
       ctx.globalAlpha = 1
       if (!reduce) raf = requestAnimationFrame(draw)

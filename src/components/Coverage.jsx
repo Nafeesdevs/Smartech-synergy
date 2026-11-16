@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
-import { SectionLabel, MaskLines, Reveal, ease } from './Motion'
+import { SectionLabel, MaskLines, Reveal } from './Motion'
 import Icon from './Icons'
 
 // City marker positions follow the supplied coverage-map reference.
@@ -26,7 +25,7 @@ const radarParticles = Array.from({ length: 160 }, (_, i) => {
   return { x: 50 + Math.cos(ang) * r * 50, y: 50 + Math.sin(ang) * r * 50, s: 1 + ((i * 7) % 3) * 0.5 }
 })
 
-function RadarParticles({ active }) {
+function RadarParticles() {
   const canvasRef = useRef(null)
 
   useEffect(() => {
@@ -51,11 +50,9 @@ function RadarParticles({ active }) {
   }, [])
 
   return (
-    <motion.canvas
+    <canvas
       ref={canvasRef}
-      className="pointer-events-none absolute inset-0 h-full w-full"
-      animate={{ rotate: active ? -360 : 0 }}
-      transition={{ duration: 130, repeat: active ? Infinity : 0, ease: 'linear' }}
+      className="coverage-radar-particles pointer-events-none absolute inset-0 h-full w-full"
       aria-hidden="true"
     />
   )
@@ -70,14 +67,12 @@ function toScreen(bearing, ring) {
 }
 
 function Radar() {
-  const ref = useRef(null)
-  const inView = useInView(ref, { margin: '150px 0px', amount: 0.05 })
-  const reduceMotion = useReducedMotion()
+  // CSS starts these compositor-only animations during page load, avoiding a viewport-entry activation burst.
   // 4 Concentric circles radiating outward from Sunway Visio Tower
   const rings = [0.22, 0.44, 0.64, 0.82]
 
   return (
-    <div ref={ref} className="relative mx-auto aspect-square w-[94%] max-w-[620px] select-none sm:w-full">
+    <div className="relative mx-auto aspect-square w-[94%] max-w-[620px] select-none sm:w-full">
       {/* 4 Concentric distance rings radiating from Cheras HQ */}
       {rings.map((r) => (
         <span
@@ -88,37 +83,31 @@ function Radar() {
       ))}
 
       {/* Radar sweeping beam animation */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 rounded-full"
+      <div
+        className="coverage-radar-sweep pointer-events-none absolute inset-0 rounded-full"
         style={{ background: 'conic-gradient(from 0deg, rgba(244,188,33,.28), transparent 22%)' }}
-        animate={{ rotate: inView && !reduceMotion ? 360 : 0 }}
-        transition={{ duration: 6, repeat: inView && !reduceMotion ? Infinity : 0, ease: 'linear' }}
       />
 
-      {/* Orbiting particles */}
-      <RadarParticles active={inView && !reduceMotion} />
+      {/* Static particles preserve the radar texture without rotating a large high-DPI canvas. */}
+      <RadarParticles />
 
       {/* Center Location Map Pin with pulsing radar glow */}
       <div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
-        <span className={`${inView && !reduceMotion ? 'animate-ping' : ''} absolute inset-0 rounded-full bg-sun/60`} />
+        <span className="coverage-radar-ping absolute inset-0 rounded-full bg-sun/60" />
         <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-sun text-ink shadow-[0_0_24px_rgba(244,188,33,0.7)] sm:h-12 sm:w-12 sm:shadow-[0_0_30px_rgba(244,188,33,0.7)]">
           <Icon name="pin" className="h-4 w-4 sm:h-5 sm:w-5" />
         </span>
       </div>
 
       {/* Cities placed to match the supplied coverage-map reference */}
-      {cities.map((city, i) => {
+      {cities.map((city) => {
         const { x, y } = toScreen(city.bearing, city.ring)
 
         return (
-          <motion.div
+          <div
             key={city.name}
             className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
             style={{ left: `${x}%`, top: `${y}%` }}
-            initial={{ opacity: 0, scale: 0 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease, delay: 0.15 + i * 0.05 }}
           >
             <span className="flex items-center gap-1 rounded-full bg-steel/95 px-1.5 py-1 text-[8px] font-bold text-white shadow-lg ring-1 ring-white/20 transition-all duration-300 hover:scale-105 hover:ring-sun/60 sm:gap-2 sm:whitespace-nowrap sm:px-3.5 sm:py-1.5 sm:text-xs">
               <span className={`h-1 w-1 shrink-0 rounded-full sm:h-2 sm:w-2 ${city.dot}`} />
@@ -131,7 +120,7 @@ function Radar() {
                 ))}
               </span>
             </span>
-          </motion.div>
+          </div>
         )
       })}
     </div>

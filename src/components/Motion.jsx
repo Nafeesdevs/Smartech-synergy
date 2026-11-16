@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react'
+import { useLayoutEffect, useRef, useMemo } from 'react'
 import {
   motion,
   useScroll,
@@ -6,6 +6,7 @@ import {
   useSpring,
   useMotionValue,
   useInView,
+  useMotionValueEvent,
 } from 'framer-motion'
 
 export const ease = [0.16, 1, 0.3, 1]
@@ -82,29 +83,44 @@ export function MaskLines({ lines, className = '', lineClass = '', delay = 0 }) 
 /* Word-by-word opacity tied to scroll position */
 export function ScrollWords({ text, className = '', highlight = [] }) {
   const ref = useRef(null)
+  const wordRefs = useRef([])
+  const lastValues = useRef([])
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 85%', 'end 45%'] })
   const words = text.split(' ')
+
+  const renderProgress = (progress) => {
+    for (let i = 0; i < words.length; i++) {
+      const element = wordRefs.current[i]
+      if (!element) continue
+      const localProgress = Math.max(0, Math.min(1, progress * words.length - i))
+      const opacity = 0.12 + localProgress * 0.88
+      const y = (1 - localProgress) * 8
+      const signature = `${opacity.toFixed(3)}:${y.toFixed(2)}`
+      if (lastValues.current[i] === signature) continue
+      lastValues.current[i] = signature
+      element.style.opacity = opacity
+      element.style.transform = `translate3d(0, ${y}px, 0)`
+      element.style.willChange = localProgress > 0 && localProgress < 1 ? 'opacity, transform' : 'auto'
+    }
+  }
+
+  useLayoutEffect(() => {
+    renderProgress(scrollYProgress.get())
+  })
+  useMotionValueEvent(scrollYProgress, 'change', renderProgress)
+
   return (
     <p ref={ref} className={className}>
-      {words.map((w, i) => {
-        const start = i / words.length
-        const end = start + 1 / words.length
-        return (
-          <Word key={i} progress={scrollYProgress} range={[start, end]} hot={highlight.includes(w.replace(/[^\w-]/g, ''))}>
-            {w}
-          </Word>
-        )
-      })}
+      {words.map((word, i) => (
+        <span
+          key={i}
+          ref={(element) => { wordRefs.current[i] = element }}
+          className={`mr-[0.25em] inline-block ${highlight.includes(word.replace(/[^\w-]/g, '')) ? 'text-sun' : ''}`}
+        >
+          {word}
+        </span>
+      ))}
     </p>
-  )
-}
-function Word({ children, progress, range, hot }) {
-  const opacity = useTransform(progress, range, [0.12, 1])
-  const y = useTransform(progress, range, [8, 0])
-  return (
-    <motion.span style={{ opacity, y }} className={`mr-[0.25em] inline-block ${hot ? 'text-sun' : ''}`}>
-      {children}
-    </motion.span>
   )
 }
 

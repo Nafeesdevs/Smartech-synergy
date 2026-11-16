@@ -120,6 +120,33 @@ main:focus {
 }
 
 /* Problems we solve — editorial card composition */
+/* Coverage radar: pre-composited from page load so motion never starts mid-scroll. */
+.coverage-radar-sweep {
+  transform: translateZ(0);
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+.coverage-radar-sweep { animation: coverage-radar-spin 6s linear infinite; }
+.coverage-radar-ping {
+  animation: coverage-radar-ping 1s cubic-bezier(0, 0, .2, 1) infinite;
+  will-change: transform, opacity;
+}
+@keyframes coverage-radar-spin {
+  from { transform: translateZ(0) rotate(0deg); }
+  to { transform: translateZ(0) rotate(360deg); }
+}
+@keyframes coverage-radar-ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .coverage-radar-sweep,
+  .coverage-radar-ping {
+    animation: none;
+    will-change: auto;
+  }
+}
+
 .problems-section {
   --problem-yellow: #ffc628;
   --problem-hot: #ff028d;
