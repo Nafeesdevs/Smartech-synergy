@@ -5,7 +5,15 @@ import Icon from './Icons'
 import { KineticText, SectionLabel, Reveal, Magnetic, ease } from './Motion'
 import { Logo } from './Chrome'
 
-const getInitialForm = () => ({ name: '', company: '', phone: '', need: services[0].t, msg: '' })
+const serviceOptions = [
+  'Hardware Repair',
+  'Software Issues',
+  'PC Upgrades / Custom Builds',
+  'Office IT Support / Setup',
+  'Device Supply',
+  'Other',
+]
+const getInitialForm = () => ({ name: '', company: '', phone: '', need: [], msg: '' })
 const phoneErrorMessage = 'Enter a valid phone number using 7 to 15 digits.'
 const isValidPhone = (value) => {
   const normalized = value.trim()
@@ -18,7 +26,10 @@ export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState(null)
   const [phoneError, setPhoneError] = useState('')
+  const [serviceOpen, setServiceOpen] = useState(false)
+  const [serviceError, setServiceError] = useState('')
   const submittingRef = useRef(false)
+  const serviceTriggerRef = useRef(null)
   useEffect(() => {
     if (!status) return undefined
 
@@ -28,6 +39,16 @@ export function Contact() {
 
   const set = (k) => (e) => {
     setForm((current) => ({ ...current, [k]: e.target.value }))
+    setStatus(null)
+  }
+  const toggleService = (service) => {
+    setForm((current) => ({
+      ...current,
+      need: current.need.includes(service)
+        ? current.need.filter((item) => item !== service)
+        : [...current.need, service],
+    }))
+    setServiceError('')
     setStatus(null)
   }
   const submit = async (e) => {
@@ -46,6 +67,14 @@ export function Contact() {
       formElement.reportValidity()
       return
     }
+    if (!form.need.length) {
+      setServiceError('Select at least one service so we can direct your request correctly.')
+      setServiceOpen(true)
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => serviceTriggerRef.current?.focus())
+      })
+      return
+    }
 
     if (submittingRef.current) return
 
@@ -60,6 +89,8 @@ export function Contact() {
     setStatus(null)
 
     const data = new FormData(formElement)
+    data.delete('service_options')
+    data.set('Services Requested', form.need.join(', '))
     data.set('access_key', accessKey)
     data.set('subject', 'New Website Enquiry - Smartech Synergys')
 
@@ -79,6 +110,8 @@ export function Contact() {
       }
 
       setForm(getInitialForm())
+      setServiceOpen(false)
+      setServiceError('')
       formElement.reset()
       setStatus({ type: 'success', message: 'Thank you. Your request has been sent successfully.' })
     } catch {
@@ -88,6 +121,9 @@ export function Contact() {
       setIsSubmitting(false)
     }
   }
+  const serviceSummary = form.need.length
+    ? `${form.need.length} selected: ${form.need.join(', ')}`
+    : 'Select one or more services'
   const field = 'w-full border-b border-white/20 bg-transparent py-4 text-lg outline-none transition-colors placeholder:text-white/30 focus:border-hot'
   const cards = [
     { icon: 'phoneCall', k: 'Call us', v: brand.phone, href: `tel:${brand.phoneRaw}` },
@@ -159,7 +195,11 @@ export function Contact() {
               </div>
               <div className="grid gap-2 sm:grid-cols-2 sm:gap-x-8">
                 <div><label className="sr-only" htmlFor="consultation-name">Your name</label><input id="consultation-name" name="name" type="text" autoComplete="name" required maxLength={100} className={field} placeholder="Your name" value={form.name} onChange={set('name')} /></div>
-                <div><label className="sr-only" htmlFor="consultation-company">Company</label><input id="consultation-company" name="company" type="text" autoComplete="organization" maxLength={150} className={field} placeholder="Company" value={form.company} onChange={set('company')} /></div>
+                <div className="relative">
+                  <label className="sr-only" htmlFor="consultation-company">Company (optional)</label>
+                  <input id="consultation-company" name="company" type="text" autoComplete="organization" maxLength={150} className={`${field} pr-20`} placeholder="Company" value={form.company} onChange={set('company')} />
+                  <span className="label pointer-events-none absolute right-0 top-[1.35rem] text-[9px] text-white/50" aria-hidden="true">Optional</span>
+                </div>
                 <div>
                   <label className="sr-only" htmlFor="consultation-phone">Phone or WhatsApp number</label>
                   <input
@@ -190,15 +230,69 @@ export function Contact() {
                   />
                   {phoneError && <p id="consultation-phone-error" className="mt-2 text-sm text-hot" role="alert">{phoneError}</p>}
                 </div>
-                <div><label className="sr-only" htmlFor="consultation-service">Service needed</label><select id="consultation-service" name="service" className={`${field} appearance-none`} value={form.need} onChange={set('need')}>
-                  {services.map((s) => (
-                    <option key={s.t} className="bg-ink">{s.t}</option>
-                  ))}
-                  <option className="bg-ink">Buy devices / products</option>
-                </select></div>
+                <div
+                  className="min-w-0"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape' && serviceOpen) {
+                      e.preventDefault()
+                      setServiceOpen(false)
+                      window.requestAnimationFrame(() => {
+                        window.requestAnimationFrame(() => serviceTriggerRef.current?.focus())
+                      })
+                    }
+                  }}
+                >
+                  <button
+                    ref={serviceTriggerRef}
+                    id="consultation-service-trigger"
+                    type="button"
+                    className="flex min-h-[64px] w-full items-center justify-between gap-4 border-b border-white/20 py-2 text-left outline-none transition-colors hover:border-white/40 focus-visible:border-hot"
+                    aria-expanded={serviceOpen}
+                    aria-controls="consultation-services-panel"
+                    aria-labelledby="consultation-service-label consultation-service-summary"
+                    aria-describedby={serviceError ? 'consultation-service-error' : undefined}
+                    aria-invalid={serviceError ? 'true' : 'false'}
+                    onClick={() => setServiceOpen((open) => !open)}
+                  >
+                    <span className="min-w-0">
+                      <span id="consultation-service-label" className="block font-display text-base font-extrabold leading-tight tracking-[-0.01em] text-white sm:text-lg">How can we assist you today?</span>
+                      <span id="consultation-service-summary" className={`mt-1 block truncate text-sm ${form.need.length ? 'text-sun' : 'text-white/40'}`} aria-live="polite">
+                        {serviceSummary}
+                      </span>
+                    </span>
+                    <span className={`shrink-0 text-xl text-hot transition-transform duration-300 ${serviceOpen ? 'rotate-45' : ''}`} aria-hidden="true">+</span>
+                  </button>
+                  {serviceError && <p id="consultation-service-error" className="mt-2 text-sm text-hot" role="alert">{serviceError}</p>}
+                  {serviceOpen && (
+                    <fieldset id="consultation-services-panel" className="mt-3 rounded-2xl bg-white/[0.04] p-3 ring-1 ring-white/10">
+                      <legend className="sr-only">How can we assist you today?</legend>
+                      <div className="grid grid-cols-2 gap-2">
+                        {serviceOptions.map((service) => {
+                          const selected = form.need.includes(service)
+                          return (
+                            <label key={service} className="block cursor-pointer">
+                              <input
+                                type="checkbox"
+                                name="service_options"
+                                value={service}
+                                checked={selected}
+                                onChange={() => toggleService(service)}
+                                className="peer sr-only"
+                              />
+                              <span className={`flex min-h-11 items-center gap-2 rounded-xl px-3 py-2 text-[13px] font-semibold leading-tight transition-colors duration-200 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-sun ${selected ? 'bg-hot text-white' : 'bg-white/[0.06] text-white/75 hover:bg-white/10 hover:text-white'}`}>
+                                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs ${selected ? 'bg-ink text-sun' : 'ring-1 ring-white/25'}`} aria-hidden="true">{selected ? '✓' : ''}</span>
+                                <span>{service}</span>
+                              </span>
+                            </label>
+                          )
+                        })}
+                      </div>
+                    </fieldset>
+                  )}
+                </div>
               </div>
               <label className="sr-only" htmlFor="consultation-message">Tell us what you need</label>
-              <textarea id="consultation-message" name="message" rows={4} maxLength={2000} className={`${field} mt-2 resize-none`} placeholder="Tell us what you need…" value={form.msg} onChange={set('msg')} />
+              <textarea id="consultation-message" name="message" rows={4} maxLength={2000} className={`${field} mt-2 resize-none`} placeholder="Tell us more about your issue..." value={form.msg} onChange={set('msg')} />
               <div className="mt-10 flex flex-wrap items-center justify-between gap-6">
                 <p id="consultation-note" className="label max-w-[16rem] text-white/50">No obligations. We usually reply within a few hours.</p>
                 <Magnetic>
