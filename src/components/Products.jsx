@@ -34,7 +34,7 @@ function Tile({ p, i }) {
         className="group relative flex aspect-[5/4] flex-col justify-between overflow-hidden rounded-3xl bg-white p-7 ring-1 ring-ink/10 transition-colors duration-500 hover:bg-ink hover:text-white"
       >
         <div className="flex items-start justify-between">
-          <span className="label text-ink/40 group-hover:text-white/40">P/0{i + 1}</span>
+          <span className="label text-ink/40 group-hover:text-white/50">P/0{i + 1}</span>
           <Icon name="arrowUR" className="h-5 w-5 -translate-x-2 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:text-volt group-hover:opacity-100" />
         </div>
         <div style={{ transform: 'translateZ(40px)' }} className="flex h-20 w-20 items-center justify-center rounded-2xl bg-paper text-ink transition-all duration-500 group-hover:scale-110 group-hover:bg-sun">

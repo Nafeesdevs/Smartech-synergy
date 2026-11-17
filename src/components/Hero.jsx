@@ -61,7 +61,13 @@ export default function Hero({ ready, lenis }) {
               <KineticText key={`never-${ready}`} text="never skips" delay={ready ? 0.35 : 0} chaos={1.4} />
               <Brackets size={22} color="#F4BC21" />
             </span>
-            <KineticText key={`beat-${ready}`} text="a beat." className="block" delay={ready ? 0.7 : 0} />
+            <KineticText
+              key={`beat-${ready}`}
+              text="a beat."
+              className="block"
+              separatorClassName="min-w-[0.24em] sm:min-w-0"
+              delay={ready ? 0.7 : 0}
+            />
           </h1>
 
           <motion.div
@@ -71,7 +77,7 @@ export default function Hero({ ready, lenis }) {
             transition={{ duration: 1, ease, delay: 1.2 }}
           >
             <p className="max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
-              From a single device repair to a complete office setup, Smartech Synergys supports the technology your business depends on. We provide repairs, performance upgrades and on-site IT support across Kuala Lumpur and Selangor, Assist your team spend less time troubleshooting and more time working.
+              From a single device repair to a complete office setup, Smartech Synergys supports the technology your business depends on. We provide repairs, performance upgrades and on-site IT support across Kuala Lumpur and Selangor, helping your team spend less time troubleshooting and more time working.
             </p>
             <div className="flex flex-col sm:mb-10 sm:flex-row flex-wrap gap-3 xl:mb-12">
               <Magnetic>

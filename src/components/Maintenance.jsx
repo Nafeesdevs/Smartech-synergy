@@ -13,7 +13,7 @@ export default function Maintenance() {
         {/* Full-width header row — matching site alignment */}
         <div className="mb-10 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <SectionLabel index="04">Maintenance Services</SectionLabel>
-          <span className="label text-white/40">Preventive Care &amp; Performance Upgrades</span>
+          <span className="label text-white/50">Preventive Care &amp; Performance Upgrades</span>
         </div>
 
         <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-14 xl:gap-16">
@@ -49,7 +49,7 @@ export default function Maintenance() {
                     </div>
                   </div>
                   <div className="mt-5 sm:mt-6 flex items-center justify-between border-t border-white/10 pt-4">
-                    <span className="label text-white/40">KL &amp; Selangor</span>
+                    <span className="label text-white/50">KL &amp; Selangor</span>
                     <a
                       href="#contact"
                       className="label inline-flex items-center gap-2 text-sun transition-colors hover:text-white"
@@ -91,7 +91,7 @@ export default function Maintenance() {
                     <div className="min-w-0 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-x-1">
                       <div className="flex flex-wrap items-center gap-2.5">
                         <span className="h-1.5 w-1.5 rounded-full bg-volt shadow-[0_0_10px_rgba(25,107,228,0.65)] transition-all duration-500 group-hover:scale-125 group-hover:bg-volt" />
-                        <span className="label text-white/40 transition-colors duration-300 group-hover:text-ink/55">
+                        <span className="label text-white/50 transition-colors duration-300 group-hover:text-ink/55">
                           {item.tag}
                         </span>
                       </div>

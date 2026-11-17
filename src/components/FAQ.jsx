@@ -39,7 +39,7 @@ function FaqItem({ item, index, isOpen, toggle, open }) {
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-3 pt-0.5">
             <span className={`h-1 w-1 rounded-full transition-colors duration-300 ${isOpen ? 'bg-ink/20' : 'bg-white/20 group-hover:bg-ink/20'}`} />
-            <span className={`label transition-colors duration-300 ${isOpen ? 'text-ink/60' : 'text-white/40 group-hover:text-ink/60'}`}>{item.tag}</span>
+            <span className={`label transition-colors duration-300 ${isOpen ? 'text-ink/60' : 'text-white/50 group-hover:text-ink/60'}`}>{item.tag}</span>
           </div>
           <span className={`mt-3 block font-display text-base font-bold leading-tight transition-colors duration-300 sm:text-xl md:text-2xl ${isOpen ? 'text-ink' : 'text-white group-hover:text-ink'}`}>
             {item.q}
@@ -117,7 +117,7 @@ export default function FAQ() {
 
               <Reveal delay={0.25} className="mt-10 hidden sm:block">
                 <div className="border-l-2 border-sun py-1 pl-5">
-                  <div className="label text-white/40">Need direct answers?</div>
+                  <div className="label text-white/50">Need direct answers?</div>
                   <p className="mt-2 text-sm text-white/75">
                     Have a unique infrastructure challenge or urgent request?
                   </p>

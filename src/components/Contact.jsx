@@ -6,11 +6,18 @@ import { KineticText, SectionLabel, Reveal, Magnetic, ease } from './Motion'
 import { Logo } from './Chrome'
 
 const getInitialForm = () => ({ name: '', company: '', phone: '', need: services[0].t, msg: '' })
+const phoneErrorMessage = 'Enter a valid phone number using 7 to 15 digits.'
+const isValidPhone = (value) => {
+  const normalized = value.trim()
+  const digits = normalized.replace(/\D/g, '')
+  return /^\+?[0-9() .-]+$/.test(normalized) && digits.length >= 7 && digits.length <= 15
+}
 
 export function Contact() {
   const [form, setForm] = useState(getInitialForm)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState(null)
+  const [phoneError, setPhoneError] = useState('')
   const submittingRef = useRef(false)
   useEffect(() => {
     if (!status) return undefined
@@ -27,6 +34,14 @@ export function Contact() {
     e.preventDefault()
 
     const formElement = e.currentTarget
+    const phoneInput = formElement.elements.namedItem('phone')
+    if (form.phone && !isValidPhone(form.phone)) {
+      phoneInput?.setCustomValidity(phoneErrorMessage)
+      setPhoneError(phoneErrorMessage)
+    } else {
+      phoneInput?.setCustomValidity('')
+      setPhoneError('')
+    }
     if (!formElement.checkValidity()) {
       formElement.reportValidity()
       return
@@ -83,7 +98,7 @@ export function Contact() {
     <section id="contact" data-section className="relative overflow-hidden bg-coal py-28 md:py-40">
       <div className="dot-grid pointer-events-none absolute inset-0 text-white/[0.05]" />
       <div className="container-x relative">
-        <SectionLabel index="08">Let&rsquo;s work together</SectionLabel>
+        <SectionLabel index="10">Let&rsquo;s work together</SectionLabel>
         <h2 className="display mt-6 sm:mt-8 text-[12vw] sm:text-6xl md:text-7xl lg:text-[8.5vw]">
           <KineticText text="Let's fix it" className="block" />
           <KineticText text="together." className="block text-hot" delay={0.3} />
@@ -93,7 +108,7 @@ export function Contact() {
           <div className="lg:col-span-5">
             <Reveal>
               <p className="text-base sm:text-lg leading-relaxed text-white/70">
-                Get a <span className="font-bold text-hot">FREE tech consultation</span> for your office today. Share your requirements and we&rsquo;ll recommend the best solution for your business  no obligations.
+                Get a <span className="font-bold text-hot">FREE tech consultation</span> for your office today. Share your requirements and we&rsquo;ll recommend the best solution for your business — no obligations.
               </p>
             </Reveal>
             <div className="mt-8 sm:mt-10 space-y-3">
@@ -113,7 +128,7 @@ export function Contact() {
                     <Icon name={c.icon} className="h-4 w-4 sm:h-5 sm:w-5" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="label block text-[10px] sm:text-[11px] text-white/40 group-hover:text-ink/60">{c.k}</span>
+                    <span className="label block text-[10px] sm:text-[11px] text-white/50 group-hover:text-ink/60">{c.k}</span>
                     <span className="block truncate font-display text-base sm:text-lg font-bold">{c.v}</span>
                   </span>
                   <Icon name="arrowUR" className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-500 group-hover:rotate-45" />
@@ -125,7 +140,7 @@ export function Contact() {
                     <Icon name="pin" className="h-4 w-4 sm:h-5 sm:w-5" />
                   </span>
                   <span>
-                    <span className="label block text-[10px] sm:text-[11px] text-white/40">Office</span>
+                    <span className="label block text-[10px] sm:text-[11px] text-white/50">Office</span>
                     <span className="mt-1 block text-sm sm:text-base leading-relaxed text-white/80">{brand.address}</span>
                   </span>
                 </div>
@@ -136,7 +151,7 @@ export function Contact() {
           <Reveal className="lg:col-span-7" delay={0.1}>
             <form onSubmit={submit} className="relative rounded-[28px] bg-ink p-5 sm:p-7 ring-1 ring-white/10 md:p-12" aria-describedby="consultation-note" aria-busy={isSubmitting}>
               <input type="checkbox" name="botcheck" className="hidden" tabIndex="-1" autoComplete="off" aria-hidden="true" />
-              <div className="label mb-4 flex items-center justify-between text-white/40">
+              <div className="label mb-4 flex items-center justify-between text-white/50">
                 <span>Request a free consultation</span>
                 <span className="flex items-center gap-2 text-hot">
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-hot" /> Fast response
@@ -145,7 +160,36 @@ export function Contact() {
               <div className="grid gap-2 sm:grid-cols-2 sm:gap-x-8">
                 <div><label className="sr-only" htmlFor="consultation-name">Your name</label><input id="consultation-name" name="name" type="text" autoComplete="name" required maxLength={100} className={field} placeholder="Your name" value={form.name} onChange={set('name')} /></div>
                 <div><label className="sr-only" htmlFor="consultation-company">Company</label><input id="consultation-company" name="company" type="text" autoComplete="organization" maxLength={150} className={field} placeholder="Company" value={form.company} onChange={set('company')} /></div>
-                <div><label className="sr-only" htmlFor="consultation-phone">Phone or WhatsApp number</label><input id="consultation-phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" required maxLength={30} className={field} placeholder="Phone / WhatsApp" value={form.phone} onChange={set('phone')} /></div>
+                <div>
+                  <label className="sr-only" htmlFor="consultation-phone">Phone or WhatsApp number</label>
+                  <input
+                    id="consultation-phone"
+                    name="phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    required
+                    maxLength={30}
+                    pattern="\\+?[0-9() .-]{7,29}"
+                    title={phoneErrorMessage}
+                    aria-invalid={phoneError ? 'true' : 'false'}
+                    aria-describedby={phoneError ? 'consultation-phone-error' : undefined}
+                    className={field}
+                    placeholder="Phone / WhatsApp"
+                    value={form.phone}
+                    onChange={(e) => {
+                      e.target.setCustomValidity('')
+                      setPhoneError('')
+                      set('phone')(e)
+                    }}
+                    onInvalid={(e) => {
+                      if (e.currentTarget.validity.patternMismatch || e.currentTarget.validationMessage === phoneErrorMessage) {
+                        setPhoneError(phoneErrorMessage)
+                      }
+                    }}
+                  />
+                  {phoneError && <p id="consultation-phone-error" className="mt-2 text-sm text-hot" role="alert">{phoneError}</p>}
+                </div>
                 <div><label className="sr-only" htmlFor="consultation-service">Service needed</label><select id="consultation-service" name="service" className={`${field} appearance-none`} value={form.need} onChange={set('need')}>
                   {services.map((s) => (
                     <option key={s.t} className="bg-ink">{s.t}</option>
@@ -156,7 +200,7 @@ export function Contact() {
               <label className="sr-only" htmlFor="consultation-message">Tell us what you need</label>
               <textarea id="consultation-message" name="message" rows={4} maxLength={2000} className={`${field} mt-2 resize-none`} placeholder="Tell us what you need…" value={form.msg} onChange={set('msg')} />
               <div className="mt-10 flex flex-wrap items-center justify-between gap-6">
-                <p id="consultation-note" className="label max-w-[16rem] text-white/40">No obligations. We usually reply within a few hours.</p>
+                <p id="consultation-note" className="label max-w-[16rem] text-white/50">No obligations. We usually reply within a few hours.</p>
                 <Magnetic>
                   <button type="submit" disabled={isSubmitting} className="btn group bg-hot text-white shadow-[0_14px_34px_rgba(255,2,141,0.22)] disabled:cursor-not-allowed disabled:opacity-60">
                     <span className="relative z-10">{isSubmitting ? 'Sending...' : 'Send request'}</span>

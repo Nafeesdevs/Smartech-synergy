@@ -101,7 +101,7 @@ export default function Process() {
                       <span className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full font-display text-base sm:text-lg font-black transition-colors duration-700 ease-[cubic-bezier(.16,1,.3,1)] ${on ? 'bg-sun text-ink' : 'bg-white/10 text-white'}`}>
                         {i + 1}
                       </span>
-                      <span className="label text-white/40">Step 0{i + 1}</span>
+                      <span className="label text-white/50">Step 0{i + 1}</span>
                     </div>
                     <h3 className="mt-4 sm:mt-5 font-display text-xl sm:text-2xl font-black uppercase tracking-tight md:text-3xl">{s.t}</h3>
                     <p className="mt-2 sm:mt-3 text-sm sm:text-[15px] leading-relaxed text-white/60">

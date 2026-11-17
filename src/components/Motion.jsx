@@ -12,7 +12,7 @@ import {
 export const ease = [0.16, 1, 0.3, 1]
 
 /* Letters fly in from scattered, rotated, blurred positions — the "EVERY FRAME" move from the reel */
-export function KineticText({ text, className = '', delay = 0, stagger = 0.035, as = 'span', chaos = 1 }) {
+export function KineticText({ text, className = '', separatorClassName = '', delay = 0, stagger = 0.035, as = 'span', chaos = 1 }) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-10% 0px' })
   const letters = useMemo(
@@ -50,7 +50,7 @@ export function KineticText({ text, className = '', delay = 0, stagger = 0.035, 
                 </span>
               )
             })}
-            {wi < arr.length - 1 && <span className="inline-block">&nbsp;</span>}
+            {wi < arr.length - 1 && <span className={`inline-block ${separatorClassName}`}>&nbsp;</span>}
           </span>
         )
       })}

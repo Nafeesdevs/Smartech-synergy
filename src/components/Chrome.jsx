@@ -188,6 +188,7 @@ export function Nav({ lenis }) {
   const [logoTurns, setLogoTurns] = useState(0)
   const menuButtonRef = useRef(null)
   const menuRef = useRef(null)
+  const pendingTargetRef = useRef(null)
   const hiddenRef = useRef(false)
   const scrolledRef = useRef(false)
   const { scrollY } = useScroll()
@@ -236,9 +237,26 @@ export function Nav({ lenis }) {
       menuButtonRef.current?.focus()
     }
   }, [open, lenis])
+  useEffect(() => {
+    if (open || !pendingTargetRef.current) return undefined
+
+    const href = pendingTargetRef.current
+    pendingTargetRef.current = null
+    const frame = window.requestAnimationFrame(() => {
+      lenis?.current
+        ? lenis.current.scrollTo(href, { offset: -20, duration: 2.8, easing: navScrollEase })
+        : document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+    })
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [open, lenis])
   const go = (e, href) => {
     e.preventDefault()
-    setOpen(false)
+    if (open) {
+      pendingTargetRef.current = href
+      setOpen(false)
+      return
+    }
     lenis?.current
       ? lenis.current.scrollTo(href, { offset: -20, duration: 2.8, easing: navScrollEase })
       : document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
