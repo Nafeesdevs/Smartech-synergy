@@ -86,7 +86,7 @@ export default function App() {
       >
         Skip to main content
       </a>
-      <Preloader onDone={onDone} performanceLite={performanceLite} />
+      <Preloader onDone={onDone} />
       <Cursor performanceLite={performanceLite} />
       <Hud performanceLite={performanceLite} />
       <Nav lenis={lenis} />

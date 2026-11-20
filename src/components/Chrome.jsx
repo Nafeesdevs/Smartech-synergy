@@ -7,6 +7,42 @@ import Icon from './Icons'
 const navScrollEase = (t) =>
   t < 0.5 ? 8 * t ** 4 : 1 - ((-2 * t + 2) ** 4) / 2
 
+const preloaderTimings = {
+  mobile: {
+    phases: [100, 250, 400, 600],
+    exit: 0.2,
+    dot: 0.1,
+    orbit: 0.15,
+    ring: 0.15,
+    square: 0.15,
+    logo: 0.2,
+  },
+  tablet: {
+    phases: [130, 330, 530, 750],
+    exit: 0.25,
+    dot: 0.13,
+    orbit: 0.2,
+    ring: 0.2,
+    square: 0.2,
+    logo: 0.22,
+  },
+  desktop: {
+    phases: [180, 500, 820, 1350],
+    exit: 0.45,
+    dot: 0.6,
+    orbit: 0.6,
+    ring: 0.8,
+    square: 0.7,
+    logo: 0.65,
+  },
+}
+
+function getPreloaderProfile() {
+  if (window.matchMedia('(max-width: 639px)').matches) return 'mobile'
+  if (window.matchMedia('(max-width: 1024px)').matches) return 'tablet'
+  return 'desktop'
+}
+
 function useMediaQuery(query) {
   const [matches, setMatches] = useState(() => window.matchMedia(query).matches)
 
@@ -40,18 +76,21 @@ export function Logo({ className = '', dark = false, priority = false }) {
 }
 
 /* Intro: dot → orbiting dots → rotating square → wordmark (mirrors the reel's opening & closing beats) */
-export function Preloader({ onDone, performanceLite = false }) {
+export function Preloader({ onDone }) {
   const [phase, setPhase] = useState(0)
+  const [profile] = useState(getPreloaderProfile)
   const reduceMotion = useReducedMotion()
-  const simplifiedMotion = reduceMotion || performanceLite
+  const timing = preloaderTimings[profile]
   useEffect(() => {
-    if (simplifiedMotion) {
+    if (reduceMotion) {
       setPhase(4)
       return undefined
     }
-    const t = [setTimeout(() => setPhase(1), 180), setTimeout(() => setPhase(2), 500), setTimeout(() => setPhase(3), 820), setTimeout(() => setPhase(4), 1350)]
-    return () => t.forEach(clearTimeout)
-  }, [simplifiedMotion])
+    const timers = timing.phases.map((delay, index) =>
+      setTimeout(() => setPhase(index + 1), delay)
+    )
+    return () => timers.forEach(clearTimeout)
+  }, [reduceMotion, timing])
   useEffect(() => {
     if (phase === 4) onDone?.()
   }, [phase, onDone])
@@ -64,7 +103,7 @@ export function Preloader({ onDone, performanceLite = false }) {
       animate={phase < 4
         ? { clipPath: 'inset(0 0 0% 0)', visibility: 'visible' }
         : { clipPath: 'inset(0 0 100% 0)', transitionEnd: { visibility: 'hidden' } }}
-      transition={{ duration: simplifiedMotion ? 0 : 0.45, ease: [0.76, 0, 0.24, 1] }}
+      transition={{ duration: reduceMotion ? 0 : timing.exit, ease: [0.76, 0, 0.24, 1] }}
       style={{ pointerEvents: phase < 4 ? 'auto' : 'none' }}
     >
           <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-2 font-mono text-[8px] font-semibold uppercase tracking-[0.12em] text-white/50 sm:inset-x-6 sm:top-6 sm:text-[10px] sm:tracking-wider">
@@ -85,7 +124,7 @@ export function Preloader({ onDone, performanceLite = false }) {
                       ? { scale: i === 0 ? 1 : 0, x: 0, y: 0 }
                       : { scale: 1, x: Math.cos((i * Math.PI) / 2) * 48, y: Math.sin((i * Math.PI) / 2) * 48 }
                   }
-                  transition={{ duration: 0.6, ease }}
+                  transition={{ duration: phase === 0 ? timing.dot : timing.orbit, ease }}
                 />
               ))}
             {phase === 1 && (
@@ -93,7 +132,7 @@ export function Preloader({ onDone, performanceLite = false }) {
                 className="absolute h-[96px] w-[96px] rounded-full border border-white/15"
                 initial={{ rotate: 0, opacity: 0 }}
                 animate={{ rotate: 180, opacity: 1 }}
-                transition={{ duration: 0.8 }}
+                transition={{ duration: timing.ring }}
               />
             )}
             {phase === 2 && (
@@ -101,7 +140,7 @@ export function Preloader({ onDone, performanceLite = false }) {
                 className="absolute h-24 w-24 rounded-[22px] bg-volt"
                 initial={{ scale: 0.2, rotate: -90, borderRadius: '50%' }}
                 animate={{ scale: 1, rotate: 25, borderRadius: '22px' }}
-                transition={{ duration: 0.7, ease }}
+                transition={{ duration: timing.square, ease }}
               >
                 <span className="label absolute -right-24 -top-5 whitespace-nowrap text-[9px] text-white/50">ROT 25.0° / SHAPE SQ</span>
               </motion.div>
@@ -110,7 +149,7 @@ export function Preloader({ onDone, performanceLite = false }) {
               <motion.div
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.65, ease }}
+                transition={{ duration: timing.logo, ease }}
               >
                 <Logo className="text-5xl sm:text-6xl" />
               </motion.div>

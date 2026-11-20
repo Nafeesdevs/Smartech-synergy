@@ -106,8 +106,15 @@ function Radar() {
         return (
           <div
             key={city.name}
-            className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
-            style={{ left: `${x}%`, top: `${y}%` }}
+            className={`absolute z-10 -translate-x-1/2 -translate-y-1/2 ${
+              city.name === 'Cheras'
+                ? 'left-[calc(57.5%+28px)] top-1/2 max-[391px]:top-[calc(50%-28px)] sm:left-[calc(57.5%+32px)] lg:left-[calc(57.5%+48px)] lg:top-[calc(50%-12px)] xl:left-[57.5%] xl:top-1/2'
+                : ''
+            }`}
+            style={{
+              left: city.name === 'Cheras' ? undefined : `${x}%`,
+              top: city.name === 'Cheras' ? undefined : `${y}%`,
+            }}
           >
             <span className="flex items-center gap-1 rounded-full bg-steel/95 px-1.5 py-1 text-[8px] font-bold text-white shadow-lg ring-1 ring-white/20 transition-all duration-300 hover:scale-105 hover:ring-sun/60 sm:gap-2 sm:whitespace-nowrap sm:px-3.5 sm:py-1.5 sm:text-xs">
               <span className={`h-1 w-1 shrink-0 rounded-full sm:h-2 sm:w-2 ${city.dot}`} />
