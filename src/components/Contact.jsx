@@ -210,7 +210,7 @@ export function Contact() {
                     autoComplete="tel"
                     required
                     maxLength={30}
-                    pattern="\\+?[0-9() .-]{7,29}"
+                    pattern="\+?[0-9\(\) .\-]{7,29}"
                     title={phoneErrorMessage}
                     aria-invalid={phoneError ? 'true' : 'false'}
                     aria-describedby={phoneError ? 'consultation-phone-error' : undefined}
