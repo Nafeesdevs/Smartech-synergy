@@ -20,7 +20,7 @@ export default function Hero({ ready, lenis }) {
   }
 
   return (
-    <section ref={ref} id="top" data-section className="relative min-h-[100svh] overflow-hidden bg-ink">
+    <section ref={ref} id="top" data-section className="hero-viewport relative overflow-hidden bg-ink">
       <motion.div style={{ scale }} className="relative origin-top">
         {/* dot wave */}
         <motion.div style={{ y: dotsY }} className="absolute inset-x-0 bottom-0 top-[30%]">
@@ -33,18 +33,18 @@ export default function Hero({ ready, lenis }) {
           initial={{ x: 400, opacity: 0 }}
           animate={ready ? { x: 0, opacity: 1 } : {}}
           transition={{ duration: 1.6, ease, delay: 0.2 }}
-          className="pointer-events-none absolute -right-[10%] top-[20%] h-[24vh] w-[44vw] opacity-60 md:opacity-100 bg-gradient-to-r from-sun/0 via-sun/80 to-sun"
+          className="pointer-events-none absolute -right-[10%] top-[20%] h-[min(24vh,18rem)] w-[44vw] opacity-60 md:opacity-100 bg-gradient-to-r from-sun/0 via-sun/80 to-sun"
         />
         <motion.div
           style={{ y: stripeB, skewX: -34 }}
           initial={{ x: 500, opacity: 0 }}
           animate={ready ? { x: 0, opacity: 1 } : {}}
           transition={{ duration: 1.6, ease, delay: 0.35 }}
-          className="pointer-events-none absolute -right-[16%] top-[56%] h-[14vh] w-[50vw] opacity-60 md:opacity-100 bg-gradient-to-r from-volt/0 via-volt/80 to-volt"
+          className="pointer-events-none absolute -right-[16%] top-[56%] h-[min(14vh,10.5rem)] w-[50vw] opacity-60 md:opacity-100 bg-gradient-to-r from-volt/0 via-volt/80 to-volt"
         />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#09090B_0%,rgba(9,9,11,.85)_35%,rgba(9,9,11,0)_70%)]" />
 
-        <motion.div style={{ y: yText }} className="container-x relative z-10 flex min-h-[100svh] flex-col justify-center pb-10 pt-32">
+        <motion.div style={{ y: yText }} className="hero-content container-x relative z-10 flex flex-col justify-center pb-10 pt-32">
           <motion.div
             className="label mb-8 flex flex-wrap items-center gap-3 text-white/60"
             initial={{ opacity: 0, y: 20 }}

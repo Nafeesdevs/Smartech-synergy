@@ -43,9 +43,18 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
       const r = canvas.getBoundingClientRect()
       w = r.width
       h = r.height
-      canvas.width = Math.round(w * dpr)
-      canvas.height = Math.round(h * dpr)
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      const maxBackingWidth = 2560
+      const maxBackingHeight = 1600
+      const maxBackingPixels = 3000000
+      const renderScale = Math.min(
+        dpr,
+        maxBackingWidth / Math.max(w, 1),
+        maxBackingHeight / Math.max(h, 1),
+        Math.sqrt(maxBackingPixels / Math.max(w * h, 1))
+      )
+      canvas.width = Math.max(1, Math.round(w * renderScale))
+      canvas.height = Math.max(1, Math.round(h * renderScale))
+      ctx.setTransform(renderScale, 0, 0, renderScale, 0, 0)
       rebuildPoints()
     }
     resize()

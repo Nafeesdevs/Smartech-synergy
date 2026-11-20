@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useMemo } from 'react'
+import { useEffect, useLayoutEffect, useRef, useMemo, useState } from 'react'
 import {
   motion,
   useScroll,
@@ -14,7 +14,17 @@ export const ease = [0.16, 1, 0.3, 1]
 /* Letters fly in from scattered, rotated, blurred positions — the "EVERY FRAME" move from the reel */
 export function KineticText({ text, className = '', separatorClassName = '', delay = 0, stagger = 0.035, as = 'span', chaos = 1 }) {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-10% 0px' })
+  const inView = useInView(ref, { once: true, margin: '-80px 0px' })
+  const [visibilityFallback, setVisibilityFallback] = useState(false)
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      const rect = ref.current?.getBoundingClientRect()
+      const visibleHeight = Math.min(window.visualViewport?.height || window.innerHeight, 1200)
+      if (rect && rect.bottom > 0 && rect.top < visibleHeight) setVisibilityFallback(true)
+    }, 2500)
+    return () => window.clearTimeout(timeout)
+  }, [])
+  const visible = inView || visibilityFallback
   const letters = useMemo(
     () =>
       text.split('').map((ch, i) => ({
@@ -38,7 +48,7 @@ export function KineticText({ text, className = '', separatorClassName = '', del
               return (
                 <span
                   key={ci}
-                  className={`kinetic-letter ${inView ? 'kinetic-letter--visible' : ''}`}
+                  className={`kinetic-letter ${visible ? 'kinetic-letter--visible' : ''}`}
                   style={{
                     '--kinetic-x': `${L.x * 120 * chaos}px`,
                     '--kinetic-y': `${-60 * chaos + L.y * 140 * chaos}px`,
@@ -61,7 +71,7 @@ export function KineticText({ text, className = '', separatorClassName = '', del
 /* Lines slide up out of a mask */
 export function MaskLines({ lines, className = '', lineClass = '', delay = 0 }) {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-12% 0px' })
+  const inView = useInView(ref, { once: true, margin: '-96px 0px' })
   return (
     <span ref={ref} className={className}>
       {lines.map((l, i) => (
@@ -131,7 +141,7 @@ export function Reveal({ children, className = '', delay = 0, y = 40 }) {
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-8% 0px' }}
+      viewport={{ once: true, margin: '-64px 0px' }}
       transition={{ duration: 1, ease, delay }}
     >
       {children}

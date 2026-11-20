@@ -48,6 +48,7 @@
 
 @layer components {
   .container-x { @apply mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12; }
+  .hero-viewport, .hero-content { min-height: min(100svh, 1200px); }
   .label { @apply font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.22em]; }
   .display { @apply font-display font-black uppercase leading-[0.88] tracking-tightest; font-stretch: 112%; }
   .btn {
