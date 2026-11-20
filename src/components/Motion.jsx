@@ -17,13 +17,14 @@ export function KineticText({ text, className = '', separatorClassName = '', del
   const inView = useInView(ref, { once: true, margin: '-80px 0px' })
   const [visibilityFallback, setVisibilityFallback] = useState(false)
   useEffect(() => {
+    if (inView || visibilityFallback) return undefined
     const timeout = window.setTimeout(() => {
       const rect = ref.current?.getBoundingClientRect()
       const visibleHeight = Math.min(window.visualViewport?.height || window.innerHeight, 1200)
       if (rect && rect.bottom > 0 && rect.top < visibleHeight) setVisibilityFallback(true)
     }, 2500)
     return () => window.clearTimeout(timeout)
-  }, [])
+  }, [inView, visibilityFallback])
   const visible = inView || visibilityFallback
   const letters = useMemo(
     () =>

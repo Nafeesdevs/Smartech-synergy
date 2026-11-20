@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 
 /* A perspective dot-plane that ripples like cloth — the reel's dot-wave beat, re-coloured in brand tones.
    Pure canvas, no deps. Reacts to pointer and pauses when off-screen. */
-export default function DotField({ className = '', density = 34, accent = '#F4BC21', accent2 = '#196BE4', base = 'rgba(255,255,255,0.55)' }) {
+export default function DotField({ className = '', density = 34, accent = '#F4BC21', accent2 = '#196BE4', base = 'rgba(255,255,255,0.55)', active = true }) {
   const ref = useRef(null)
   useEffect(() => {
     const canvas = ref.current
@@ -39,10 +39,10 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
         }
       }
     }
-    const resize = () => {
-      const r = canvas.getBoundingClientRect()
-      w = r.width
-      h = r.height
+    const resize = ({ width, height }) => {
+      if (width === w && height === h) return
+      w = width
+      h = height
       const maxBackingWidth = 2560
       const maxBackingHeight = 1600
       const maxBackingPixels = 3000000
@@ -57,8 +57,7 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
       ctx.setTransform(renderScale, 0, 0, renderScale, 0, 0)
       rebuildPoints()
     }
-    resize()
-    const ro = new ResizeObserver(resize)
+    const ro = new ResizeObserver(([entry]) => resize(entry.contentRect))
     ro.observe(canvas)
     const onMove = (e) => {
       if (!visible) return
@@ -111,11 +110,11 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
       raf = 0
     }
     const io = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting
+      visible = active && entry.isIntersecting
       if (visible) start()
       else stop()
     }, { rootMargin: '120px 0px' })
-    const onVisibilityChange = () => (document.hidden ? stop() : start())
+    const onVisibilityChange = () => (document.hidden || !active ? stop() : start())
     io.observe(canvas)
     document.addEventListener('visibilitychange', onVisibilityChange)
     return () => {
@@ -125,6 +124,6 @@ export default function DotField({ className = '', density = 34, accent = '#F4BC
       document.removeEventListener('visibilitychange', onVisibilityChange)
       io.disconnect()
     }
-  }, [density, accent, accent2, base])
+  }, [density, accent, accent2, base, active])
   return <canvas ref={ref} className={className} aria-hidden="true" />
 }

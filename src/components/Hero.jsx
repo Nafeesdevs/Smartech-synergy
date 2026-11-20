@@ -5,7 +5,7 @@ import Icon from './Icons'
 import { KineticText, Brackets, Magnetic, ease } from './Motion'
 import { brand, highlights } from '../data/content'
 
-export default function Hero({ ready, lenis }) {
+export default function Hero({ ready, lenis, performanceLite = false }) {
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.88])
@@ -24,20 +24,20 @@ export default function Hero({ ready, lenis }) {
       <motion.div style={{ scale }} className="relative origin-top">
         {/* dot wave */}
         <motion.div style={{ y: dotsY }} className="absolute inset-x-0 bottom-0 top-[30%]">
-          <DotField className="h-full w-full" />
+          <DotField className="h-full w-full" active={ready} />
         </motion.div>
 
         {/* PDF-cover diagonal stripes, parallaxed */}
         <motion.div
           style={{ y: stripeA, skewX: -34 }}
-          initial={{ x: 400, opacity: 0 }}
+          initial={performanceLite ? false : { x: 400, opacity: 0 }}
           animate={ready ? { x: 0, opacity: 1 } : {}}
           transition={{ duration: 1.6, ease, delay: 0.2 }}
           className="pointer-events-none absolute -right-[10%] top-[20%] h-[min(24vh,18rem)] w-[44vw] opacity-60 md:opacity-100 bg-gradient-to-r from-sun/0 via-sun/80 to-sun"
         />
         <motion.div
           style={{ y: stripeB, skewX: -34 }}
-          initial={{ x: 500, opacity: 0 }}
+          initial={performanceLite ? false : { x: 500, opacity: 0 }}
           animate={ready ? { x: 0, opacity: 1 } : {}}
           transition={{ duration: 1.6, ease, delay: 0.35 }}
           className="pointer-events-none absolute -right-[16%] top-[56%] h-[min(14vh,10.5rem)] w-[50vw] opacity-60 md:opacity-100 bg-gradient-to-r from-volt/0 via-volt/80 to-volt"
@@ -47,7 +47,7 @@ export default function Hero({ ready, lenis }) {
         <motion.div style={{ y: yText }} className="hero-content container-x relative z-10 flex flex-col justify-center pb-10 pt-32">
           <motion.div
             className="label mb-8 flex flex-wrap items-center gap-3 text-white/60"
-            initial={{ opacity: 0, y: 20 }}
+            initial={performanceLite ? false : { opacity: 0, y: 20 }}
             animate={ready ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease, delay: 0.1 }}
           >
@@ -56,23 +56,23 @@ export default function Hero({ ready, lenis }) {
           </motion.div>
 
           <h1 className="display text-[14vw] sm:text-[11vw] lg:text-[9.4vw]">
-            <KineticText key={`tech-${ready}`} text="Tech that" className="block" delay={ready ? 0.1 : 0} />
+            <KineticText key={`tech-${ready}`} text="Tech that" className="block" delay={ready && !performanceLite ? 0.1 : 0} />
             <span className="relative inline-block px-[0.12em] text-sun drop-shadow-[0_0_32px_rgba(244,188,33,0.16)]">
-              <KineticText key={`never-${ready}`} text="never skips" delay={ready ? 0.35 : 0} chaos={1.4} />
-              <Brackets size={22} color="#F4BC21" />
+              <KineticText key={`never-${ready}`} text="never skips" delay={ready && !performanceLite ? 0.35 : 0} chaos={1.4} />
+              <Brackets size={22} color="#F4BC21" animate={!performanceLite} />
             </span>
             <KineticText
               key={`beat-${ready}`}
               text="a beat."
               className="block"
               separatorClassName="min-w-[0.24em] sm:min-w-0"
-              delay={ready ? 0.7 : 0}
+              delay={ready && !performanceLite ? 0.7 : 0}
             />
           </h1>
 
           <motion.div
             className="mt-8 sm:mt-10 flex max-w-2xl flex-col gap-8 sm:flex-row sm:items-end sm:justify-between lg:max-w-none"
-            initial={{ opacity: 0, y: 30 }}
+            initial={performanceLite ? false : { opacity: 0, y: 30 }}
             animate={ready ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1, ease, delay: 1.2 }}
           >
@@ -102,7 +102,7 @@ export default function Hero({ ready, lenis }) {
                 <motion.div
                   key={h.k}
                   className="py-4 pr-4 md:py-5 md:pr-6 border-b sm:border-b-0 border-white/10 md:border-r md:last:border-r-0 [&:not(:first-child)]:md:pl-6"
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={performanceLite ? false : { opacity: 0, y: 20 }}
                   animate={ready ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.8, ease, delay: 1.4 + i * 0.08 }}
                 >

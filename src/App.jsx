@@ -25,8 +25,24 @@ function getPerformanceLiteMode() {
 
 export default function App() {
   const lenis = useRef(null)
+  const lenisFrame = useRef(0)
+  const readyRef = useRef(false)
   const [ready, setReady] = useState(false)
   const [performanceLite] = useState(getPerformanceLiteMode)
+
+  const stopLenisLoop = useCallback(() => {
+    if (lenisFrame.current) cancelAnimationFrame(lenisFrame.current)
+    lenisFrame.current = 0
+  }, [])
+
+  const startLenisLoop = useCallback(() => {
+    if (lenisFrame.current || document.hidden) return
+    const loop = (time) => {
+      lenis.current?.raf(time)
+      lenisFrame.current = requestAnimationFrame(loop)
+    }
+    lenisFrame.current = requestAnimationFrame(loop)
+  }, [])
 
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -40,34 +56,27 @@ export default function App() {
     lenis.current = l
     window.__lenis = l
     l.stop()
-    let raf = 0
-    const loop = (t) => {
-      l.raf(t)
-      raf = requestAnimationFrame(loop)
+    const onVisibilityChange = () => {
+      if (document.hidden) stopLenisLoop()
+      else if (readyRef.current) startLenisLoop()
     }
-    const startLoop = () => {
-      if (!raf && !document.hidden) raf = requestAnimationFrame(loop)
-    }
-    const stopLoop = () => {
-      if (raf) cancelAnimationFrame(raf)
-      raf = 0
-    }
-    const onVisibilityChange = () => (document.hidden ? stopLoop() : startLoop())
 
-    startLoop()
     document.addEventListener('visibilitychange', onVisibilityChange)
     return () => {
-      stopLoop()
+      stopLenisLoop()
       document.removeEventListener('visibilitychange', onVisibilityChange)
       l.destroy()
+      lenis.current = null
       delete window.__lenis
     }
-  }, [performanceLite])
+  }, [performanceLite, startLenisLoop, stopLenisLoop])
 
   const onDone = useCallback(() => {
+    readyRef.current = true
     setReady(true)
     lenis.current?.start()
-  }, [])
+    startLenisLoop()
+  }, [startLenisLoop])
 
   return (
     <div className={`grain ${performanceLite ? 'performance-lite' : ''}`}>
@@ -82,7 +91,7 @@ export default function App() {
       <Hud performanceLite={performanceLite} />
       <Nav lenis={lenis} />
       <main id="main-content" tabIndex="-1">
-        <Hero ready={ready} lenis={lenis} />
+        <Hero ready={ready} lenis={lenis} performanceLite={performanceLite} />
         <MarqueeBand a={marqueeA} b={marqueeB} performanceLite={performanceLite} />
         <About />
         <Problems />
